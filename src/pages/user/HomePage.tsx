@@ -6,6 +6,7 @@ import Courses from "../../components/user/Home/Courses";
 import Testimonials from "../../components/user/Home/Testimonials";
 import Footer from "../../components/user/Home/Footer";
 
+
 const HomePage: React.FC = () => {
     return (
         <div>

@@ -1,7 +1,81 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { OtpValidationSchema } from "../../schemas/OtpValidationSchema";
+import { verifyOtp } from "../../redux/actions/userActions";
+import { AppDispatch } from "../../redux/store";
+import toast from "react-hot-toast";
+
+interface TempData {
+  name: string;
+  email: string;
+  password: string;
+  otp?: string;
+  role: "student" | "instructor";
+}
+
+interface LocationState {
+  userData: TempData;
+}
+interface OtpVerificationState {
+  loading: boolean;
+  success: boolean;
+  error: string | null;
+}
+
+const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserData }) => {
+  // const [otp, setOtp] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = location.state as LocationState;
+
+  const userData: TempData = {
+    ...locationState?.userData,
+    ...propUserData
+  };
+
+  const otpState = useSelector((state: any) => state.user.OtpVerification) as OtpVerificationState;
+
+  const formik = useFormik({
+    initialValues: {
+      otp: "",
+    },
+    validationSchema: OtpValidationSchema,
+    onSubmit: async (values) => {
+      console.log("called submit funvtion", userData)
+      if (!userData?.email || !userData?.password || !userData?.role) {
+        toast.error("Missing required user information");
+        return;
+      }
+      if(userData){
+        try {
+          const result = await dispatch(verifyOtp({  otp: values.otp, 
+            email: userData.email,
+            password: userData.password,
+            role: userData.role })).unwrap();
+          if (result) {
+            toast.success("OTP verified successfully!");
+            navigate("/");
+          }
+        } catch (error) {
+          toast.error("OTP verification failed");
+        }
+      }
+    },
+  });
 
 
-const OtpVerification: React.FC = () => {
+  useEffect(() => {
+    if (otpState?.success) {
+      navigate("/");
+    }
+  }, [otpState?.success, navigate]);
+  // if(otpState.success){
+  //   navigate("/")
+  // }
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
@@ -24,7 +98,7 @@ const OtpVerification: React.FC = () => {
         </p>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div>
             <label
               htmlFor="otp"
@@ -35,18 +109,26 @@ const OtpVerification: React.FC = () => {
             <input
               type="text"
               id="otp"
+              name="otp"
+              value={formik.values.otp}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder="Enter your OTP"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
               maxLength={6}
               required
             />
+             {formik.touched.otp && formik.errors.otp && (
+              <p className="text-red-700">{formik.errors.otp}</p>
+            )}
           </div>
 
           <button
             type="submit"
             className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            disabled={otpState.loading}
           >
-            Verify OTP
+            {otpState.loading ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
 
@@ -59,6 +141,13 @@ const OtpVerification: React.FC = () => {
             Resend OTP
           </button>
         </div>
+
+        {otpState.error && (
+          <div className="mt-4 text-red-600 text-center">
+            <p>{otpState.error}</p>
+          </div>
+        )}
+
       </div>
     </div>
   );
