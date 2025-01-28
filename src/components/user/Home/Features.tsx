@@ -1,30 +1,3 @@
-// import React from "react";
-
-// const Features: React.FC = () => {
-//   return (
-//     <section id="features" className="py-16 bg-gray-100">
-//       <div className="container mx-auto text-center">
-//         <h3 className="text-3xl font-semibold mb-8">Why Choose EduWorld?</h3>
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-//           <div className="bg-white p-6 rounded-lg shadow-md">
-//             <h4 className="font-semibold text-xl mb-4">High Quality Courses</h4>
-//             <p>Learn from the best instructors in various fields, ranging from tech to business.</p>
-//           </div>
-//           <div className="bg-white p-6 rounded-lg shadow-md">
-//             <h4 className="font-semibold text-xl mb-4">Flexible Learning</h4>
-//             <p>Study at your own pace with our flexible online courses, available anytime, anywhere.</p>
-//           </div>
-//           <div className="bg-white p-6 rounded-lg shadow-md">
-//             <h4 className="font-semibold text-xl mb-4">Certifications</h4>
-//             <p>Earn certifications that boost your career and show off your new skills!</p>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Features;
 
 
 import React from 'react';
@@ -72,7 +45,7 @@ import { BookOpen, GraduationCap, Globe, Users, Headphones, UserCheck } from 'lu
 
   return (
     <div className="py-16 px-4 max-w-7xl mx-auto">
-      {/* Section Header */}
+     
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose EduWorld</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -81,16 +54,16 @@ import { BookOpen, GraduationCap, Globe, Users, Headphones, UserCheck } from 'lu
         </p>
       </div>
 
-      {/* Features Grid */}
+    
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feature, index) => (
           <div key={index} className="p-6 rounded-lg transition-all hover:shadow-lg">
-            {/* Icon Container */}
+          
             <div className={`w-16 h-16 rounded-full ${feature.bgColor} flex items-center justify-center mb-4`}>
               {feature.icon}
             </div>
             
-            {/* Content */}
+           
             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
             <p className="text-gray-600">{feature.description}</p>
           </div>

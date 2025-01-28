@@ -25,7 +25,7 @@ interface OtpVerificationState {
 }
 
 const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserData }) => {
-  // const [otp, setOtp] = useState<string>("");
+ 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,10 +59,15 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
             toast.success("OTP verified successfully!");
             navigate("/");
           }
-        } catch (error) {
-          toast.error("OTP verification failed");
+        } catch (error: any) {
+          console.error("OTP verification error:", error);
+          if (error.message) {
+            toast.error(error.message);
+          }else 
+          toast.error(error.message || "OTP verification failed");
         }
-      }
+        }
+      
     },
   });
 
@@ -80,16 +85,16 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundColor: "#1E40AF", // Blue background
+        backgroundColor: "#1E40AF", 
       }}
     >
-      {/* Overlay */}
+     
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-950/90 bg-opacity-75"></div>
 
       <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg p-8 z-10">
        
 
-        {/* Page Description */}
+      
         <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">
           OTP Verification
         </h2>
@@ -97,7 +102,7 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
           Enter the OTP sent to your registered email address to continue.
         </p>
 
-        {/* Form */}
+       
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div>
             <label
@@ -132,7 +137,7 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
           </button>
         </form>
 
-        {/* Resend OTP */}
+       
         <div className="mt-6 text-center">
           <button
             className="text-blue-600 hover:underline"

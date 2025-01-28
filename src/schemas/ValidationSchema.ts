@@ -17,3 +17,11 @@ export const ValidationSchema = yup.object().shape({
     .required("confirm your password")
     .oneOf([yup.ref("password")], "Passwords must Match"),
 })
+
+export const ValidationSchemaLogin = yup.object().shape({
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});

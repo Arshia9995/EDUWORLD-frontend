@@ -3,7 +3,7 @@ import userReducer from './reducers/user/userSlice';
 import { useDispatch } from "react-redux";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
-
+export type RootState = ReturnType<typeof reducer>;
 export type AppDispatch = typeof store.dispatch;
 
 const reducer = combineReducers({

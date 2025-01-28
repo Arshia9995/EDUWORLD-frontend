@@ -6,17 +6,17 @@ const ForgotPassword: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundColor: "#1E40AF", // Blue background
+        backgroundColor: "#1E40AF", 
       }}
     >
-      {/* Overlay */}
+   
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-950/90 bg-opacity-75"></div>
 
       <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg p-8 z-10">
        
         
 
-        {/* Page Description */}
+    
         <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">
           Forgot Password?
         </h2>
@@ -24,7 +24,7 @@ const ForgotPassword: React.FC = () => {
           Enter your registered email address to receive the OTP.
         </p>
 
-        {/* Form */}
+       
         <form className="space-y-5">
           <div>
             <label
@@ -50,7 +50,7 @@ const ForgotPassword: React.FC = () => {
           </button>
         </form>
 
-        {/* Navigation */}
+        
         <p className="text-center text-gray-600 mt-4">
           Remembered your password?{" "}
           <a

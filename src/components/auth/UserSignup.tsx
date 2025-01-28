@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
 import { useFormik } from 'formik';
 import { ValidationSchema } from "../../schemas/ValidationSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { userSignup } from "../../redux/actions/userActions";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import OtpVerification from "./OtpVerification";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { IUserSignupData } from "../../interface/IUserSignup";
+
+
+
+
 
 
 interface UserValues {
@@ -45,24 +49,25 @@ const UserSignup: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [role, setRole] = useState<string>("student"); 
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
 
-  
+  const { loading, error } = useSelector((state: RootState) => state.user);
+
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: ValidationSchema,
     onSubmit: async (values, action) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    
       const { confirmPassword, ...rest } = values;
 
       const signupData: IUserSignupData = {
         name: rest.name,
         email: rest.email,
         password: rest.password,
-        role: rest.role as 'student' | 'instructor'  // Type assertion here
+        role: rest.role as 'student' | 'instructor'  
       };
-
+      try {
       const response = await dispatch(userSignup(signupData)).unwrap()
       console.log(response, 'response ----')
       if (response) {
@@ -74,19 +79,29 @@ const UserSignup: React.FC = () => {
           role: rest.role as 'student' | 'instructor',
         });
 
-        setIsOTP(true); // Switch to OTP verification
+        setIsOTP(true); 
         toast.success("Signup successful! OTP sent.");
-        action.resetForm(); // Reset the form
+        action.resetForm(); 
         navigate("/otp", { state: { userData: {
           name: rest.name,
           email: rest.email,
           password: rest.password,
           role: rest.role as 'student' | 'instructor',
         } } });
+          }
+         } catch (err: any) {
+            console.error("Signup Error:", err);
+            toast.error(
+              typeof err === "string"
+                ? err
+                : "Signup failed. Please try again."
+            );
+          }
+
       
-      }else {
-        toast.error("Signup failed. Please try again."); // Add user feedback
-    }
+    //   }else {
+    //     toast.error("Signup failed. Please try again."); 
+    // }
       
     }
     
@@ -101,14 +116,14 @@ const UserSignup: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-950/90 to-blue-950/90 overflow-hidden"
       style={{
-        backgroundColor: "#1E40AF", // Blue background
+        backgroundColor: "#1E40AF", 
       }}
     >
-      {/* Overlay */}
+     
       <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 to-blue-950/90 bg-opacity-75"></div>
 
       <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg p-8 z-10">
-        {/* Logo and Title */}
+      
         <div className="flex items-center justify-center mb-6">
           <img src={logo} alt="EduWorld Logo" className="h-12 w-20" />
           <h2 className="text-3xl font-extrabold text-blue-900 ml-3">
@@ -116,6 +131,11 @@ const UserSignup: React.FC = () => {
           </h2>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 text-red-700 bg-red-100 rounded">
+            {error}
+          </div>
+        )}
       
 
        
@@ -160,6 +180,7 @@ const UserSignup: React.FC = () => {
               required
             />
              {errors.email && touched.email && <p className="text-red-700">{errors.email}</p>}
+          
           </div>
 
           <div>
@@ -222,7 +243,7 @@ const UserSignup: React.FC = () => {
           )}
           
 
-          {/* Role Selection */}
+         
           <div>
             <label
               htmlFor="role"
@@ -248,7 +269,7 @@ const UserSignup: React.FC = () => {
             type="submit"
             className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
           >
-            Sign Up
+           {loading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
         

@@ -1,22 +1,4 @@
-// import React from "react";
 
-// const Footer: React.FC = () => {
-//   return (
-//     <footer id="footer" className="bg-gray-500 text-white py-6">
-//       <div className="container mx-auto text-center">
-//         <p>&copy; 2025 EduWorld. All Rights Reserved.</p>
-//         <ul className="flex justify-center space-x-4 mt-4">
-//           <li><a href="#home">Home</a></li>
-//           <li><a href="#features">Features</a></li>
-//           <li><a href="#courses">Courses</a></li>
-//           <li><a href="#testimonials">Testimonials</a></li>
-//         </ul>
-//       </div>
-//     </footer>
-//   );
-// };
-
-// export default Footer;
 import React from 'react';
 import { MapPin, Phone, Mail, FileText } from 'lucide-react';
 import appStore from "../../../assets/home/app-store.png";
@@ -27,7 +9,7 @@ const Footer: React.FC = () => {
     <footer className="bg-blue-950/90 text-white py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Contact Us Section */}
+          
           <div>
             <h3 className="text-[#FFB800] text-xl font-bold mb-6 relative">
               Contact Us
@@ -53,7 +35,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature Links */}
+      
           <div>
             <h3 className="text-[#FFB800] text-xl font-bold mb-6 relative">
               Feature Links
@@ -67,7 +49,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Support */}
+         
           <div>
             <h3 className="text-[#FFB800] text-xl font-bold mb-6 relative">
               Support
@@ -81,7 +63,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Download App Section */}
+         
           <div>
             <h3 className="text-[#FFB800] text-xl font-bold mb-6 relative">
               Download App
@@ -102,7 +84,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Social Media Links */}
+       
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
           <button className="bg-[#3b5998] text-white py-3 px-4 rounded flex items-center justify-center hover:opacity-90 transition-opacity">
             FACEBOOK
@@ -115,7 +97,7 @@ const Footer: React.FC = () => {
           </button>
         </div>
 
-        {/* Copyright */}
+       
         <div className="text-center mt-12 pt-8 border-t border-gray-700">
           <p>Copyright © 2020 <span className="text-[#FFB800]">E-learning</span>. All rights reserved</p>
         </div>

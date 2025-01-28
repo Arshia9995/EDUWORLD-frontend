@@ -2,13 +2,28 @@
 import React from "react";
 import logo from "../../../assets/home/logo.png";
 import { Link ,useNavigate} from "react-router-dom";
-import { UseSelector,useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
+import { userLogout } from "../../../redux/actions/userActions";
+import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user)
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(userLogout()).unwrap();
+      toast.success("Logged out successfully!");
+      navigate("/login");
+    } catch (err: any) {
+      console.error("Logout Error:", err);
+      toast.error("Logout failed. Please try again.");
+      
+    }
+  };
+
   return (
     <div className="bg-white shadow-md">
       {/* Navbar section */}
@@ -43,7 +58,7 @@ const Navbar: React.FC = () => {
               >
                 Profile
               </button> */}
-              <button
+              <button onClick={handleLogout}
                 
                 className="bg-red-500 px-4 py-2 text-white font-semibold rounded hover:bg-red-600"
               >
@@ -53,7 +68,7 @@ const Navbar: React.FC = () => {
           ) : (
             <>
           <button className="bg-yellow-400 px-4 py-2 text-black font-semibold rounded hover:bg-yellow-500">
-            Login
+             <Link to="/login">Login</Link>
           </button>
           <button className="bg-gray-300 px-4 py-2 text-black font-semibold rounded hover:bg-gray-400">
           <Link to="/signup">Register</Link>

@@ -5,16 +5,16 @@ const ResetPassword: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundColor: "#1E40AF", // Blue background color
+        backgroundColor: "#1E40AF",
       }}
     >
-      {/* Overlay */}
+    
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-950/90 bg-opacity-75"></div>
 
       <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg p-8 z-10">
        
 
-        {/* Page Description */}
+        
         <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">
           Reset Password
         </h2>
@@ -22,7 +22,7 @@ const ResetPassword: React.FC = () => {
           Create a new password for your account.
         </p>
 
-        {/* Form */}
+       
         <form className="space-y-5">
           <div>
             <label
@@ -64,7 +64,7 @@ const ResetPassword: React.FC = () => {
           </button>
         </form>
 
-        {/* Navigation */}
+        
         <p className="text-center text-gray-600 mt-4">
           Remembered your password?{" "}
           <a href="/login" className="text-blue-600 hover:underline">

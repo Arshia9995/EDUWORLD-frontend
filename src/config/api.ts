@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { baseUrl } from "./constants";
 import { ApiError, handleError } from "./configuration";
 
+
 const instance = axios.create({
     baseURL: baseUrl,
     withCredentials: true
