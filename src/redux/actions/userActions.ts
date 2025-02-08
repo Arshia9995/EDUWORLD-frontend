@@ -33,9 +33,9 @@ export const userSignup = createAsyncThunk('user/userSignup', async(userCredenti
 export const verifyOtp = createAsyncThunk('user/verifyOtp', async({ otp, email,password, role}: {otp: string; email: string; password:string; role:string}, { rejectWithValue }) => {
     try {
         console.log("reached in verifyOtp reducer");
-        const { data } = await axios.post(`${baseUrl}/users/verify-otp`, { otp, email, password, role }, config);
+        const { data } = await axios.post(`${baseUrl}/users/verifyotp`, { otp, email, password, role }, config);
         console.log("OTP Verification API Response:", data);
-        return data.data;
+        return data;
     } catch (err: any) {
         console.error("API Error:", err);
         const axiosError = err as AxiosError<ApiError>;
@@ -61,6 +61,16 @@ export const userLogin = createAsyncThunk('/user/userLogin', async(userCredentia
 export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(`${baseUrl}/users/logout`);
+      return data;
+    } catch (err: any) {
+      const axiosError = err as AxiosError<ApiError>;
+      return rejectWithValue(axiosError.response?.data.message || "Logout failed. Please try again.");
+    }
+  });
+
+  export const getUserDataFirst = createAsyncThunk('user/getUserDataFirst',async(_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(`${baseUrl}/users/getUserDataFirst`);
       return data;
     } catch (err: any) {
       const axiosError = err as AxiosError<ApiError>;

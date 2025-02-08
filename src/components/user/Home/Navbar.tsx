@@ -23,6 +23,8 @@ const Navbar: React.FC = () => {
       
     }
   };
+  console.log(user,"................");
+  
 
   return (
     <div className="bg-white shadow-md">

@@ -82,7 +82,7 @@ const UserLogin: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
-              required
+              // required
             />
             {errors.email && touched.email && <p className="text-red-700">{errors.email}</p>}
           </div>
@@ -103,7 +103,7 @@ const UserLogin: React.FC = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
-              required
+              // required
             />
             <button
                 type="button"

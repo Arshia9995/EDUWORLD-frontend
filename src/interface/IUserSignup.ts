@@ -3,5 +3,7 @@ export interface IUserSignupData {
     email?: string | null;            
     password?: string | null;         
     role?: 'student' | 'instructor'; 
-    otp?: string | null;             
+    otp?: string | null;  
+    
+
   }

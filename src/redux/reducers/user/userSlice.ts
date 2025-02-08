@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  {userSignup, verifyOtp, userLogin,userLogout} from "../../actions/userActions";
+import  {userSignup, verifyOtp, userLogin,userLogout, getUserDataFirst} from "../../actions/userActions";
 import { IUserSignupData } from "../../../interface/IUserSignup";
 import { IUserLoginData } from "../../../interface/IUserLogin";
 
@@ -34,6 +34,8 @@ const userSlice = createSlice({
             state.error = null;
           })
           .addCase(userSignup.fulfilled, (state, action: any) => {
+            console.log(action.payload,"payload in user signup ---------------------------");
+            
             state.loading = false;
             state.user = action.payload as IUserSignupData;
             state.error = null;
@@ -50,7 +52,7 @@ const userSlice = createSlice({
           })
           .addCase(verifyOtp.fulfilled, (state, action) => {
             state.OtpVerification.loading = false;
-            state.OtpVerification.success = true;
+            state.OtpVerification.success = action.payload.success;
             state.OtpVerification.error = null;
           })
           .addCase(verifyOtp.rejected, (state, action) => {
@@ -83,8 +85,20 @@ const userSlice = createSlice({
           .addCase(userLogout.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string | null;
+          })
+          .addCase(getUserDataFirst.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(getUserDataFirst.fulfilled, (state,action) => {
+            state.loading = false;
+            state.user = action.payload; 
+            state.error = null;
+          })
+          .addCase(getUserDataFirst.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string | null;
           });
-
       },
 });
 

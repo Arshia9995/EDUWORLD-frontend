@@ -38,6 +38,8 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
 
   const otpState = useSelector((state: any) => state.user.OtpVerification) as OtpVerificationState;
 
+  
+
   const formik = useFormik({
     initialValues: {
       otp: "",

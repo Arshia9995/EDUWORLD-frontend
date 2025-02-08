@@ -16,11 +16,11 @@ import { IUserSignupData } from "../../interface/IUserSignup";
 
 
 
-interface UserValues {
-  name: string;
-  email: string;
-  role: "student" | "instructor";
-}
+// interface UserValues {
+//   name: string;
+//   email: string;
+//   role: "student" | "instructor";
+// }
 interface TempData {
   name: string;
   email: string;
@@ -47,7 +47,6 @@ const UserSignup: React.FC = () => {
   const [tempData, setTempData] = useState<TempData>(temporaryData)
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [role, setRole] = useState<string>("student"); 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -106,11 +105,6 @@ const UserSignup: React.FC = () => {
     }
     
   })
- 
-
-  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRole(e.target.value);
-  };
 
   return (
     <div
@@ -156,7 +150,7 @@ const UserSignup: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
-              required
+              // required
             />
              {errors.name && touched.name && <p className="text-red-700">{errors.name}</p>}
           </div>
@@ -177,7 +171,7 @@ const UserSignup: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-400 focus:border-yellow-500"
-              required
+              // required
             />
              {errors.email && touched.email && <p className="text-red-700">{errors.email}</p>}
           
@@ -199,7 +193,7 @@ const UserSignup: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
-              required
+              // required
             />
              <button
                   type="button"
@@ -228,7 +222,7 @@ const UserSignup: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
-              required
+              // required
             />
             <button
                   type="button"

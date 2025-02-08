@@ -16,6 +16,10 @@ const UserRoutes: React.FC = () => {
             <Route path="/otp" element={<OtpPage /> } />
             <Route path="/forgotpassword" element={<ForgotPassword /> } />
             <Route path="/resetpassword" element={<ResetPassword /> } />
+            
+            
+
+
         </Routes>
     );
 };
