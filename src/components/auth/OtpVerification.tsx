@@ -123,7 +123,7 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
               placeholder="Enter your OTP"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
               maxLength={6}
-              required
+              // required
             />
              {formik.touched.otp && formik.errors.otp && (
               <p className="text-red-700">{formik.errors.otp}</p>

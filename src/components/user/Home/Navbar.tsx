@@ -11,20 +11,20 @@ const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user)
+  console.log(user,"from NAVBAR")
 
   const handleLogout = async () => {
     try {
-      await dispatch(userLogout()).unwrap();
-      toast.success("Logged out successfully!");
-      navigate("/login");
+      await dispatch(userLogout()).then(() => {
+        toast.success("Logged out successfully!");
+        navigate("/login");
+      })
     } catch (err: any) {
       console.error("Logout Error:", err);
       toast.error("Logout failed. Please try again.");
       
     }
   };
-  console.log(user,"................");
-  
 
   return (
     <div className="bg-white shadow-md">

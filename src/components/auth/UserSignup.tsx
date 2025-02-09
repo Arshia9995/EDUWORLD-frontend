@@ -52,6 +52,7 @@ const UserSignup: React.FC = () => {
 
 
   const { loading, error } = useSelector((state: RootState) => state.user);
+  console.log(error,"error from state")
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,

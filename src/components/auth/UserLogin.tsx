@@ -33,7 +33,7 @@ const UserLogin: React.FC = () => {
     validationSchema: ValidationSchemaLogin,
     onSubmit: async (values) => {
       try {
-        const response = await dispatch(userLogin(values)).unwrap();
+        await dispatch(userLogin(values)).unwrap();
         toast.success("Login successful!");
         navigate("/");
 

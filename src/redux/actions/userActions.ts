@@ -13,7 +13,7 @@ export const userSignup = createAsyncThunk('user/userSignup', async(userCredenti
         console.log("reached in userSignup reducer");
         const {data} = await axios.post(`${baseUrl}/users/signup`, userCredentials,config)
         console.log("API Response:", data);
-        return data.data
+        return data
         
     } catch (err: any) {
         console.error("API Error:", err);
@@ -50,6 +50,7 @@ export const verifyOtp = createAsyncThunk('user/verifyOtp', async({ otp, email,p
 export const userLogin = createAsyncThunk('/user/userLogin', async(userCredentials: IUserLoginData, {rejectWithValue}) => {
     try {
         const { data } = await axios.post(`${baseUrl}/users/login`, userCredentials, config);
+        
         return data.data;
     } catch (err: any) {
         const axiosError = err as AxiosError<ApiError>;
@@ -60,7 +61,8 @@ export const userLogin = createAsyncThunk('/user/userLogin', async(userCredentia
 //logout
 export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post(`${baseUrl}/users/logout`);
+      console.log("reache the api request of the of the logout")
+      const { data } = await axios.post(`${baseUrl}/users/logout`,{} ,{ withCredentials:true});
       return data;
     } catch (err: any) {
       const axiosError = err as AxiosError<ApiError>;
@@ -68,16 +70,16 @@ export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectW
     }
   });
 
-  export const getUserDataFirst = createAsyncThunk('user/getUserDataFirst',async(_, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.post(`${baseUrl}/users/getUserDataFirst`);
-      return data;
-    } catch (err: any) {
-      const axiosError = err as AxiosError<ApiError>;
-      return rejectWithValue(axiosError.response?.data.message || "Logout failed. Please try again.");
-    }
-  });
-
+  // export const getUserDataFirst = createAsyncThunk('user/getUserDataFirst',async(_, { rejectWithValue }) => {
+  //   try {
+  //     const data = await axios.get(`${baseUrl}/users/getUserDataFirst`);
+  //     console.log(data," data in the action")
+  //     return data;
+  //   } catch (err: any) {
+  //     const axiosError = err as AxiosError<ApiError>;
+  //     return rejectWithValue(axiosError.response?.data.message || "Logout failed. Please try again.");
+  //   }
+  // });
 
 
 
