@@ -6,6 +6,7 @@ import Login from "../pages/auth/Login";
 import OtpPage from "../pages/auth/OtpPage";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
+import ForgotOtpPage from "../pages/auth/ForgotOtpPage";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const UserRoutes: React.FC = () => {
             <Route path="/otp" element={<OtpPage /> } />
             <Route path="/forgotpassword" element={<ForgotPassword /> } />
             <Route path="/resetpassword" element={<ResetPassword /> } />
+            <Route path ="/forgototp" element= {<ForgotOtpPage />} />
             
             
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -6,6 +6,9 @@ import { OtpValidationSchema } from "../../schemas/OtpValidationSchema";
 import { verifyOtp } from "../../redux/actions/userActions";
 import { AppDispatch } from "../../redux/store";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { baseUrl } from "../../config/constants";
+
 
 interface TempData {
   name: string;
@@ -38,6 +41,44 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
 
   const otpState = useSelector((state: any) => state.user.OtpVerification) as OtpVerificationState;
 
+  const [timeLeft, setTimeLeft]= useState(60)
+  const [resendDisabled, setResendDisabled] = useState(true);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setResendDisabled(false); 
+    }
+  }, [timeLeft]);
+
+
+  const handleResendOtp = async () => {
+    if(!userData.email){
+      toast.error("Email is required for resending OTP.");
+      return;
+
+    }
+
+    try {
+      setResendDisabled(true);
+      setTimeLeft(60);
+
+      const response = await axios.post(`${baseUrl}/users/resendotp`,{ email: userData.email });
+
+      if (response.data.success) {
+        toast.success("OTP Resent Successfully. Please check your email.");
+      } else {
+        toast.error(response.data.message || "Failed to resend OTP.");
+      }
+    } catch (error: any){
+      console.error("Error resending OTP:", error);
+      toast.error(error.response?.data?.message || "Failed to resend OTP.");
+      
+    }
+
+    }
   
 
   const formik = useFormik({
@@ -83,6 +124,13 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
   //   navigate("/")
   // }
 
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
@@ -104,6 +152,8 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
           Enter the OTP sent to your registered email address to continue.
         </p>
 
+         
+        <p className="text-center text-red-600 font-semibold mb-4">OTP Expires In: {formatTime(timeLeft)}</p>
        
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div>
@@ -121,8 +171,9 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="Enter your OTP"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
               maxLength={6}
+              disabled={timeLeft === 0}
               // required
             />
              {formik.touched.otp && formik.errors.otp && (
@@ -132,8 +183,9 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
 
           <button
             type="submit"
-            className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            disabled={otpState.loading}
+            className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+  disabled={otpState.loading || timeLeft === 0} // Disable when loading or timer reaches 0
+
           >
             {otpState.loading ? "Verifying..." : "Verify OTP"}
           </button>
@@ -142,8 +194,9 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
        
         <div className="mt-6 text-center">
           <button
-            className="text-blue-600 hover:underline"
-            onClick={() => alert("Resending OTP...")}
+           className={`text-blue-600 ${resendDisabled ? "opacity-50 cursor-not-allowed" : "hover:underline"}`}
+           disabled={resendDisabled}
+           onClick={handleResendOtp}  
           >
             Resend OTP
           </button>

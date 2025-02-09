@@ -137,7 +137,7 @@ const UserLogin: React.FC = () => {
         
          <div className="mt-4 text-center">
           <Link
-            to="/reset-password"
+            to="/forgotpassword"
             className="text-sm text-blue-600 hover:underline"
           >
             Forgot Password?
