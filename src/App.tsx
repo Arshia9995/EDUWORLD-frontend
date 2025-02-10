@@ -4,6 +4,7 @@ import UserRoutes from "./routes/UserRoutes";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
+import AdminRoutes from "./routes/AdminRoutes";
 // import { useDispatch, useSelector } from "react-redux";
 // import { AppDispatch, RootState } from "./redux/store";
 // import { getUserDataFirst } from "./redux/actions/userActions";
@@ -28,6 +29,7 @@ const App: React.FC = () => {
       <Toaster />
       <Routes>
         <Route path="/*" element={<UserRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} /> 
       </Routes>
     </>
   );

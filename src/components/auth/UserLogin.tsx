@@ -35,7 +35,7 @@ const UserLogin: React.FC = () => {
       try {
         await dispatch(userLogin(values)).unwrap();
         toast.success("Login successful!");
-        navigate("/");
+        navigate("/", { replace: true });
 
       } catch (err: any) {
         console.error("Login Error:", err);

@@ -30,13 +30,16 @@ const UserForgotPassword: React.FC = () => {
       );
 
       // ✅ Show toast only if response is successful
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.success) {
         toast.success(response.data.message || "OTP sent successfully!");
 
         setTimeout(() => {
-          navigate("/forgototp")
+          navigate("/forgototp",{ state: { email: values.email } }); 
         }, 2000);
-      }
+
+      }else {
+      toast.error(response.data.message || "Something went wrong. Try again.");
+    }
     } catch (error: any) {
       if (error.response?.status === 404) {
         toast.error("Email not registered. Please check and try again.");
