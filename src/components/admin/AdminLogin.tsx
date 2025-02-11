@@ -1,10 +1,47 @@
+
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { adminLogin } from "../../redux/actions/adminActions";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
 import logo from "../../assets/home/logo.png";
+import { useEffect } from "react";
+
 
 const AdminLogin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const { loading, error, isAuthenticated } = useSelector(
+    (state: RootState) => state.admin
+  );
+
+  const formik = useFormik({
+    initialValues: { email: "", password: "" },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      password: Yup.string()
+        .min(6, "Password must be at least 6 characters")
+        .required("Password is required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        await dispatch(adminLogin(values)).unwrap();
+        toast.success("Login successful!");
+        navigate("/admin/dashboard", { replace: true });
+      } catch (err) {
+        console.error("Login failed:", err);
+        toast.error("Login failed. Please try again.");
+      }
+    },
+  });
+
+
 
   return (
     <div
@@ -23,7 +60,9 @@ const AdminLogin: React.FC = () => {
           </h2>
         </div>
 
-        <form className="space-y-5">
+        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+
+        <form className="space-y-5" onSubmit={formik.handleSubmit}>
           <div>
             <label
               htmlFor="email"
@@ -34,10 +73,13 @@ const AdminLogin: React.FC = () => {
             <input
               type="email"
               id="email"
-              name="email"
+              {...formik.getFieldProps("email")}
               placeholder="Enter admin email"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
             />
+            {formik.touched.email && formik.errors.email && (
+              <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+            )}
           </div>
 
           <div className="relative">
@@ -50,35 +92,30 @@ const AdminLogin: React.FC = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              name="password"
+              {...formik.getFieldProps("password")}
               placeholder="Enter admin password"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+              className="absolute top-8 right-3 transform text-gray-500"
             >
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
+            {formik.touched.password && formik.errors.password && (
+              <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
+            )}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 disabled:opacity-50"
+            disabled={loading}
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
-
-        <div className="mt-4 text-center">
-          {/* <Link
-            to="/forgotpassword"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Forgot Password?
-          </Link> */}
-        </div>
       </div>
     </div>
   );

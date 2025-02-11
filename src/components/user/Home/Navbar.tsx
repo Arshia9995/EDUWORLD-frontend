@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="bg-white shadow-md">
-      {/* Navbar section */}
+    
       <div className="flex justify-between items-center px-6 py-4">
         <div className="text-2xl font-bold text-blue-900 flex items-center space-x-2">
           <img

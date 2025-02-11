@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { toast } from "react-hot-toast"; // ✅ Fixed import
+import { toast } from "react-hot-toast"; 
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../config/constants";
 
@@ -29,7 +29,7 @@ const UserForgotPassword: React.FC = () => {
         values
       );
 
-      // ✅ Show toast only if response is successful
+
       if (response.status === 200 && response.data.success) {
         toast.success(response.data.message || "OTP sent successfully!");
 
@@ -73,7 +73,7 @@ const UserForgotPassword: React.FC = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-5">
-              {/* ✅ Use <Form> instead of <form> */}
+  
               <div>
                 <label
                   htmlFor="email"
@@ -82,7 +82,7 @@ const UserForgotPassword: React.FC = () => {
                   Email Address
                 </label>
 
-                {/* ✅ Added name="email" */}
+              
                 <Field
                   // type="email"
                   name="email"

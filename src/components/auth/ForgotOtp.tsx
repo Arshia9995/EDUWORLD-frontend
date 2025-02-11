@@ -71,7 +71,7 @@ const ForgotOtp: React.FC = () => {
       
               if (response.data.success) {
                 toast.success("OTP verified successfully!");
-                navigate("/resetpassword", { state: { email } }); // Pass email to reset password page
+                navigate("/resetpassword", { state: { email } }); 
               } else {
                 toast.error(response.data.message);
               }

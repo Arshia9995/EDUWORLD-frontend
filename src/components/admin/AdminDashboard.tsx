@@ -8,15 +8,12 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside
         className={`${
           isSidebarOpen ? "w-64" : "w-20"
         } bg-blue-900 text-white h-screen p-5 transition-all duration-300`}
 
  >
-
- {/* Logo and Title */}
  <div className="flex items-center space-x-2 mb-6">
           <img src={logo} alt="EduWorld Logo" className="h-10 w-10" />
           {isSidebarOpen && (
@@ -24,7 +21,6 @@ const AdminDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Sidebar Toggle */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="mb-6 text-yellow-400 focus:outline-none"
@@ -32,7 +28,6 @@ const AdminDashboard: React.FC = () => {
           <FiMenu size={24} />
         </button>
 
-        {/* Sidebar Links */}
         <nav className="space-y-4">
           <Link
             to="/admin/dashboard"
@@ -42,11 +37,11 @@ const AdminDashboard: React.FC = () => {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
           <Link
-            to="/admin/users"
+            to="/admin/studentslist"
             className="flex items-center space-x-2 hover:text-yellow-400"
           >
             <FiUsers />
-            {isSidebarOpen && <span>Users</span>}
+            {isSidebarOpen && <span>Students</span>}
           </Link>
           <Link
             to="/admin/settings"
@@ -65,7 +60,6 @@ const AdminDashboard: React.FC = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 p-6">
         <h1 className="text-3xl font-extrabold text-blue-900">
           Welcome to Admin Dashboard
