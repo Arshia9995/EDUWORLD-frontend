@@ -7,6 +7,9 @@ import OtpPage from "../pages/auth/OtpPage";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import ForgotOtpPage from "../pages/auth/ForgotOtpPage";
+import ProfilePage from "../pages/user/ProfilePage";
+import RegistrationFormPage from "../pages/user/instructor/RegistrationFormPage";
+import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -18,6 +21,9 @@ const UserRoutes: React.FC = () => {
             <Route path="/forgotpassword" element={<ForgotPassword /> } />
             <Route path="/resetpassword" element={<ResetPassword /> } />
             <Route path ="/forgototp" element= {<ForgotOtpPage />} />
+            <Route path ="/profile" element= {<ProfilePage />} />
+            <Route path ="/instructorregistration" element= {<RegistrationFormPage />} />
+            <Route path ="/instructordashboard" element= {<InstructorDashboardPage />} />
             
             
 

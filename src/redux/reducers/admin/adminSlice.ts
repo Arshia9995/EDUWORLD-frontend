@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IAdminLoginData } from "../../../interface/IAdminLogin";
-import { adminLogin ,getallStudents} from "../../actions/adminActions";
+import { adminLogin ,getallStudents, getallInstructors, approveInstructor, rejectInstructor} from "../../actions/adminActions";
 import { IStudentData } from "../../../interface/IStudent";
+import { IInstructorData } from "../../../interface/IInstructor";
+
 
 
 interface AdminState {
@@ -12,6 +14,9 @@ interface AdminState {
     students: IStudentData[]; 
     studentLoading: boolean;
     studentError: string | null;
+    instructors: IInstructorData[]; // Added instructors array
+    instructorLoading: boolean;    // Added instructor loading state
+    instructorError: string | null;
   }
 
   const initialState: AdminState = {
@@ -22,6 +27,9 @@ interface AdminState {
     students: [], 
     studentLoading: false,
     studentError: null,
+    instructors: [],
+    instructorLoading: false,
+    instructorError: null,
   };
 
 
@@ -64,7 +72,44 @@ const adminSlice = createSlice({
         .addCase(getallStudents.rejected, (state, action) => {
             state.studentLoading = false;
             state.studentError = action.payload as string;
-        });
+        })
+        .addCase(getallInstructors.pending, (state) => {
+            state.instructorLoading = true;
+            state.instructorError = null;
+          })
+          .addCase(getallInstructors.fulfilled, (state, action) => {
+            state.instructorLoading = false;
+            state.instructors = action.payload as IInstructorData[];
+          })
+          .addCase(getallInstructors.rejected, (state, action) => {
+            state.instructorLoading = false;
+            state.instructorError = action.payload as string;
+          })
+          .addCase(approveInstructor.pending, (state) => {
+            state.instructorLoading = true;
+            state.instructorError = null;
+          })
+          .addCase(approveInstructor.fulfilled, (state, action) => {
+            state.instructorLoading = false;
+            state.instructors = action.payload as IInstructorData[]; // Replace entire array
+          })
+          .addCase(approveInstructor.rejected, (state, action) => {
+            state.instructorLoading = false;
+            state.instructorError = action.payload as string;
+          })
+          .addCase(rejectInstructor.pending, (state) => {
+            state.instructorLoading = true;
+            state.instructorError = null;
+          })
+          .addCase(rejectInstructor.fulfilled, (state, action) => {
+            state.instructorLoading = false;
+            state.instructors = action.payload as IInstructorData[]; // Replace entire array
+          })
+          .addCase(rejectInstructor.rejected, (state, action) => {
+            state.instructorLoading = false;
+            state.instructorError = action.payload as string;
+          });
+
     },
 
 

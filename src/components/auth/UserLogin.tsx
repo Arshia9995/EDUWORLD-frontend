@@ -33,13 +33,15 @@ const UserLogin: React.FC = () => {
     validationSchema: ValidationSchemaLogin,
     onSubmit: async (values) => {
       try {
-        await dispatch(userLogin(values)).unwrap();
+        const result = await dispatch(userLogin(values)).unwrap();
+
+        if(!result.isBlocked){
         toast.success("Login successful!");
         navigate("/", { replace: true });
-
+        }
       } catch (err: any) {
         console.error("Login Error:", err);
-        toast.error(typeof err === "string" ? err : "Login failed. Please try again.")
+        toast.error(err);
       }
     },
 

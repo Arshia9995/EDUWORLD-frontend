@@ -100,7 +100,11 @@ const OtpVerification: React.FC<{userData: TempData}> = ({ userData: propUserDat
             role: userData.role })).unwrap();
           if (result) {
             toast.success("OTP verified successfully!");
+            if(userData.role === "instructor"){
+               navigate("/instructorregistration");
+            }else {
             navigate("/",{ replace: true });
+            }
           }
         } catch (error: any) {
           console.error("OTP verification error:", error);

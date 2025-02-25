@@ -3,6 +3,7 @@ import { Route,Routes } from "react-router-dom";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
 import AdminDashboard from "../components/admin/AdminDashboard";
 import AdminStudentsPage from "../pages/admin/AdminStudentsPage";
+import AdminInstructorsPage from "../pages/admin/AdminInstructorsPage";
 
 
 const AdminRoutes: React.FC = () => {
@@ -11,6 +12,7 @@ const AdminRoutes: React.FC = () => {
             <Route path="/login" element={<AdminLoginPage />} />
             <Route path="/dashboard" element={<AdminDashboard />}/>
             <Route path="/studentslist" element ={<AdminStudentsPage />} />
+            <Route path="/instructorslist" element ={<AdminInstructorsPage />} />
         </Routes>
     )
 }

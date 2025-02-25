@@ -1,17 +1,27 @@
 
 import React from "react";
+import { useEffect } from "react";
 import logo from "../../../assets/home/logo.png";
 import { Link ,useNavigate} from "react-router-dom";
 import {useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../../redux/store";
+import { AppDispatch, RootState } from "../../../redux/store";
 import { userLogout } from "../../../redux/actions/userActions";
 import toast from "react-hot-toast";
+import { IUserSignupData } from "../../../interface/IUserSignup";
+import { IInstructorData } from "../../../interface/IInstructor";
+import { getallInstructors } from "../../../redux/actions/adminActions";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user)
-  console.log(user,"from NAVBAR")
+  const { instructors } = useSelector((state: RootState) => state.admin || { instructors: [] });
+  console.log("User from Navbar:", user);
+  console.log("Instructors from Navbar:", instructors);
+
+   useEffect(() => {
+      dispatch(getallInstructors());
+    }, [dispatch]);
 
   const handleLogout = async () => {
     try {
@@ -23,6 +33,61 @@ const Navbar: React.FC = () => {
       console.error("Logout Error:", err);
       toast.error("Logout failed. Please try again.");
       
+    }
+  };
+
+  // const handleDashboardClick = () => {
+
+  //   console.log("Dashboard Click - User:", user, "Instructors:", instructors);
+  //   console.log("User ID:", user?._id, "User Email:", user?.email);
+  //   if (user?.role === "instructor") {
+  //     // Find the current user in the instructors array (using _id or email)
+  //     const currentInstructor = instructors.find(
+  //       (instructor) => instructor._id === user._id || instructor.email === user.email
+  //     );
+  //     if (currentInstructor?.isApproved) {
+  //       navigate("/instructordashboard"); // Navigate to dashboard if approved
+  //     } else if (currentInstructor?.isRequested) {
+  //       toast.error("Your request is processing"); // Show error only if isRequested is true
+  //     } else if (currentInstructor?.isRejected) {
+  //       toast.error("Your request is rejected"); // Show error if rejected
+  //     } else {
+  //       toast.error("Instructor data not found");
+  //     }
+  //   } else {
+  //     toast.error("You are not authorized to access the dashboard");
+  //   }
+  // };
+
+  const handleDashboardClick = () => {
+    console.log("Dashboard Click - User:", user, "Instructors:", instructors);
+    console.log("User ID:", user?._id, "User Email:", user?.email);
+    
+    if (user?.role === "instructor") {
+      // First log all instructor emails to ensure they match the format expected
+      console.log("Available instructor emails:", instructors.map(inst => inst.email));
+      
+      // Find the current user in the instructors array (using _id or email)
+      const currentInstructor = instructors.find(
+        (instructor) => 
+          (user._id && instructor._id === user._id) || 
+          (user.email && instructor.email === user.email)
+      );
+      
+      console.log("Found instructor:", currentInstructor);
+      
+      if (currentInstructor?.isApproved) {
+        toast.success("Your request is Approved")
+        navigate("/instructordashboard"); // Navigate to dashboard if approved
+      } else if (currentInstructor?.isRequested) {
+        toast.error("Your request is processing"); // Show error only if isRequested is true
+      } else if (currentInstructor?.isRejected) {
+        toast.error("Your request is rejected"); // Show error if rejected
+      } else {
+        toast.error("Instructor data not found");
+      }
+    } else {
+      toast.error("You are not authorized to access the dashboard");
     }
   };
 
@@ -52,14 +117,25 @@ const Navbar: React.FC = () => {
         
 
         {user ? (
+
+          
             <>
+            {/* Show Dashboard button if user is an instructor */}
+            {user.role === "instructor" && (
+                <button
+                onClick={handleDashboardClick}
+                  className="bg-blue-900 px-4 py-2 text-white font-semibold rounded hover:bg-blue-950"
+                >
+                  Dashboard
+                </button>
+              )}
               {/* Show Profile and Logout buttons if user is authenticated */}
-              {/* <button
+              <button
                 onClick={() => navigate("/profile")}
                 className="bg-yellow-400 px-4 py-2 text-black font-semibold rounded hover:bg-yellow-500"
               >
                 Profile
-              </button> */}
+              </button>
               <button onClick={handleLogout}
                 
                 className="bg-red-500 px-4 py-2 text-white font-semibold rounded hover:bg-red-600"

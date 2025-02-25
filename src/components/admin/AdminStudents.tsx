@@ -5,12 +5,16 @@ import { getallStudents } from "../../redux/actions/adminActions";
 import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
+import { baseUrl } from "../../config/constants";
+import { config } from "../../config/configuration";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const AdminStudents: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
   const dispatch = useDispatch<AppDispatch>();
 
- 
   const { students, studentLoading, studentError } = useSelector(
     (state: RootState) => state.admin
   );
@@ -19,10 +23,35 @@ const AdminStudents: React.FC = () => {
     dispatch(getallStudents());
   }, [dispatch]);
 
+  const toggleBlockStatus = async (userId: string, isBlocked: boolean) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}${isBlocked ? "/admin/unblockstudent" : "/admin/blockstudent"}`,
+        { userId },
+        config
+      );
+      await dispatch(getallStudents());
+      toast.success(response.data.message);
 
-  console.log('Loading:', studentLoading);
-  console.log('Error:', studentError);
-  console.log('Students:', students);
+      // if (response.data.success) {
+      //   await dispatch(getallStudents());
+      //   toast.success(response.data.message);
+      // } else {
+      //   toast.error(response.data.message);
+      // }
+    } catch (error: any) {
+    const errorMessage = error.response?.data?.message || "Failed to update user status";
+    toast.error(errorMessage);
+    }
+  };
+
+  const handleBlockClick = (userId: string, isBlocked: boolean) => {
+    toggleBlockStatus(userId, isBlocked);
+  };
+
+  console.log("Loading:", studentLoading);
+  console.log("Error:", studentError);
+  console.log("Students:", students);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -54,12 +83,19 @@ const AdminStudents: React.FC = () => {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
           <Link
-            to="/admin/students"
+            to="/admin/studentslist"
             className="flex items-center space-x-2 hover:text-yellow-400"
           >
             <FiUsers />
             {isSidebarOpen && <span>Students</span>}
           </Link>
+              <Link
+                      to="/admin/instructorslist"
+                      className="flex items-center space-x-2 hover:text-yellow-400"
+                    >
+                      <FiUsers />
+                      {isSidebarOpen && <span>Instructors</span>}
+                    </Link>
           <Link
             to="/admin/settings"
             className="flex items-center space-x-2 hover:text-yellow-400"
@@ -83,7 +119,6 @@ const AdminStudents: React.FC = () => {
         {studentLoading && <p className="text-blue-900">Loading students...</p>}
         {studentError && <p className="text-red-600">{studentError}</p>}
 
-
         {!studentLoading && !studentError && (
           <table className="w-full bg-white shadow-md rounded-lg">
             <thead>
@@ -91,26 +126,37 @@ const AdminStudents: React.FC = () => {
                 <th className="p-3">ID</th>
                 <th className="p-3">Name</th>
                 <th className="p-3">Email</th>
+                <th className="p-3">Status</th>
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               {students.length > 0 ? (
                 students.map((student) => (
-                  <tr key={student._id } className="border-b text-center">
-                    <td className="p-3">{student._id  }</td>
+                  <tr key={student._id} className="border-b text-center">
+                    <td className="p-3">{student._id}</td>
                     <td className="p-3">{student.name}</td>
                     <td className="p-3">{student.email}</td>
                     <td className="p-3">
-                      <button className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
-                        Delete
+                      {student.isBlocked ? "Blocked" : "Active"}
+                    </td>
+                    <td className="p-3 space-x-2">
+                      <button
+                        onClick={() => handleBlockClick(student._id as string, student.isBlocked as boolean)}
+                        className={`px-3 py-1 rounded-md text-white ${
+                          student.isBlocked
+                            ? "bg-green-500 hover:bg-green-600"
+                            : "bg-red-500 hover:bg-red-600"
+                        }`}
+                      >
+                        {student.isBlocked ? "Unblock" : "Block"}
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="text-center p-3">
+                  <td colSpan={5} className="text-center p-3">
                     No students found.
                   </td>
                 </tr>
@@ -124,4 +170,3 @@ const AdminStudents: React.FC = () => {
 };
 
 export default AdminStudents;
-

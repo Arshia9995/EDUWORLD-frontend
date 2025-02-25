@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  {userSignup, verifyOtp, userLogin,userLogout} from "../../actions/userActions";
+import  {userSignup, verifyOtp, userLogin,userLogout, updateUserProfile, getUserDataFirst, isExist, registerInstructor} from "../../actions/userActions";
 import { IUserSignupData } from "../../../interface/IUserSignup";
 import { IUserLoginData } from "../../../interface/IUserLogin";
-
+import { IUserData } from "../../../interface/IUserData";
 
 
 
@@ -14,6 +14,8 @@ const userSlice = createSlice({
       loading: false as boolean,
       userDetails: null as IUserSignupData | null,
       
+      // isExistData: null as IUserData | null,
+
       OtpVerification: {
         loading: false,
         success: false,
@@ -67,9 +69,11 @@ const userSlice = createSlice({
           .addCase(userLogin.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload;
+            state.error = null;
           })
           .addCase(userLogin.rejected, (state, action) => {
             state.loading = false;
+            state.user = null;
             state.error = action.payload as string | null; ;
           })
           // Handle user logout
@@ -92,19 +96,46 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload as string | null;
           })
-          // .addCase(getUserDataFirst.pending, (state) => {
-          //   state.loading = true;
-          //   state.error = null;
-          // })
-          // .addCase(getUserDataFirst.fulfilled, (state,action) => {
-          //   state.loading = false;
-          //   state.user = action.payload.data; 
-          //   state.error = null;
-          // })
-          // .addCase(getUserDataFirst.rejected, (state, action) => {
-          //   state.loading = false;
-          //   state.error = action.payload as string | null;
-          // });
+          .addCase(updateUserProfile.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(updateUserProfile.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload as IUserSignupData
+            state.error = null;
+          })
+          .addCase(updateUserProfile.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+          })
+          .addCase(getUserDataFirst.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(getUserDataFirst.fulfilled, (state,action) => {
+            state.loading = false;
+            state.user = action.payload.data; 
+            state.error = null;
+          })
+          .addCase(getUserDataFirst.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string | null;
+          })
+          .addCase(registerInstructor.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(registerInstructor.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.data // Update user with new data
+            state.error = null;
+          })
+          .addCase(registerInstructor.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+          });
+
       },
 });
 
