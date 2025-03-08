@@ -101,6 +101,7 @@ const userSlice = createSlice({
             state.error = null;
           })
           .addCase(updateUserProfile.fulfilled, (state, action) => {
+            console.log(action,"action after saving")
             state.loading = false;
             state.user = action.payload as IUserSignupData
             state.error = null;

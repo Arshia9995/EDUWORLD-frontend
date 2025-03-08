@@ -9,7 +9,7 @@ import { userLogout } from "../../../redux/actions/userActions";
 import toast from "react-hot-toast";
 import { IUserSignupData } from "../../../interface/IUserSignup";
 import { IInstructorData } from "../../../interface/IInstructor";
-import { getallInstructors } from "../../../redux/actions/adminActions";
+import { approveInstructor, getallInstructors, rejectInstructor } from "../../../redux/actions/adminActions";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +22,8 @@ const Navbar: React.FC = () => {
    useEffect(() => {
       dispatch(getallInstructors());
     }, [dispatch]);
+
+   
 
   const handleLogout = async () => {
     try {
@@ -36,48 +38,18 @@ const Navbar: React.FC = () => {
     }
   };
 
-  // const handleDashboardClick = () => {
+  const handleDashboardClick = async() => {
 
-  //   console.log("Dashboard Click - User:", user, "Instructors:", instructors);
-  //   console.log("User ID:", user?._id, "User Email:", user?.email);
-  //   if (user?.role === "instructor") {
-  //     // Find the current user in the instructors array (using _id or email)
-  //     const currentInstructor = instructors.find(
-  //       (instructor) => instructor._id === user._id || instructor.email === user.email
-  //     );
-  //     if (currentInstructor?.isApproved) {
-  //       navigate("/instructordashboard"); // Navigate to dashboard if approved
-  //     } else if (currentInstructor?.isRequested) {
-  //       toast.error("Your request is processing"); // Show error only if isRequested is true
-  //     } else if (currentInstructor?.isRejected) {
-  //       toast.error("Your request is rejected"); // Show error if rejected
-  //     } else {
-  //       toast.error("Instructor data not found");
-  //     }
-  //   } else {
-  //     toast.error("You are not authorized to access the dashboard");
-  //   }
-  // };
-
-  const handleDashboardClick = () => {
     console.log("Dashboard Click - User:", user, "Instructors:", instructors);
     console.log("User ID:", user?._id, "User Email:", user?.email);
-    
     if (user?.role === "instructor") {
-      // First log all instructor emails to ensure they match the format expected
-      console.log("Available instructor emails:", instructors.map(inst => inst.email));
-      
+      await dispatch(getallInstructors()).unwrap();
       // Find the current user in the instructors array (using _id or email)
       const currentInstructor = instructors.find(
-        (instructor) => 
-          (user._id && instructor._id === user._id) || 
-          (user.email && instructor.email === user.email)
+        (instructor) => instructor._id === user._id || instructor.email === user.email
       );
-      
-      console.log("Found instructor:", currentInstructor);
-      
       if (currentInstructor?.isApproved) {
-        toast.success("Your request is Approved")
+        toast.success("Your request is Approved");
         navigate("/instructordashboard"); // Navigate to dashboard if approved
       } else if (currentInstructor?.isRequested) {
         toast.error("Your request is processing"); // Show error only if isRequested is true
@@ -90,6 +62,38 @@ const Navbar: React.FC = () => {
       toast.error("You are not authorized to access the dashboard");
     }
   };
+
+  // const handleDashboardClick = () => {
+  //   console.log("Dashboard Click - User:", user, "Instructors:", instructors);
+  //   console.log("User ID:", user?._id, "User Email:", user?.email);
+    
+  //   if (user?.role === "instructor") {
+  //     // First log all instructor emails to ensure they match the format expected
+  //     console.log("Available instructor emails:", instructors.map(inst => inst.email));
+      
+  //     // Find the current user in the instructors array (using _id or email)
+  //     const currentInstructor = instructors.find(
+  //       (instructor) => 
+  //         (user._id && instructor._id === user._id) || 
+  //         (user.email && instructor.email === user.email)
+  //     );
+      
+  //     console.log("Found instructor:", currentInstructor);
+      
+  //     if (currentInstructor?.isApproved) {
+  //       toast.success("Your request is Approved")
+  //       navigate("/instructordashboard"); // Navigate to dashboard if approved
+  //     } else if (currentInstructor?.isRequested) {
+  //       toast.error("Your request is processing"); // Show error only if isRequested is true
+  //     } else if (currentInstructor?.isRejected) {
+  //       toast.error("Your request is rejected"); // Show error if rejected
+  //     } else {
+  //       toast.error("Instructor data not found");
+  //     }
+  //   } else {
+  //     toast.error("You are not authorized to access the dashboard");
+  //   }
+  // };
 
   return (
     <div className="bg-white shadow-md">
@@ -104,7 +108,9 @@ const Navbar: React.FC = () => {
           <span>EduWorld</span>
         </div>
         <ul className="flex space-x-6 text-sm font-semibold text-gray-700">
-          <li className="hover:text-yellow-400 cursor-pointer">HOME</li>
+        <li className="hover:text-yellow-400 cursor-pointer">
+  <Link to="/">HOME</Link>
+</li>
           {/* <li className="hover:text-yellow-400 cursor-pointer">PAGES</li> */}
           <li className="hover:text-yellow-400 cursor-pointer">COURSES</li>
           {/* <li className="hover:text-yellow-400 cursor-pointer">EVENTS</li> */}

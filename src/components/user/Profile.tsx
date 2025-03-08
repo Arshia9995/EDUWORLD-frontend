@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { updateUserProfile } from '../../redux/actions/userActions';
@@ -7,65 +6,120 @@ import { toast } from 'react-toastify';
 import { Camera, User, Mail, Phone, MapPin, Calendar, Settings, LogOut } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { baseUrl } from '../../config/constants';
+
 
 const Profile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.user ?? {});
   const [loading, setLoading] = useState<boolean>(false);
- 
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+
+      // Generate preview URL
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  const uploadToS3 = async (file: File) => {
+    try {
+      const { data } = await axios.post(`${baseUrl}/users/get-s3-url`, {
+        fileName: file.name,
+        fileType: file.type,
+      }, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log("Received S3 URL response:", data);
+      if (!data.url) {
+        console.error("No S3 URL received:", data);
+        throw new Error('Failed to get S3 URL');
+      }
+
+      await axios.put(data.url, file, {
+        headers: { 'Content-Type': file.type },
+      });
+      console.log("File successfully uploaded to S3:", data.imageUrl);
+
+      console.log("profileimage",user?.profile?.profileImage);
+      return data.imageUrl;
+    
+      
+    } catch (error: any) {
+      console.error('S3 upload error:', error.response?.data || error.message);
+      throw new Error('Failed to upload image to S3');
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
-        name: user?.name || '',
-        email: user?.email || '',
-        phone: user?.profile?.phone || '',
-        dob: user?.profile?.dob || '',
-        address: user?.profile?.address || '',
-        gender: user?.profile?.gender || ''
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.profile?.phone || '',
+      dob: user?.profile?.dob || '',
+      address: user?.profile?.address || '',
+      gender: user?.profile?.gender || '',
+      profileImage: user?.profile?.profileImage && encodeURI(user?.profile?.profileImage) || '',
+      
     },
-    enableReinitialize: true,
-
+    enableReinitialize: true, // Reinitialize form when user data changes
     validationSchema: Yup.object({
-        name: Yup.string().required('Name is required'),
-        email: Yup.string().email('Invalid email address').required('Email is required'),
-        phone: Yup.string().matches(/^\d+$/, 'Phone number must be numeric').min(10, 'Must be at least 10 digits').required('phone number is required'),
-        dob: Yup.date().required('Date of birth is required'),
-        address: Yup.string().required('Address is required'),
-        gender: Yup.string().required('Please select a gender')
-      }),
-    onSubmit:async (values) => {
-    
-      console.log('ldhnfihsdiufhuisdbhfuisdbh',values);
-      if (JSON.stringify(values) === JSON.stringify(formik.initialValues)) {
-        toast.info("No changes detected.");
-        return;
-      }
+      name: Yup.string().required('Name is required'),
+      email: Yup.string().email('Invalid email address').required('Email is required'),
+      phone: Yup.string().matches(/^\d+$/, 'Phone number must be numeric').min(10, 'Must be at least 10 digits').required('Phone number is required'),
+      dob: Yup.date().required('Date of birth is required'),
+      address: Yup.string().required('Address is required'),
+      gender: Yup.string().required('Please select a gender'),
+    }),
+    onSubmit: async (values) => {
+      console.log('Form values', values);
+      setLoading(true);
       try {
-        setLoading(true);
-        await dispatch(updateUserProfile(values)).unwrap();
+        let updatedValues = { ...values };
+
+        if (!file && JSON.stringify(values) === JSON.stringify(formik.initialValues)) {
+          toast.info("No changes detected.");
+          setLoading(false);
+          return;
+        }
+
+        if (file) {
+          const uploadedImageUrl = await uploadToS3(file);
+          updatedValues.profileImage = uploadedImageUrl;
+          formik.setFieldValue('profileImage', uploadedImageUrl)
+        
+
+        }
+
+        await dispatch(updateUserProfile(updatedValues)).unwrap();
         toast.success('Profile updated successfully');
       } catch (error: any) {
-        setLoading(false)
-        toast.error(error || 'Failed to update profile');
+        toast.error(error?.message || 'Failed to update profile');
       } finally {
-         setLoading(false)
+        setLoading(false);
       }
-
-    }
+    },
   });
 
-
-console.log("User state:", user);
-if (!user) {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <p className="text-gray-600">Loading profile...</p>
-    </div>
-  );
-}
-
+  console.log("User state:", user);
+  console.log("formikvalues",formik.values);
   
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -100,22 +154,28 @@ if (!user) {
               <div className="p-6 border-b border-gray-200">
                 <h1 className="text-2xl font-bold text-gray-900">Profile Information</h1>
               </div>
-              
+
               <form onSubmit={(e) => {
-  e.preventDefault();
-  formik.handleSubmit();
-}}>
+                e.preventDefault();
+                formik.handleSubmit();
+              }}>
                 <div className="p-6">
                   <div className="max-w-2xl space-y-8">
                     {/* Profile Photo */}
                     <div className="flex justify-center py-4">
                       <div className="relative">
-                        <div className="w-40 h-40 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow">
-                          <Camera className="w-16 h-16 text-gray-400" />
+                        <div className="w-40 h-40 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow overflow-hidden">
+                        {previewUrl ? (
+                         <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                         ) : formik.values.profileImage ? (
+                        <img src={formik.values.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                         ) : (
+                        <Camera className="w-16 h-16 text-gray-400" />
+                         )}
                         </div>
                         <label className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 shadow-lg transition-colors">
                           <Camera className="w-5 h-5" />
-                          <input type="file" accept="image/*" className="hidden" />
+                          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
                         </label>
                       </div>
                     </div>
@@ -165,7 +225,7 @@ if (!user) {
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Enter your phone number"
                           />
-                             {formik.touched.phone && formik.errors.phone ? (
+                          {formik.touched.phone && formik.errors.phone ? (
                             <p className="text-red-500 text-sm">{formik.errors.phone}</p>
                           ) : null}
                         </div>
@@ -181,7 +241,7 @@ if (!user) {
                             {...formik.getFieldProps('dob')}
                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
-                             {formik.touched.dob && formik.errors.dob ? (
+                          {formik.touched.dob && formik.errors.dob ? (
                             <p className="text-red-500 text-sm">{formik.errors.dob}</p>
                           ) : null}
                         </div>
@@ -199,7 +259,7 @@ if (!user) {
                           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter your full address"
                         />
-                           {formik.touched.address && formik.errors.address ? (
+                        {formik.touched.address && formik.errors.address ? (
                           <p className="text-red-500 text-sm">{formik.errors.address}</p>
                         ) : null}
                       </div>
@@ -226,12 +286,12 @@ if (!user) {
 
                     {/* Save Button */}
                     <div className="pt-6 border-t border-gray-200">
-                      <button 
+                      <button
                         type="submit"
                         disabled={loading}
                         className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
                       >
-                       {loading ? 'Saving...' : 'Save Changes'}
+                        {loading ? 'Saving...' : 'Save Changes'}
                       </button>
                     </div>
                   </div>
@@ -246,4 +306,3 @@ if (!user) {
 };
 
 export default Profile;
-

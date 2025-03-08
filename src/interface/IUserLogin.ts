@@ -6,5 +6,6 @@ export interface IUserLoginData {
       dob?: string;
       address?: string;
       gender?: string;
+      profileImage?: string;
       }
   }

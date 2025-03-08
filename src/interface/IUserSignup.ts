@@ -11,7 +11,9 @@ export interface IUserSignupData {
     dob?: string;
     address?: string;
     gender?: string;
+    profileImage?: string;
     },
+    cv?: string
     qualification?: string
     
 

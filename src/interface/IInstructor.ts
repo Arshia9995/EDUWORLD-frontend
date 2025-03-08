@@ -12,6 +12,7 @@ export interface IInstructorData {
     isApproved?: boolean;
     isRejected?: boolean;
     qualification?: string;
+    cv?: string
     profile?: {
       phone?: string;
       dob?: string;

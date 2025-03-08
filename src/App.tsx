@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "./redux/store";
 import { getUserDataFirst, isExist, userLogout } from "./redux/actions/userActions";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor} from './redux/store'
+import { getallInstructors } from "./redux/actions/adminActions";
 
 const App: React.FC = () => {
   const { user, error } = useSelector((state: RootState) => state.user);
@@ -52,6 +53,10 @@ const App: React.FC = () => {
 //   if (loading) {
 //     return <div>Loading...</div>; // Or your loading component
 // }
+
+useEffect(() => {
+      dispatch(getallInstructors());
+    }, [dispatch]);
 
 if (error) {
   // Handle error state

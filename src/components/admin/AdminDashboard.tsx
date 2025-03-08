@@ -43,6 +43,10 @@ const AdminDashboard: React.FC = () => {
             <FiUsers />
             {isSidebarOpen && <span>Students</span>}
           </Link>
+           <Link to="/admin/instructorslist" className="flex items-center space-x-2 hover:text-yellow-400">
+                      <FiUsers />
+                      {isSidebarOpen && <span>Instructors</span>}
+                    </Link>
           <Link
             to="/admin/settings"
             className="flex items-center space-x-2 hover:text-yellow-400"

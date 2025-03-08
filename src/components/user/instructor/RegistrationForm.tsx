@@ -1,79 +1,107 @@
 import React, { useState } from "react";
-import { Camera } from "lucide-react"; 
+import { Camera } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../redux/store";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { registerInstructor } from "../../../redux/actions/userActions";
 import toast from "react-hot-toast";
-import { useNavigate  } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { baseUrl } from "../../../config/constants";
 
 // Validation schema
 const validationSchema = Yup.object({
-    dob: Yup.string().required("Date of Birth is required"),
-    gender: Yup.string()
-      .oneOf(["male", "female", "other"], "Invalid gender selection")
-      .required("Gender is required"),
-    phone: Yup.string()
-      .matches(/^\d{10}$/, "Phone number must be exactly 10 digits")
-      .required("Phone number is required"),
-    address: Yup.string().required("Address is required"),
-    qualification: Yup.string().required("Qualification is required"),
-    // cv: Yup.mixed()
-    //   .required("CV is required")
-    //   .test("fileType", "Only PDF files are allowed", (value: any) => {
-    //     return value && value.type === "application/pdf";
-    //   }),
-    // profile_picture: Yup.mixed().test(
-    //   "fileType",
-    //   "Only image files (jpg, jpeg, png) are allowed",
-    //   (value: any) => {
-    //     if (!value) return true; // Optional field
-    //     return value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
-    //   }
-    // ),
-  });
+  dob: Yup.string().required("Date of Birth is required"),
+  gender: Yup.string()
+    .oneOf(["male", "female", "other"], "Invalid gender selection")
+    .required("Gender is required"),
+  phone: Yup.string()
+    .matches(/^\d{10}$/, "Phone number must be exactly 10 digits")
+    .required("Phone number is required"),
+  address: Yup.string().required("Address is required"),
+  qualification: Yup.string().required("Qualification is required"),
+  profileImage: Yup.string().nullable(), // S3 URL will be set here
+});
+
+// S3 upload function
+const uploadToS3 = async (file: File) => {
+  try {
+    const { data } = await axios.post(`${baseUrl}/users/get-s3-url`, {
+      fileName: file.name,
+      fileType: file.type,
+    }, {
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log("Received S3 URL response:", data);
+    if (!data.url) {
+      console.error("No S3 URL received:", data);
+      throw new Error("Failed to get S3 URL");
+    }
+
+    await axios.put(data.url, file, {
+      headers: { "Content-Type": file.type },
+    });
+    console.log("File successfully uploaded to S3:", data.imageUrl);
+    return data.imageUrl;
+  } catch (error: any) {
+    console.error("S3 upload error:", error.response?.data || error.message);
+    throw new Error("Failed to upload image to S3");
+  }
+};
 
 const RegistrationForm: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const { user } = useSelector((state: RootState) => state.user); 
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null); // Store the selected file
+  const [uploading, setUploading] = useState(false);
+  const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
-      name: user?.name || "", // Pre-fill name from Redux
-      email: user?.email || "", // Pre-fill email from Redux
+      name: user?.name || "",
+      email: user?.email || "",
       dob: "",
       gender: "" as "" | "male" | "female" | "other",
       phone: "",
       address: "",
       qualification: "",
-    //   cv: null as File | null,
-    //   profile_picture: null as File | null,
+      profileImage: null as string | null,
     },
     validationSchema,
-    onSubmit: async(values) => {
-    //   console.log("Form Submitted:", values);
+    onSubmit: async (values) => {
+      console.log("Form Submitted:", values);
+      setUploading(true);
+      try {
+        let updatedValues = { ...values };
 
-    try {
-        const result = await dispatch(registerInstructor(values)).unwrap();
+        // Upload profile image to S3 if a file was selected
+        if (file) {
+          const s3ImageUrl = await uploadToS3(file);
+          updatedValues.profileImage = s3ImageUrl;
+          formik.setFieldValue("profileImage", s3ImageUrl); // Optional: update form state
+        }
+
+        const result = await dispatch(registerInstructor(updatedValues)).unwrap();
         if (result.success) {
-            toast.success("Your request is under processing for verification");
-          navigate("/"); // Redirect after success
+          toast.success("Your request is under processing for verification");
+          navigate("/");
         }
       } catch (error: any) {
         toast.error(error.message || "Failed to register instructor");
+      } finally {
+        setUploading(false);
       }
     },
   });
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile); // Store the file for later upload
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setProfileImagePreview(imageUrl); // Show preview immediately
     }
   };
 
@@ -91,31 +119,30 @@ const RegistrationForm: React.FC = () => {
 
         <div className="bg-white rounded-b-lg p-6">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            {/* Profile Picture Upload with Camera Icon */}
+            {/* Profile Picture Upload */}
             <div className="flex justify-center">
               <label className="relative w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer overflow-hidden group">
-                {profileImage ? (
+                {profileImagePreview ? (
                   <img
-                    src={profileImage}
+                    src={profileImagePreview}
                     alt="Profile"
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
                   <span className="text-gray-500 text-sm">Upload</span>
                 )}
-
-                {/* Camera Icon (Visible on Hover) */}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Camera className="text-white w-6 h-6" />
                 </div>
-
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageUpload}
+                  disabled={uploading}
                 />
               </label>
+              {uploading && <p className="ml-4 text-gray-600">Uploading...</p>}
             </div>
 
             {/* Name Field */}
@@ -248,7 +275,7 @@ const RegistrationForm: React.FC = () => {
               )}
             </div>
 
-            {/* CV Upload */}
+            {/* CV Upload (not integrated with S3 yet) */}
             <div>
               <label htmlFor="cv" className="block text-sm font-medium text-gray-700">
                 Upload CV (PDF only)
@@ -256,7 +283,7 @@ const RegistrationForm: React.FC = () => {
               <input
                 type="file"
                 id="cv"
-                 name="cv"
+                name="cv"
                 accept=".pdf"
                 onChange={(event) => formik.setFieldValue("cv", event.target.files?.[0])}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
@@ -266,10 +293,10 @@ const RegistrationForm: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || uploading}
               className="w-full bg-yellow-500 text-gray-900 py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-            {formik.isSubmitting ? "Submitting..." : "Register as Instructor"}
+              {formik.isSubmitting || uploading ? "Submitting..." : "Register as Instructor"}
             </button>
           </form>
         </div>
