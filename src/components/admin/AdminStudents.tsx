@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getallStudents } from "../../redux/actions/adminActions";
-import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu } from "react-icons/fi";
+import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu,FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
 import { baseUrl } from "../../config/constants";
@@ -12,11 +12,18 @@ import toast from "react-hot-toast";
 
 const AdminStudents: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const dispatch = useDispatch<AppDispatch>();
 
-  const { students, studentLoading, studentError } = useSelector(
-    (state: RootState) => state.admin
+  const { students = [], studentLoading, studentError } = useSelector(
+    (state: RootState) => state.admin || { students: [], studentLoading: false, studentError: null }
+  );
+  // Filter students based on search query
+  const filteredStudents = students.filter(
+    (student) =>
+      student.name!.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email!.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -49,9 +56,14 @@ const AdminStudents: React.FC = () => {
     toggleBlockStatus(userId, isBlocked);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   console.log("Loading:", studentLoading);
   console.log("Error:", studentError);
   console.log("Students:", students);
+  console.log("Filtered Students:", filteredStudents);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -96,13 +108,17 @@ const AdminStudents: React.FC = () => {
                       <FiUsers />
                       {isSidebarOpen && <span>Instructors</span>}
                     </Link>
-          <Link
+                  <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 text-yellow-400">
+                            <FiUsers />
+                            {isSidebarOpen && <span>Approved Instructors</span>}
+                          </Link>
+          {/* <Link
             to="/admin/settings"
             className="flex items-center space-x-2 hover:text-yellow-400"
           >
             <FiSettings />
             {isSidebarOpen && <span>Settings</span>}
-          </Link>
+          </Link> */}
           <Link
             to="/admin/logout"
             className="flex items-center space-x-2 hover:text-yellow-400"
@@ -114,7 +130,19 @@ const AdminStudents: React.FC = () => {
       </aside>
 
       <main className="flex-1 p-6">
+      <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-blue-900 mb-4">Students List</h1>
+        <div className="relative w-64">
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full p-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          </div>
+        </div>
 
         {studentLoading && <p className="text-blue-900">Loading students...</p>}
         {studentError && <p className="text-red-600">{studentError}</p>}
@@ -131,8 +159,8 @@ const AdminStudents: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {students.length > 0 ? (
-                students.map((student) => (
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map((student) => (
                   <tr key={student._id} className="border-b text-center">
                     <td className="p-3">{student._id}</td>
                     <td className="p-3">{student.name}</td>
@@ -157,7 +185,9 @@ const AdminStudents: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={5} className="text-center p-3">
-                    No students found.
+                  {searchQuery
+                      ? "No students match your search."
+                      : "No students found."}
                   </td>
                 </tr>
               )}

@@ -82,3 +82,21 @@ export const rejectInstructor = createAsyncThunk(
     }
   }
 );
+
+export const blockUnblockInstructor = createAsyncThunk(
+  "admin/blockUnblockInstructor",
+  async (
+    { instructorId, isBlocked }: { instructorId: string; isBlocked: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+      const url = isBlocked
+        ? `${baseUrl}/admin/unblockinstructor`
+        : `${baseUrl}/admin/blockinstructor`;
+      const response = await axios.put(url, { instructorId }, config);
+      return response.data.instructor;
+    } catch (error) {
+      return handleError(error as AxiosError<ApiError>, rejectWithValue);
+    }
+  }
+);

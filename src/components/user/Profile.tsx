@@ -16,6 +16,7 @@ const Profile = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -50,8 +51,10 @@ const Profile = () => {
       });
       console.log("File successfully uploaded to S3:", data.imageUrl);
 
-      console.log("profileimage",user?.profile?.profileImage);
-      return data.imageUrl;
+      setProfileImageUrl(data.downloadUrl);
+
+      // console.log("profileimage",user?.profile?.profileImage);
+      return { permanentUrl: data.imageUrl, downloadUrl: data.downloadUrl };
     
       
     } catch (error: any) {
@@ -68,7 +71,7 @@ const Profile = () => {
       dob: user?.profile?.dob || '',
       address: user?.profile?.address || '',
       gender: user?.profile?.gender || '',
-      profileImage: user?.profile?.profileImage && encodeURI(user?.profile?.profileImage) || '',
+      profileImage: user?.profile?.profileImage  || '',
       
     },
     enableReinitialize: true, // Reinitialize form when user data changes
@@ -93,9 +96,9 @@ const Profile = () => {
         }
 
         if (file) {
-          const uploadedImageUrl = await uploadToS3(file);
-          updatedValues.profileImage = uploadedImageUrl;
-          formik.setFieldValue('profileImage', uploadedImageUrl)
+          const { permanentUrl, downloadUrl } = await uploadToS3(file);         
+          updatedValues.profileImage = permanentUrl; // Send permanent URL to backend
+          // formik.setFieldValue("profileImage", downloadUrl); // Use download URL for display
         
 
         }
@@ -109,6 +112,41 @@ const Profile = () => {
       }
     },
   });
+
+  // Fetch pre-signed URL for profile image whenever user data changes or on component mount
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      if (user?.profile?.profileImage) {
+        try {
+          // Extract the actual filename from the S3 URL path
+          const fullPath = user.profile.profileImage;
+          const fileName = fullPath.split('/').pop();
+          
+          if (!fileName) {
+            console.error("Could not extract filename from path:", fullPath);
+            return;
+          }
+          
+          console.log("Fetching downloadUrl for fileName:", fileName);
+
+          
+          const { data } = await axios.post(`${baseUrl}/users/get-s3-url`, {
+            fileName: fileName,
+            fileType: "image/*",
+            getUrl: true  // This is the key addition
+        });
+          
+          console.log("Received downloadUrl:", data.downloadUrl);
+          setProfileImageUrl(data.downloadUrl);
+        } catch (error) {
+          console.error("Error fetching downloadUrl:", error);
+          toast.error("Failed to load profile image");
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, [user]);
 
   console.log("User state:", user);
   console.log("formikvalues",formik.values);
@@ -167,8 +205,8 @@ const Profile = () => {
                         <div className="w-40 h-40 rounded-full bg-gray-100 flex items-center justify-center border-4 border-white shadow overflow-hidden">
                         {previewUrl ? (
                          <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                         ) : formik.values.profileImage ? (
-                        <img src={formik.values.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                         ) : profileImageUrl ? (
+                        <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
                          ) : (
                         <Camera className="w-16 h-16 text-gray-400" />
                          )}

@@ -47,13 +47,17 @@ const AdminDashboard: React.FC = () => {
                       <FiUsers />
                       {isSidebarOpen && <span>Instructors</span>}
                     </Link>
-          <Link
+                      <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 text-yellow-400">
+                                <FiUsers />
+                                {isSidebarOpen && <span>Approved Instructors</span>}
+                              </Link>
+          {/* <Link
             to="/admin/settings"
             className="flex items-center space-x-2 hover:text-yellow-400"
           >
             <FiSettings />
             {isSidebarOpen && <span>Settings</span>}
-          </Link>
+          </Link> */}
           <Link
             to="/admin/logout"
             className="flex items-center space-x-2 hover:text-yellow-400"

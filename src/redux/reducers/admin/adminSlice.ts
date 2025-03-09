@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IAdminLoginData } from "../../../interface/IAdminLogin";
-import { adminLogin ,getallStudents, getallInstructors, approveInstructor, rejectInstructor} from "../../actions/adminActions";
+import { adminLogin ,getallStudents, getallInstructors, approveInstructor, rejectInstructor, blockUnblockInstructor} from "../../actions/adminActions";
 import { IStudentData } from "../../../interface/IStudent";
 import { IInstructorData } from "../../../interface/IInstructor";
 
@@ -106,6 +106,24 @@ const adminSlice = createSlice({
             state.instructors = action.payload as IInstructorData[]; // Replace entire array
           })
           .addCase(rejectInstructor.rejected, (state, action) => {
+            state.instructorLoading = false;
+            state.instructorError = action.payload as string;
+          })
+          .addCase(blockUnblockInstructor.pending, (state) => {
+            state.instructorLoading = true;
+            state.instructorError = null;
+          })
+          .addCase(blockUnblockInstructor.fulfilled, (state, action) => {
+            state.instructorLoading = false;
+            const updatedInstructor = action.payload; // Updated instructor from backend
+            const index = state.instructors.findIndex(
+              (inst) => inst._id === updatedInstructor._id
+            );
+            if (index !== -1) {
+              state.instructors[index] = updatedInstructor;
+            }
+          })
+          .addCase(blockUnblockInstructor.rejected, (state, action) => {
             state.instructorLoading = false;
             state.instructorError = action.payload as string;
           });
