@@ -22,6 +22,7 @@ const validationSchema = Yup.object({
   address: Yup.string().required("Address is required"),
   qualification: Yup.string().required("Qualification is required"),
   profileImage: Yup.string().nullable(), // S3 URL will be set here
+  cv: Yup.string().nullable(),
 });
 
 // S3 upload function
@@ -53,6 +54,7 @@ const uploadToS3 = async (file: File) => {
 const RegistrationForm: React.FC = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null); // Store the selected file
+  const [cvFile, setCvFile] = useState<File | null>(null); // CV file
   const [uploading, setUploading] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -67,7 +69,9 @@ const RegistrationForm: React.FC = () => {
       phone: "",
       address: "",
       qualification: "",
+      // cv: "",
       profileImage: null as string | null,
+      cv: null as string | null,
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -81,6 +85,13 @@ const RegistrationForm: React.FC = () => {
           const s3ImageUrl = await uploadToS3(file);
           updatedValues.profileImage = s3ImageUrl;
           formik.setFieldValue("profileImage", s3ImageUrl); // Optional: update form state
+        }
+
+        // Upload CV to S3 if selected
+        if (cvFile) {
+          const s3CvUrl = await uploadToS3(cvFile);
+          updatedValues.cv = s3CvUrl;
+          formik.setFieldValue("cv", s3CvUrl);
         }
 
         const result = await dispatch(registerInstructor(updatedValues)).unwrap();
@@ -102,6 +113,13 @@ const RegistrationForm: React.FC = () => {
       setFile(selectedFile); // Store the file for later upload
       const imageUrl = URL.createObjectURL(selectedFile);
       setProfileImagePreview(imageUrl); // Show preview immediately
+    }
+  };
+
+  const handleCvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setCvFile(selectedFile); // Store the CV file
     }
   };
 
@@ -285,8 +303,9 @@ const RegistrationForm: React.FC = () => {
                 id="cv"
                 name="cv"
                 accept=".pdf"
-                onChange={(event) => formik.setFieldValue("cv", event.target.files?.[0])}
+                onChange={handleCvUpload}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500"
+                disabled={uploading}
               />
             </div>
 

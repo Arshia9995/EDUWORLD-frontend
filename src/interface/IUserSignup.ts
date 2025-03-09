@@ -13,7 +13,7 @@ export interface IUserSignupData {
     gender?: string;
     profileImage?: string;
     },
-    cv?: string
+    cv?: string | null; // Add CV field
     qualification?: string
     
 
