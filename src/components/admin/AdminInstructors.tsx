@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu, FiDownload,FiSearch } from "react-icons/fi";
+import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu, FiDownload,FiChevronLeft, FiChevronRight,FiSearch  } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
 import { getallInstructors, approveInstructor, rejectInstructor } from "../../redux/actions/adminActions";
@@ -12,6 +12,10 @@ import { baseUrl } from "../../config/constants";
 const AdminInstructors: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10; // Fixed at 10 items per page
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -32,13 +36,26 @@ const AdminInstructors: React.FC = () => {
       instructor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       instructor.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+    // Calculate pagination
+    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+    const currentInstructors = filteredInstructors.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE);
   
   useEffect(() => {
     dispatch(getallInstructors());
   }, [dispatch]);
 
+   // Reset to first page when search query changes
+   useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+
   console.log("Instructors State:", instructors); // Debug instructors
   console.log("Filtered Instructors:", filteredInstructors); // Debug filtered instructors
+  console.log("Current Page Items:", currentInstructors); // Debug paginated items
 
   const handleApprove = async (instructorId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -123,6 +140,11 @@ const AdminInstructors: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
+    // Pagination handlers
+    const handlePageChange = (pageNumber: number) => {
+      setCurrentPage(pageNumber);
+    };
+
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -155,7 +177,7 @@ const AdminInstructors: React.FC = () => {
             <FiUsers />
             {isSidebarOpen && <span>Instructors</span>}
           </Link>
-            <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 text-yellow-400">
+            <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 hover:text-yellow-400">
                       <FiUsers />
                       {isSidebarOpen && <span>Approved Instructors</span>}
                     </Link>
@@ -190,6 +212,21 @@ const AdminInstructors: React.FC = () => {
         {instructorError && <p className="text-red-600">{instructorError}</p>}
 
         {!instructorLoading && !instructorError && (
+           <>
+           {/* <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+             <div>
+               <span className="text-gray-700">
+                 Showing {currentInstructors.length ? indexOfFirstItem + 1 : 0} to {Math.min(indexOfLastItem, filteredInstructors.length)} of {filteredInstructors.length} instructors
+               </span>
+               {searchQuery && (
+                 <span className="ml-2 text-gray-500">
+                   (Filtered from {instructors.length})
+                 </span>
+               )}
+             </div>
+           </div> */}
+            
+
           <table className="w-full bg-white shadow-md rounded-lg">
             <thead>
               <tr className="bg-blue-900 text-white">
@@ -201,8 +238,8 @@ const AdminInstructors: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(filteredInstructors) && filteredInstructors.length > 0 ? (
-                filteredInstructors.map((instructor, index) => (
+              {Array.isArray(currentInstructors) && currentInstructors.length > 0 ? (
+                currentInstructors.map((instructor, index) => (
                   <tr key={instructor._id} className="border-b text-center">
                     <td className="p-3">{index + 1}</td>
                     <td className="p-3">{instructor.name}</td>
@@ -301,6 +338,41 @@ const AdminInstructors: React.FC = () => {
               )}
             </tbody>
           </table>
+
+
+           {/* Pagination controls */}
+           {filteredInstructors.length > ITEMS_PER_PAGE && (
+              <div className="flex justify-center mt-4">
+                <div className="flex items-center space-x-1">
+                  <button 
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className={`p-2 rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-100'}`}
+                  >
+                    <FiChevronLeft />
+                  </button>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number)}
+                      className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'hover:bg-blue-100'}`}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  
+                  <button 
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    className={`p-2 rounded-md ${currentPage === totalPages || totalPages === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-100'}`}
+                  >
+                    <FiChevronRight />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>

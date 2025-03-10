@@ -47,7 +47,7 @@ const AdminDashboard: React.FC = () => {
                       <FiUsers />
                       {isSidebarOpen && <span>Instructors</span>}
                     </Link>
-                      <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 text-yellow-400">
+                      <Link to="/admin/approvedinstructors" className="flex items-center space-x-2 hover:text-yellow-400">
                                 <FiUsers />
                                 {isSidebarOpen && <span>Approved Instructors</span>}
                               </Link>
