@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IAdminLoginData } from "../../../interface/IAdminLogin";
-import { adminLogin ,getallStudents, getallInstructors, approveInstructor, rejectInstructor, blockUnblockInstructor} from "../../actions/adminActions";
+import { adminLogin ,getallStudents, getallInstructors, approveInstructor, rejectInstructor, blockUnblockInstructor, logoutAdminAction} from "../../actions/adminActions";
 import { IStudentData } from "../../../interface/IStudent";
 import { IInstructorData } from "../../../interface/IInstructor";
 
@@ -126,7 +126,29 @@ const adminSlice = createSlice({
           .addCase(blockUnblockInstructor.rejected, (state, action) => {
             state.instructorLoading = false;
             state.instructorError = action.payload as string;
-          });
+          })
+        //   .addCase(logoutAdminAction.pending, (state) => {
+        //     state.loading = true;
+        //     state.error = null;
+        // })
+        // .addCase(logoutAdminAction.fulfilled, (state) => {
+        //     // Reset all state to initial values
+        //     state.admin = null;
+        //     state.isAuthenticated = false;
+        //     state.loading = false;
+        //     state.error = null;
+        //     state.students = [];
+        //     state.studentLoading = false;
+        //     state.studentError = null;
+        //     state.instructors = [];
+        //     state.instructorLoading = false;
+        //     state.instructorError = null;
+        // })
+        // .addCase(logoutAdminAction.rejected, (state, action) => {
+        //     state.loading = false;
+        //     state.error = action.payload as string;
+        //     // Note: We don't clear authentication state here since the logout failed
+        // });
 
     },
 

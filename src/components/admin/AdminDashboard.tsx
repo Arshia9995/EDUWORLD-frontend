@@ -6,6 +6,8 @@ import logo from '../../assets/home/logo.png';
 const AdminDashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <aside

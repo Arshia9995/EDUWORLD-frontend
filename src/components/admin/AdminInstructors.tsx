@@ -127,7 +127,7 @@ const AdminInstructors: React.FC = () => {
       link.click();
       document.body.removeChild(link);
       
-      toast.success("CV download started");
+      // toast.success("CV download started");
     } catch (error: any) {
       console.error("Download Error:", error);
       toast.error(error.message || "Failed to download CV");

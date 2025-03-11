@@ -46,10 +46,8 @@ export const adminLogin = createAsyncThunk(
             return handleError(error as AxiosError<ApiError>, rejectWithValue);
         }
     }
-
-    
-
-);
+  );
+   
 
 export const approveInstructor = createAsyncThunk(
   "admin/approveInstructor",
@@ -96,6 +94,18 @@ export const blockUnblockInstructor = createAsyncThunk(
       const response = await axios.put(url, { instructorId }, config);
       return response.data.instructor;
     } catch (error) {
+      return handleError(error as AxiosError<ApiError>, rejectWithValue);
+    }
+  }
+);
+
+export const logoutAdminAction = createAsyncThunk(
+  "admin/logoutAdmin",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${baseUrl}/admin/adminlogout`, {}, { withCredentials:true});
+      return response.data;
+    } catch (error: any) {
       return handleError(error as AxiosError<ApiError>, rejectWithValue);
     }
   }

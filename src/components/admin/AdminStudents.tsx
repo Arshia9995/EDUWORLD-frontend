@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getallStudents } from "../../redux/actions/adminActions";
+import { getallStudents,logoutAdminAction } from "../../redux/actions/adminActions";
 import { FiUsers, FiHome, FiSettings, FiLogOut, FiMenu, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
@@ -117,6 +117,8 @@ const AdminStudents: React.FC = () => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  
 
   return (
     <div className="flex min-h-screen bg-gray-100">
