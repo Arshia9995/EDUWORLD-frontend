@@ -1,10 +1,11 @@
 export interface IUserSignupData {
+ 
     name?: string | null;             
     email?: string | null;            
     password?: string | null; 
     _id?: string;
     isBlocked?: boolean;        
-    role?: 'student' | 'instructor'; 
+    role?: 'student' | 'instructor' | 'admin'; 
     otp?: string | null;  
     profile?: {
     phone?: string;
@@ -14,7 +15,11 @@ export interface IUserSignupData {
     profileImage?: string;
     },
     cv?: string | null; // Add CV field
-    qualification?: string
+    qualification?: string;
+    isApproved?: boolean;
+    isRequested?: boolean;
+    isRejected?: boolean;
+    verified?: boolean;
     
 
   }

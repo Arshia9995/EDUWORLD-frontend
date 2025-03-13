@@ -122,7 +122,23 @@ export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectW
       const axiosError = err as AxiosError<ApiError>;
       return handleError(axiosError, rejectWithValue);
      }
-   })
+   });
+
+   export const getInstructorById = createAsyncThunk('user/getInstructorById', async (id: string, { rejectWithValue }) => {
+    try {
+      console.log("reached in getuserid action with id : ", id);
+      
+      const response = await axios.get(`${baseUrl}/users/getinstructorbyid/${id}`, { withCredentials: true });
+     
+      console.log("getting the respose", response)
+      return response.data.data;
+      
+    } catch (err: any) {
+      console.log("error catched" , err)
+      const axiosError = err as AxiosError<ApiError>;
+      return handleError(axiosError, rejectWithValue);
+    }
+  });
 
 
 

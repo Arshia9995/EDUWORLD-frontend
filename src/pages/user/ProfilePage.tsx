@@ -11,9 +11,9 @@ const ProfilePage: React.FC = () => {
 
     const dispatch =useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        dispatch(getallInstructors());
-      }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(getallInstructors());
+    //   }, [dispatch]);
 
     return (
         <div className="min-h-screen bg-gray-50">

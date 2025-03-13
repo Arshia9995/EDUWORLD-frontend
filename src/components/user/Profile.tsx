@@ -74,7 +74,7 @@ const Profile = () => {
       profileImage: user?.profile?.profileImage  || '',
       
     },
-    enableReinitialize: true, // Reinitialize form when user data changes
+    enableReinitialize: true, 
     validationSchema: Yup.object({
       name: Yup.string().required('Name is required'),
       email: Yup.string().email('Invalid email address').required('Email is required'),

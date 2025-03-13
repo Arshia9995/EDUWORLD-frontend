@@ -13,31 +13,31 @@ const AdminInstructors: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-    // Pagination states
+    
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 10; // Fixed at 10 items per page
+    const ITEMS_PER_PAGE = 10; 
 
   const dispatch = useDispatch<AppDispatch>();
 
   const { instructors = [], instructorLoading, instructorError } = useSelector(
     (state: RootState) => {
-      console.log("Redux State:", state); // Debug state
+      console.log("Redux State:", state); 
       return state.admin || { instructors: [], instructorLoading: false, instructorError: null };
     }
   );
   
 
-  const [actionLoading, setActionLoading] = useState<string | null>(null); // Track individual action loading
-  const [downloadLoading, setDownloadLoading] = useState<string | null>(null); // Track download loading
+  const [actionLoading, setActionLoading] = useState<string | null>(null); 
+  const [downloadLoading, setDownloadLoading] = useState<string | null>(null); 
 
-  // Filter instructors based on search query
+
   const filteredInstructors = instructors.filter(
-    (instructor) =>
+    (instructor:any) =>
       instructor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       instructor.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-    // Calculate pagination
+  
     const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
     const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
     const currentInstructors = filteredInstructors.slice(indexOfFirstItem, indexOfLastItem);
@@ -47,19 +47,19 @@ const AdminInstructors: React.FC = () => {
     dispatch(getallInstructors());
   }, [dispatch]);
 
-   // Reset to first page when search query changes
+   
    useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
 
-  console.log("Instructors State:", instructors); // Debug instructors
-  console.log("Filtered Instructors:", filteredInstructors); // Debug filtered instructors
-  console.log("Current Page Items:", currentInstructors); // Debug paginated items
+  console.log("Instructors State:", instructors); 
+  console.log("Filtered Instructors:", filteredInstructors); 
+  console.log("Current Page Items:", currentInstructors); 
 
   const handleApprove = async (instructorId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setActionLoading(instructorId); // Set loading for this specific instructor
+    setActionLoading(instructorId); 
     try {
       await dispatch(approveInstructor(instructorId)).unwrap();
       toast.success("Instructor approved successfully!");
@@ -67,13 +67,13 @@ const AdminInstructors: React.FC = () => {
       console.error("Approve Error:", error);
       toast.error(error || "Failed to approve instructor");
     } finally {
-      setActionLoading(null); // Clear loading state
+      setActionLoading(null); 
     }
   };
 
   const handleReject = async (instructorId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setActionLoading(instructorId); // Set loading for this specific instructor
+    setActionLoading(instructorId); 
     try {
       await dispatch(rejectInstructor(instructorId)).unwrap();
       toast.success("Instructor rejected successfully!");
@@ -81,7 +81,7 @@ const AdminInstructors: React.FC = () => {
       console.error("Reject Error:", error);
       toast.error(error || "Failed to reject instructor");
     } finally {
-      setActionLoading(null); // Clear loading state
+      setActionLoading(null); 
     }
   };
 
@@ -140,7 +140,7 @@ const AdminInstructors: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
-    // Pagination handlers
+  
     const handlePageChange = (pageNumber: number) => {
       setCurrentPage(pageNumber);
     };

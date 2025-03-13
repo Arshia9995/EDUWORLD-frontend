@@ -14,13 +14,13 @@ const AdminStudents: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   
-  // Sorting states
+  
   const [sortField, setSortField] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // Pagination states
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10; // Fixed at 10 items per page
+  const ITEMS_PER_PAGE = 10; 
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -28,19 +28,19 @@ const AdminStudents: React.FC = () => {
     (state: RootState) => state.admin || { students: [], studentLoading: false, studentError: null }
   );
 
-  // Sorting function
+ 
   const sortStudents = (students: any[]) => {
     return [...students].sort((a, b) => {
       if (sortField === "status") {
-        // For status field, sort by isBlocked property
+       
         if (a.isBlocked === b.isBlocked) return 0;
         if (sortDirection === "asc") {
-          return a.isBlocked ? 1 : -1; // Active (false) comes first in ascending
+          return a.isBlocked ? 1 : -1; 
         } else {
-          return a.isBlocked ? -1 : 1; // Blocked (true) comes first in descending
+          return a.isBlocked ? -1 : 1; 
         }
       } else {
-        // For name and email fields
+       
         const fieldA = a[sortField]?.toLowerCase() || "";
         const fieldB = b[sortField]?.toLowerCase() || "";
         
@@ -54,7 +54,7 @@ const AdminStudents: React.FC = () => {
     });
   };
   
-  // Filter students based on search query and sort
+  
   const filteredAndSortedStudents = sortStudents(
     students.filter(
       (student) =>
@@ -63,7 +63,7 @@ const AdminStudents: React.FC = () => {
     )
   );
 
-  // Calculate pagination
+  
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentStudents = filteredAndSortedStudents.slice(indexOfFirstItem, indexOfLastItem);
@@ -73,7 +73,7 @@ const AdminStudents: React.FC = () => {
     dispatch(getallStudents());
   }, [dispatch]);
 
-  // Reset to first page when search query or sorting changes
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, sortField, sortDirection]);
@@ -101,19 +101,19 @@ const AdminStudents: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
-  // Sorting handler
+  
   const handleSort = (field: string) => {
     if (sortField === field) {
-      // If already sorting by this field, toggle direction
+     
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      // If sorting by a new field, default to ascending
+      
       setSortField(field);
       setSortDirection("asc");
     }
   };
 
-  // Pagination handler
+ 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -285,7 +285,7 @@ const AdminStudents: React.FC = () => {
                 )}
               </tbody>
             </table>
-            {/* Pagination controls */}
+           
             {filteredAndSortedStudents.length > ITEMS_PER_PAGE && (
               <div className="flex justify-center mt-4">
                 <div className="flex items-center space-x-1">

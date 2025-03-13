@@ -5,7 +5,7 @@ import logo from "../../../assets/home/logo.png";
 import { Link ,useNavigate} from "react-router-dom";
 import {useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
-import { userLogout } from "../../../redux/actions/userActions";
+import { getInstructorById, userLogout } from "../../../redux/actions/userActions";
 import toast from "react-hot-toast";
 import { IUserSignupData } from "../../../interface/IUserSignup";
 import { IInstructorData } from "../../../interface/IInstructor";
@@ -19,9 +19,9 @@ const Navbar: React.FC = () => {
   console.log("User from Navbar:", user);
   console.log("Instructors from Navbar:", instructors);
 
-   useEffect(() => {
-      dispatch(getallInstructors());
-    }, [dispatch]);
+  //  useEffect(() => {
+  //     dispatch(getallInstructors());
+  //   }, [dispatch]);
 
    
 
@@ -38,25 +38,26 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const handleDashboardClick = async() => {
-
-    console.log("Dashboard Click - User:", user, "Instructors:", instructors);
-    console.log("User ID:", user?._id, "User Email:", user?.email);
+  const handleDashboardClick = async () => {
     if (user?.role === "instructor") {
-      await dispatch(getallInstructors()).unwrap();
-      // Find the current user in the instructors array (using _id or email)
-      const currentInstructor = instructors.find(
-        (instructor) => instructor._id === user._id || instructor.email === user.email
-      );
-      if (currentInstructor?.isApproved) {
-        toast.success("Your request is Approved");
-        navigate("/instructordashboard"); // Navigate to dashboard if approved
-      } else if (currentInstructor?.isRequested) {
-        toast.error("Your request is processing"); // Show error only if isRequested is true
-      } else if (currentInstructor?.isRejected) {
-        toast.error("Your request is rejected"); // Show error if rejected
-      } else {
-        toast.error("Instructor data not found");
+      try {
+        console.log(user)
+        const instructor = await dispatch(getInstructorById(user._id)).unwrap();
+        console.log("haaaaaaaaaaaaai",instructor);
+        
+        if (instructor.isApproved) {
+          toast.success("Your request is Approved");
+          navigate("/instructordashboard");
+        } else if (instructor.isRequested) {
+          toast.error("Your request is processing");
+        } else if (instructor.isRejected) {
+          toast.error("Your request is rejected");
+        } else {
+          toast.error("Instructor data not found");
+        }
+      } catch (error) {
+        console.error("Error fetching instructor data:", error);
+        toast.error("Failed to fetch instructor status");
       }
     } else {
       toast.error("You are not authorized to access the dashboard");

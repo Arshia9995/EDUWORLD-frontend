@@ -21,9 +21,9 @@ const App: React.FC = () => {
   // console.log(user, "user in the app.tsx");
   // const fetchUserData = async () => {
   // .............................................
-    useEffect(() => {
-      checkExist();
-  },[]);
+  //   useEffect(() => {
+  //     checkExist();
+  // },[]);
 
   const checkExist = async () => {
     if (user) {
@@ -54,9 +54,9 @@ const App: React.FC = () => {
 //     return <div>Loading...</div>; // Or your loading component
 // }
 
-useEffect(() => {
-      dispatch(getallInstructors());
-    }, [dispatch]);
+// useEffect(() => {
+//       dispatch(getallInstructors());
+//     }, [dispatch]);
 
 if (error) {
   // Handle error state
