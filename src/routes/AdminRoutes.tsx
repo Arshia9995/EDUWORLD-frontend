@@ -5,16 +5,65 @@ import AdminDashboard from "../components/admin/AdminDashboard";
 import AdminStudentsPage from "../pages/admin/AdminStudentsPage";
 import AdminInstructorsPage from "../pages/admin/AdminInstructorsPage";
 import ApprovedInstructorsPage from "../pages/admin/ApprovedInstructorsPage";
-
+import ProtectedRoute from "./ProtectedRoute";
+import AdminCategoryPage from "../pages/admin/AdminCategoryPage";
+import AddCategoryPage from "../pages/admin/AddCategoryPage";
+import EditCategoryPage from "../pages/admin/EditCategoryPage";
+import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
 
 const AdminRoutes: React.FC = () => {
     return (
         <Routes>
+            {/* Public Route */}
             <Route path="/login" element={<AdminLoginPage />} />
-            <Route path="/dashboard" element={<AdminDashboard />}/>
-            <Route path="/studentslist" element ={<AdminStudentsPage />} />
-            <Route path="/instructorslist" element ={<AdminInstructorsPage />} />
-            <Route path="/approvedinstructors" element ={<ApprovedInstructorsPage />} />
+
+            {/* Protected Routes for Admins */}
+        
+            <Route path="/dashboard"
+             element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminDashboard />
+                    </ProtectedRoute>
+                    }/>
+            <Route path="/studentslist"
+             element ={
+                <ProtectedRoute allowedRoles={['admin']}>
+             <AdminStudentsPage />
+             </ProtectedRoute>
+            } />
+            <Route path="/instructorslist"
+            element ={
+                <ProtectedRoute allowedRoles={['admin']}>
+            <AdminInstructorsPage />
+            </ProtectedRoute>}
+             />
+            <Route path="/approvedinstructors"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <ApprovedInstructorsPage />
+             </ProtectedRoute>
+            } />
+            <Route path="/categories"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <AdminCategoryPage />
+             </ProtectedRoute>
+            } />
+           
+           <Route path="/addcategory"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <AddCategoryPage />
+             </ProtectedRoute>
+            } />
+
+            <Route path="/editcategory"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <EditCategoryPage />
+             </ProtectedRoute>
+            } />
+
         </Routes>
     )
 }

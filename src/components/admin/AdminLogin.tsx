@@ -17,7 +17,7 @@ const AdminLogin: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading, error, isAuthenticated, admin } = useSelector(
     (state: RootState) => state.admin
   );
 
@@ -31,7 +31,8 @@ const AdminLogin: React.FC = () => {
     }),
     onSubmit: async (values) => {
       try {
-        await dispatch(adminLogin(values)).unwrap();
+        const result = await dispatch(adminLogin(values)).unwrap();
+        console.log("Login result:", result);
         toast.success("Login successful!");
         navigate("/admin/dashboard", { replace: true });
       } catch (err) {
@@ -41,7 +42,12 @@ const AdminLogin: React.FC = () => {
     },
   });
 
-
+  useEffect(() => {
+    console.log("Admin state:", { loading, error, isAuthenticated, admin }); // Debug state
+    if (isAuthenticated) {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div

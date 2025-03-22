@@ -10,6 +10,11 @@ import ForgotOtpPage from "../pages/auth/ForgotOtpPage";
 import ProfilePage from "../pages/user/ProfilePage";
 import RegistrationFormPage from "../pages/user/instructor/RegistrationFormPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
+import ProtectedRoute from "./ProtectedRoute";
+import InstructorCourselist from "../components/user/instructor/InstructorCourselist";
+import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
+import InstructorAddCourse from "../components/user/instructor/InstructorAddCourse";
+import InstructorAddLesson from "../components/user/instructor/InstructorAddLesson";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -21,9 +26,47 @@ const UserRoutes: React.FC = () => {
             <Route path="/forgotpassword" element={<ForgotPassword /> } />
             <Route path="/resetpassword" element={<ResetPassword /> } />
             <Route path ="/forgototp" element= {<ForgotOtpPage />} />
-            <Route path ="/profile" element= {<ProfilePage />} />
-            <Route path ="/instructorregistration" element= {<RegistrationFormPage />} />
-            <Route path ="/instructordashboard" element= {<InstructorDashboardPage />} />
+
+
+            <Route path ="/profile"
+             element= {
+                <ProtectedRoute allowedRoles={["student", "instructor"]}>
+             <ProfilePage />
+             </ProtectedRoute>
+             } />
+            <Route path ="/instructorregistration"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <RegistrationFormPage />
+             </ProtectedRoute>
+             } />
+            <Route path ="/instructordashboard"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorDashboardPage />
+             </ProtectedRoute>
+            } />
+
+             <Route path ="/instructorcourses"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorCoursePage />
+             </ProtectedRoute>
+            } />
+
+           <Route path ="/instructoraddcourse"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorAddCourse />
+             </ProtectedRoute>
+            } />
+
+           <Route path ="/instructoraddlesson"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorAddLesson />
+             </ProtectedRoute>
+            } />
             
             
 

@@ -1,11 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { baseUrl } from "./constants";
-import { ApiError, handleError } from "./configuration";
+import { ApiError, config, handleError } from "./configuration";
 
 
-const instance = axios.create({
+ export const api = axios.create({
     baseURL: baseUrl,
-    withCredentials: true
+    // withCredentials: true
+    ...config
   })
 
   export const reduxRequest = async (
@@ -22,7 +23,7 @@ const instance = axios.create({
       config,
     };
     try {
-      const response = await instance(requestConfig);
+      const response = await api(requestConfig);
       console.log("🚀 ~ file: api.ts:25 ~ response:", response)
       return response.data.data;
     } catch (error: any) {
