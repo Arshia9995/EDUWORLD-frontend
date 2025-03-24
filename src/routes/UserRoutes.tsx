@@ -15,6 +15,7 @@ import InstructorCourselist from "../components/user/instructor/InstructorCourse
 import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
 import InstructorAddCourse from "../components/user/instructor/InstructorAddCourse";
 import InstructorAddLesson from "../components/user/instructor/InstructorAddLesson";
+import InstructorCourseDetails from "../components/user/instructor/InstructorCourseDetails";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -65,6 +66,13 @@ const UserRoutes: React.FC = () => {
              element= {
                 <ProtectedRoute allowedRoles={["instructor"]}>
              <InstructorAddLesson />
+             </ProtectedRoute>
+            } />
+
+        <Route path ="/instructor/course/:courseId"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorCourseDetails/>
              </ProtectedRoute>
             } />
             

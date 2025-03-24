@@ -17,6 +17,7 @@ function InstructorAddLesson() {
   const [uploading, setUploading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [lessonCount, setLessonCount] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
@@ -137,7 +138,12 @@ function InstructorAddLesson() {
         withCredentials: true,
       });
 
+      if (response.status !== 201) {
+        throw new Error(response.data.message || 'Failed to add lesson');
+      }
+
       toast.success('Lesson added successfully');
+      setLessonCount((prev) => prev + 1);
 
       resetForm();
       setVideo(null);
@@ -190,6 +196,33 @@ function InstructorAddLesson() {
   const handleUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  const handleFinishCourse = async () => {
+    try {
+      // Validate that at least one lesson has been added
+      if (lessonCount === 0) {
+        toast.error('Cannot publish course: At least one lesson is required');
+        return;
+      }
+
+      // Call the publish course endpoint
+      const response = await api.post(
+        '/users/publishcourse',
+        { courseId },
+        { withCredentials: true }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message || 'Failed to publish course');
+      }
+
+      toast.success('Course published successfully');
+      navigate('/instructorcourses');
+    } catch (err: any) {
+      console.error('Error publishing course:', err);
+      toast.error(err.response?.data?.message || 'Failed to publish course');
     }
   };
 
@@ -411,7 +444,7 @@ function InstructorAddLesson() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => navigate('/instructor/courses')}
+                        onClick={handleFinishCourse}
                         className="py-2.5 px-6 rounded-lg flex items-center justify-center gap-2 bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
                       >
                         Finish Course
