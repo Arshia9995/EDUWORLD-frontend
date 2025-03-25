@@ -96,6 +96,14 @@ const Navbar: React.FC = () => {
   //   }
   // };
 
+  const handleStudentDashboardClick = () => {
+    if (user?.role === "student") {
+      navigate("/studentdashboard");
+    } else {
+      toast.error("You are not authorized to access the student dashboard");
+    }
+  };
+
   return (
     <div className="bg-white shadow-md">
     
@@ -136,6 +144,16 @@ const Navbar: React.FC = () => {
                   Dashboard
                 </button>
               )}
+              {/* Show Student Dashboard button if user is a student */}
+              {user.role === "student" && (
+                <button
+                  onClick={handleStudentDashboardClick}
+                  className="bg-blue-900 px-4 py-2 text-white font-semibold rounded hover:bg-blue-950"
+                >
+                  Student Dashboard
+                </button>
+              )}
+
               {/* Show Profile and Logout buttons if user is authenticated */}
               <button
                 onClick={() => navigate("/profile")}
