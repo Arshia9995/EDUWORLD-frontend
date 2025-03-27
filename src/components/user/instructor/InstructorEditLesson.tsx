@@ -120,7 +120,7 @@ const InstructorEditLesson: React.FC = () => {
     const fetchLessons = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/users/getlessonsbycourse/${courseId}`, {
+        const response = await api.get(`/users/getlessonbycourseid/${courseId}`, {
           withCredentials: true,
         });
 
@@ -470,7 +470,7 @@ const InstructorEditLesson: React.FC = () => {
                                     className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
-                                <div>
+                                {/* <div>
                                   <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Duration (optional)
                                   </label>
@@ -485,7 +485,7 @@ const InstructorEditLesson: React.FC = () => {
                                     component="div"
                                     className="text-red-500 text-xs mt-1"
                                   />
-                                </div>
+                                </div> */}
                               </div>
                             </div>
 

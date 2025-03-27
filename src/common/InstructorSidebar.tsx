@@ -64,12 +64,12 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
           <FiMessageSquare />
           {sidebarOpen && <span>Messages</span>}
         </Link>
-        <button
+        {/* <button
           className="flex items-center space-x-2 hover:text-yellow-400 w-full text-left"
         >
           <FiLogOut />
           {sidebarOpen && <span>Logout</span>}
-        </button>
+        </button> */}
       </nav>
     </aside>
   );

@@ -171,8 +171,9 @@ const InstructorEditCourse: React.FC = () => {
         throw new Error(response.data.message || 'Failed to update course');
       }
 
-      toast.success('Course updated successfully');
+      // toast.success('Course updated successfully');
       navigate(`/instructor/editlessons/${courseId}`);
+    navigate("/instructorcourses")
     } catch (err: any) {
       console.error('Error updating course:', err);
       setError(err.response?.data?.message || 'Failed to update course. Please try again.');
@@ -445,7 +446,7 @@ const InstructorEditCourse: React.FC = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => navigate('/instructorcourselist')}
+                      onClick={() => navigate('/instructorcourses')}
                       className="py-3 px-6 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
                     >
                       Cancel
