@@ -43,6 +43,7 @@ const InstructorEditLesson: React.FC = () => {
 
   // Validate video file
   const validateVideoFile = (file: File): Promise<boolean> => {
+    console.log('File type:', file.type);
     return new Promise((resolve, reject) => {
       const maxSize = 50 * 1024 * 1024; // 50MB in bytes
       if (file.size > maxSize) {
@@ -188,6 +189,7 @@ const InstructorEditLesson: React.FC = () => {
       }
 
       toast.success('Lesson updated successfully');
+      // navigate("/instructorcourses")
       const updatedLessons = lessons.map((lesson) =>
         lesson._id === selectedLesson._id ? { ...lesson, ...lessonData } : lesson
       );
@@ -210,6 +212,7 @@ const InstructorEditLesson: React.FC = () => {
     try {
       if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
+        console.log('Selected video type:', file.type);
         await validateVideoFile(file);
         const url = URL.createObjectURL(file);
         setVideo(file);

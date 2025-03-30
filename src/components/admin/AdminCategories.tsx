@@ -4,6 +4,7 @@ import AdminSidebar from "../../common/AdminSidebar";
 import toast from "react-hot-toast";
 import { api } from "../../config/api";
 import Swal from "sweetalert2";
+import Pagination from "../../common/Pagination"; // Make sure the path is correct
 
 interface CategoryDoc {
   _id: string;
@@ -15,6 +16,10 @@ const AdminCategories: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [categories, setCategories] = useState<CategoryDoc[]>([]);
   const navigate = useNavigate();
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // You can adjust this value
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -31,12 +36,14 @@ const AdminCategories: React.FC = () => {
   }, []);
 
   const handleEdit = (index: number) => {
-    const category = categories[index];
+    const actualIndex = (currentPage - 1) * itemsPerPage + index;
+    const category = categories[actualIndex];
     navigate("/admin/editcategory", { state: { category } });
   };
 
   const handleBlockCategory = async (index: number) => {
-    const category = categories[index];
+    const actualIndex = (currentPage - 1) * itemsPerPage + index;
+    const category = categories[actualIndex];
     const result = await Swal.fire({
       title: "Are you sure?",
       text: `Do you want to block the category "${category.categoryName}"?`,
@@ -53,7 +60,7 @@ const AdminCategories: React.FC = () => {
         const categoryId = category._id;
         const response = await api.put(`/admin/blockcategory/${categoryId}`);
         const updatedCategories = [...categories];
-        updatedCategories[index].isActive = false;
+        updatedCategories[actualIndex].isActive = false;
         setCategories(updatedCategories);
         toast.success(response.data.message || "Category blocked successfully!");
       } catch (error: any) {
@@ -63,7 +70,8 @@ const AdminCategories: React.FC = () => {
   };
 
   const handleUnblockCategory = async (index: number) => {
-    const category = categories[index];
+    const actualIndex = (currentPage - 1) * itemsPerPage + index;
+    const category = categories[actualIndex];
     const result = await Swal.fire({
       title: "Are you sure?",
       text: `Do you want to unblock the category "${category.categoryName}"?`,
@@ -80,7 +88,7 @@ const AdminCategories: React.FC = () => {
         const categoryId = category._id;
         const response = await api.put(`/admin/unblockcategory/${categoryId}`);
         const updatedCategories = [...categories];
-        updatedCategories[index].isActive = true;
+        updatedCategories[actualIndex].isActive = true;
         setCategories(updatedCategories);
         toast.success(response.data.message || "Category unblocked successfully!");
       } catch (error: any) {
@@ -92,6 +100,16 @@ const AdminCategories: React.FC = () => {
   const handleAddCategoryClick = () => {
     navigate("/admin/addcategory");
   };
+
+  // Function to handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Get current categories for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentCategories = categories.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -120,10 +138,10 @@ const AdminCategories: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {categories.length > 0 ? (
-              categories.map((cat, index) => (
+            {currentCategories.length > 0 ? (
+              currentCategories.map((cat, index) => (
                 <tr key={cat._id} className="border-b text-center">
-                  <td className="p-3">{index + 1}</td>
+                  <td className="p-3">{indexOfFirstItem + index + 1}</td>
                   <td className="p-3">{cat.categoryName}</td>
                   <td className="p-3">
                     {cat.isActive ? (
@@ -166,6 +184,14 @@ const AdminCategories: React.FC = () => {
             )}
           </tbody>
         </table>
+        
+        {/* Pagination Component */}
+        <Pagination
+          currentPage={currentPage}
+          totalItems={categories.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
       </main>
     </div>
   );

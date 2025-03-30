@@ -171,9 +171,9 @@ const InstructorEditCourse: React.FC = () => {
         throw new Error(response.data.message || 'Failed to update course');
       }
 
-      // toast.success('Course updated successfully');
+      toast.success('Course updated successfully');
       navigate(`/instructor/editlessons/${courseId}`);
-    navigate("/instructorcourses")
+    // navigate("/instructorcourses")
     } catch (err: any) {
       console.error('Error updating course:', err);
       setError(err.response?.data?.message || 'Failed to update course. Please try again.');
