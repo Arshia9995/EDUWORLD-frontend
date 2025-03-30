@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMenu, FiX, FiMessageSquare, FiBell, FiPlus, FiBookOpen, FiEdit, FiFilter, FiSearch } from 'react-icons/fi';
+import { FiMenu, FiX, FiMessageSquare, FiBell, FiPlus, FiBookOpen, FiEdit, FiFilter, FiSearch, FiFilePlus } from 'react-icons/fi';
 import { BiSort } from 'react-icons/bi';
 import InstructorSidebar from '../../../common/InstructorSidebar';
 import { api } from '../../../config/api';
@@ -122,6 +122,10 @@ const InstructorCourselist: React.FC = () => {
 
   const handleEditCourse = (courseId: string) => {
     navigate(`/instructor/editcourse/${courseId}`);
+  };
+
+  const handleAddLesson = (courseId: string) => {
+    navigate(`/instructoraddlesson`, { state: { courseId } });
   };
 
   const handlePageChange = (page: number) => {
@@ -419,7 +423,7 @@ const InstructorCourselist: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {courses.map((course) => (
                   <div
                     key={course._id}
@@ -472,17 +476,30 @@ const InstructorCourselist: React.FC = () => {
                         </div>
                       </div>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditCourse(course._id);
-                        }}
-                        className="absolute bottom-3 right-3 flex items-center space-x-1 bg-blue-900 text-white py-1 px-3 rounded-full hover:bg-blue-800 transition-colors"
-                        title="Edit Course"
-                      >
-                        <FiEdit className="h-4 w-4" />
-                        <span className="text-sm">Edit Course</span>
-                      </button>
+                      <div className="absolute bottom-3 right-3 flex space-x-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddLesson(course._id);
+                          }}
+                          className="flex items-center space-x-1 bg-yellow-500 text-white py-1 px-3 rounded-full hover:bg-yellow-600 transition-colors"
+                          title="Add Lesson"
+                        >
+                          <FiFilePlus className="h-4 w-4" />
+                          <span className="text-sm">Add Lesson</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditCourse(course._id);
+                          }}
+                          className="flex items-center space-x-1 bg-blue-900 text-white py-1 px-3 rounded-full hover:bg-blue-800 transition-colors"
+                          title="Edit Course"
+                        >
+                          <FiEdit className="h-4 w-4" />
+                          <span className="text-sm">Edit Course</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}

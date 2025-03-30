@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MessageSquare, Upload, X, CheckCircle, AlertCircle, Plus } from 'lucide-react';
 import InstructorSidebar from '../../../common/InstructorSidebar';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -22,8 +22,7 @@ function InstructorAddLesson() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { courseId } = location.state || {};
-
+  const { courseId } = location.state || {}; 
   // Redirect if courseId is not provided
   if (!courseId) {
     toast.error('Course ID is missing. Please add a course first.');
@@ -214,6 +213,15 @@ function InstructorAddLesson() {
         { withCredentials: true }
       );
 
+
+          // Check if the course is already published - handle this case separately
+    if (response.data.message === "Course is already published") {
+      toast.success('Course is already published');
+      navigate('/instructorcourses');
+      return;
+    }
+
+    
       if (response.status !== 200) {
         throw new Error(response.data.message || 'Failed to publish course');
       }
