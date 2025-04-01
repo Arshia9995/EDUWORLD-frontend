@@ -45,7 +45,6 @@ const InstructorEditLesson: React.FC = () => {
 
   // Validate video file
   const validateVideoFile = (file: File): Promise<boolean> => {
-    console.log('File type:', file.type);
     return new Promise((resolve, reject) => {
       const maxSize = 50 * 1024 * 1024; // 50MB in bytes
       if (file.size > maxSize) {
@@ -73,6 +72,7 @@ const InstructorEditLesson: React.FC = () => {
       };
 
       videoElement.src = url;
+      videoElement.load(); // Explicitly trigger loading
     });
   };
 
@@ -83,7 +83,7 @@ const InstructorEditLesson: React.FC = () => {
       setUploadProgress(0);
 
       const { data } = await axios.post(
-        `${baseUrl}/users/get-s3-url`,
+        `${baseUrl}/users/videoget-s3-url`,
         {
           fileName: file.name,
           fileType: file.type,
@@ -110,7 +110,7 @@ const InstructorEditLesson: React.FC = () => {
       });
 
       setUploading(false);
-      return { permanentUrl: data.imageUrl };
+      return { permanentUrl: data.downloadUrl }; // Return the permanent S3 URL
     } catch (error: any) {
       setUploading(false);
       console.error('S3 upload error:', error.response?.data || error.message);
@@ -120,37 +120,47 @@ const InstructorEditLesson: React.FC = () => {
 
   // Fetch lessons for the course
   const fetchLessons = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/users/getlessonbycourseid/${courseId}`, {
-        withCredentials: true,
-      });
+  try {
+    setLoading(true);
+    const response = await api.get(`/users/getlessonbycourseid/${courseId}`, {
+      withCredentials: true,
+    });
 
-      if (response.status !== 200 || !response.data.lessons) {
-        throw new Error(response.data.message || 'Failed to fetch lessons');
-      }
-
-      const fetchedLessons = response.data.lessons;
-      setLessons(fetchedLessons);
-      if (fetchedLessons.length > 0) {
-        setSelectedLesson(fetchedLessons[0]); // Default to first lesson
-        setVideoPreviewUrl(fetchedLessons[0].video || null);
-      } else {
-        setSelectedLesson(null);
-        setVideoPreviewUrl(null);
-      }
-    } catch (err: any) {
-      console.error('Error fetching lessons:', err);
-      setError(err.response?.data?.message || 'Failed to load lessons. Please try again.');
-    } finally {
-      setLoading(false);
+    if (response.status !== 200 || !response.data.lessons) {
+      throw new Error(response.data.message || 'Failed to fetch lessons');
     }
-  };
+
+    const fetchedLessons = response.data.lessons;
+    
+    setLessons(fetchedLessons);
+    if (fetchedLessons.length > 0) {
+      setSelectedLesson(fetchedLessons[0]);
+      setVideoPreviewUrl(fetchedLessons[0].video || null);
+    } else {
+      setSelectedLesson(null);
+      setVideoPreviewUrl(null);
+    }
+  } catch (err: any) {
+    console.error('Error fetching lessons:', err);
+    setError(err.response?.data?.message || 'Failed to load lessons. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Load lessons on component mount
   useEffect(() => {
     fetchLessons();
   }, [courseId]);
+
+  // Cleanup preview URL on unmount or when video changes
+  useEffect(() => {
+    return () => {
+      if (videoPreviewUrl && video) {
+        URL.revokeObjectURL(videoPreviewUrl);
+      }
+    };
+  }, [videoPreviewUrl, video]);
 
   // Initial form values based on selected lesson
   const initialValues = {
@@ -176,6 +186,11 @@ const InstructorEditLesson: React.FC = () => {
       if (video) {
         const { permanentUrl } = await uploadToS3(video);
         videoUrl = permanentUrl;
+        // Update preview URL only after successful upload
+        if (videoPreviewUrl && video) {
+          URL.revokeObjectURL(videoPreviewUrl); // Clean up old preview
+        }
+        setVideoPreviewUrl(videoUrl);
       }
 
       const lessonData = {
@@ -202,7 +217,6 @@ const InstructorEditLesson: React.FC = () => {
       setLessons(updatedLessons);
       setSelectedLesson({ ...selectedLesson, ...lessonData });
       setVideo(null);
-      setVideoPreviewUrl(videoUrl);
       setVideoError(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -232,11 +246,9 @@ const InstructorEditLesson: React.FC = () => {
 
       toast.success('Lesson deleted successfully');
       
-      // Remove the deleted lesson from state
       const updatedLessons = lessons.filter(lesson => lesson._id !== selectedLesson._id);
       setLessons(updatedLessons);
       
-      // Reset selected lesson
       if (updatedLessons.length > 0) {
         setSelectedLesson(updatedLessons[0]);
         setVideoPreviewUrl(updatedLessons[0].video || null);
@@ -258,8 +270,11 @@ const InstructorEditLesson: React.FC = () => {
     try {
       if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
-        console.log('Selected video type:', file.type);
         await validateVideoFile(file);
+        // Clean up previous preview URL if it exists and is a local blob
+        if (videoPreviewUrl && video) {
+          URL.revokeObjectURL(videoPreviewUrl);
+        }
         const url = URL.createObjectURL(file);
         setVideo(file);
         setVideoPreviewUrl(url);
@@ -267,6 +282,8 @@ const InstructorEditLesson: React.FC = () => {
       }
     } catch (err: any) {
       setVideoError(err.message);
+      setVideo(null);
+      setVideoPreviewUrl(selectedLesson?.video || null); // Revert to original
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -278,7 +295,7 @@ const InstructorEditLesson: React.FC = () => {
       URL.revokeObjectURL(videoPreviewUrl);
     }
     setVideo(null);
-    setVideoPreviewUrl(selectedLesson?.video || null); // Revert to original video
+    setVideoPreviewUrl(selectedLesson?.video || null);
     setVideoError(null);
     setUploadProgress(0);
   };
@@ -290,6 +307,9 @@ const InstructorEditLesson: React.FC = () => {
   };
 
   const handleLessonSelect = (lesson: Lesson) => {
+    if (videoPreviewUrl && video) {
+      URL.revokeObjectURL(videoPreviewUrl); // Clean up preview of unsaved video
+    }
     setSelectedLesson(lesson);
     setVideo(null);
     setVideoPreviewUrl(lesson.video || null);
@@ -305,7 +325,6 @@ const InstructorEditLesson: React.FC = () => {
         className={`flex-1 min-h-screen transition-all duration-300`}
         style={{ marginLeft: sidebarOpen ? '16rem' : '5rem' }}
       >
-        {/* Header */}
         <div className="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-gray-800">Edit Lessons</h1>
@@ -317,7 +336,6 @@ const InstructorEditLesson: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="max-w-6xl mx-auto p-6">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Edit Lesson Content</h2>
@@ -351,7 +369,6 @@ const InstructorEditLesson: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Lesson List */}
               <div className="md:col-span-1 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Lessons</h3>
                 <ul className="space-y-2">
@@ -389,7 +406,6 @@ const InstructorEditLesson: React.FC = () => {
                 </ul>
               </div>
 
-              {/* Edit Form */}
               <div className="md:col-span-3">
                 {selectedLesson && (
                   <>
@@ -457,7 +473,6 @@ const InstructorEditLesson: React.FC = () => {
 
                             <div className="p-6">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Video Upload */}
                                 <div className="space-y-4">
                                   <h4 className="text-base font-medium text-gray-700 mb-2">Lesson Video</h4>
                                   {!videoPreviewUrl ? (
@@ -475,14 +490,17 @@ const InstructorEditLesson: React.FC = () => {
                                     <div className="space-y-3">
                                       <div className="relative rounded-lg overflow-hidden bg-gray-800 border border-gray-200">
                                         <video
+                                          key={videoPreviewUrl} // Force re-render when URL changes
                                           src={videoPreviewUrl}
                                           controls
                                           className="w-full h-auto max-h-[240px] object-contain"
-                                          onError={() => {
+                                          onError={(e) => {
+                                            console.error('Video error:', e);
                                             setVideoError(
-                                              'Error loading video. The format may be unsupported by your browser.'
+                                              'Error loading video. It may not be accessible or supported.'
                                             );
                                           }}
+                                          onLoadedData={() => setVideoError(null)} // Clear error on successful load
                                         />
                                         <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/50 to-transparent p-2">
                                           <div className="flex justify-between items-center">
@@ -550,7 +568,6 @@ const InstructorEditLesson: React.FC = () => {
                                   ) : null}
                                 </div>
 
-                                {/* Lesson Details */}
                                 <div className="space-y-4">
                                   <h4 className="text-base font-medium text-gray-700 mb-2">Lesson Details</h4>
                                   <div>
@@ -586,7 +603,6 @@ const InstructorEditLesson: React.FC = () => {
                                       className="text-red-500 text-xs mt-1"
                                     />
                                   </div>
-                                  {/* Duration field commented out as in your original code */}
                                 </div>
                               </div>
 

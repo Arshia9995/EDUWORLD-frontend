@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import { ValidationSchemaLogin } from "../../schemas/ValidationSchema";
 import { userLogin } from "../../redux/actions/userActions";
 import { RootState, AppDispatch } from "../../redux/store";
+// import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+// import { googleAuthAction } from "../../redux/actions/userActions";
 
 
 interface LoginValues {
@@ -46,6 +48,26 @@ const UserLogin: React.FC = () => {
     },
 
   })
+
+  // const handleGoogleSuccess = async (credentialResponse: any) => {
+  //   console.log(credentialResponse);
+  //   try {
+  //     const result = await dispatch(googleAuthAction(credentialResponse.credential)).unwrap();
+  //     if (!result.isBlocked) {
+  //       toast.success("Google Login successful!");
+  //       navigate("/", { replace: true });
+  //     }
+  //   } catch (err: any) {
+  //     toast.error("Google login failed");
+  //   }
+  // };
+
+  // const handleGoogleError = () => {
+  //   console.log("Login Failed");
+  //   toast.error("Google Login Failed");
+  // };
+
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
@@ -130,12 +152,19 @@ const UserLogin: React.FC = () => {
         </form>
         
 
-        <div className="mt-6 text-center">
+        {/* <div className="mt-6 text-center">
           <button className="w-full bg-red-500 text-gray-900 py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
             Log In with Google
           </button>
-        </div>
-
+        </div> */}
+{/* 
+      <div className="mt-6 text-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            width="352px"
+          />
+        </div> */}
         
          <div className="mt-4 text-center">
           <Link

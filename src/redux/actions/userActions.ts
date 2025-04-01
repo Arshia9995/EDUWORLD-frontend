@@ -5,6 +5,7 @@ import axios,  { AxiosError } from "axios";
 import { baseUrl } from "../../config/constants";
 import { ApiError, config, handleError } from "../../config/configuration";
 import { api } from "../../config/api";
+import { CredentialResponse } from "@react-oauth/google";
 
 
 
@@ -140,6 +141,18 @@ export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectW
       return handleError(axiosError, rejectWithValue);
     }
   });
+
+  // export const googleAuthAction = createAsyncThunk(
+  //   'user/googleAuth',
+  //   async (token: string, { rejectWithValue }) => {
+  //     try {
+  //       const response = await axios.post('/users/google-login', { token }, { withCredentials: true });
+  //       return response.data.data;
+  //     } catch (error: any) {
+  //       return rejectWithValue(error.response?.data.message || 'Google login failed');
+  //     }
+  //   }
+  // );
 
 
 

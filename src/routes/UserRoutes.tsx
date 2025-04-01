@@ -22,6 +22,7 @@ import StudentCourseDetails from "../components/user/student/StudentCourseDetail
 import InstructorEditCourse from "../components/user/instructor/InstructorEditCourse";
 import InstructorEditLesson from "../components/user/instructor/InstructorEditLesson";
 // import InstructorEditLesson from "../components/user/instructor/InstructorEditLesson";
+import NotFoundPage from "../common/NotFoundPage";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -115,10 +116,8 @@ const UserRoutes: React.FC = () => {
            </ProtectedRoute>
           } />
 
+         <Route path="*" element={<NotFoundPage />} />
             
-            
-
-
         </Routes>
     );
 };

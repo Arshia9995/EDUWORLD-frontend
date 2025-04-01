@@ -135,7 +135,22 @@ const userSlice = createSlice({
           .addCase(registerInstructor.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
-          });
+          })
+          // Google Auth Cases
+      // .addCase(googleAuthAction.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(googleAuthAction.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.user = action.payload;
+      //   state.error = null;
+      // })
+      // .addCase(googleAuthAction.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.user = null;
+      //   state.error = action.payload as string | null;
+      // });
 
       },
 });
