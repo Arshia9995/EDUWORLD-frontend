@@ -262,11 +262,7 @@ const InstructorCourseDetails: React.FC = () => {
                     src={course.thumbnail || 'https://via.placeholder.com/500x300?text=No+Thumbnail'}
                     alt={course.title}
                     className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                      console.error(`Failed to load image: ${course.thumbnail}`);
-                      e.currentTarget.src = 'https://via.placeholder.com/500x300?text=No+Thumbnail';
-                      handleThumbnailError();
-                    }}
+                    
                   />
                   <div className="absolute top-4 right-4 flex space-x-2">
                     {course.isPublished ? (
@@ -380,6 +376,7 @@ const InstructorCourseDetails: React.FC = () => {
                   <div className="aspect-w-16 aspect-h-9 bg-gray-900">
                     {activeLessonData.video ? (
                       <video
+                      key={activeLessonData.video}
                         controls
                         className="w-full h-full object-contain"
                         onError={() => handleVideoError(activeLessonData._id)}

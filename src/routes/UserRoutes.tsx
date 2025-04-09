@@ -23,6 +23,7 @@ import InstructorEditCourse from "../components/user/instructor/InstructorEditCo
 import InstructorEditLesson from "../components/user/instructor/InstructorEditLesson";
 // import InstructorEditLesson from "../components/user/instructor/InstructorEditLesson";
 import NotFoundPage from "../common/NotFoundPage";
+import EnrollmentSuccess from "../components/user/student/EnrollmentSuccess";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -115,6 +116,14 @@ const UserRoutes: React.FC = () => {
             <StudentCourseDetails />
            </ProtectedRoute>
           } />
+
+          <Route path="/enrollment-success" 
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+          <EnrollmentSuccess />
+          </ProtectedRoute>
+          } 
+          />
 
          <Route path="*" element={<NotFoundPage />} />
             

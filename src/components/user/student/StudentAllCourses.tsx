@@ -261,7 +261,7 @@ const StudentAllCourses: React.FC = () => {
               className="w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 pl-3 pr-10 py-2 appearance-none bg-white shadow-sm"
             >
               <option value="">All Prices</option>
-              <option value="free">Free</option>
+              {/* <option value="free">Free</option> */}
               <option value="0-500">₹0 - ₹500</option>
               <option value="500-1000">₹500 - ₹1000</option>
               <option value="1000-2000">₹1000 - ₹2000</option>

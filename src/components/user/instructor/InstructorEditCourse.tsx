@@ -143,37 +143,44 @@ const InstructorEditCourse: React.FC = () => {
         toast.error('Please upload a thumbnail');
         return;
       }
-
+  
       // Upload thumbnail to S3 if a new one is selected
       let thumbnailUrl = previewUrl;
-      if (thumbnail) {
-        const { permanentUrl } = await uploadToS3(thumbnail);
-        thumbnailUrl = permanentUrl;
-      }
-
-      // Prepare course data
-      const courseData = {
+      const courseData: Partial<{
+        title: string;
+        description: string;
+        category: string;
+        price: number;
+        language: string;
+        thumbnail: string;
+        isPublished: boolean;
+      }> = {
         title: values.title,
         description: values.description,
         category: values.category,
         price: parseFloat(values.price),
         language: values.language,
-        thumbnail: thumbnailUrl,
         isPublished: values.isPublished,
       };
-
+  
+      if (thumbnail) {
+        const { permanentUrl } = await uploadToS3(thumbnail);
+        thumbnailUrl = permanentUrl;
+        courseData.thumbnail = thumbnailUrl || ''; // Add thumbnail only if new
+      }
+  
       // Update the course
       const response = await api.put(`/users/updatecourse/${courseId}`, courseData, {
         withCredentials: true,
       });
-
+  
       if (response.status !== 200) {
         throw new Error(response.data.message || 'Failed to update course');
       }
-
+  
       toast.success('Course updated successfully');
       navigate(`/instructor/editlessons/${courseId}`);
-    // navigate("/instructorcourses")
+      // navigate("/instructorcourses")
     } catch (err: any) {
       console.error('Error updating course:', err);
       setError(err.response?.data?.message || 'Failed to update course. Please try again.');
