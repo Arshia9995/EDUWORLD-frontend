@@ -24,6 +24,9 @@ import InstructorEditLesson from "../components/user/instructor/InstructorEditLe
 // import InstructorEditLesson from "../components/user/instructor/InstructorEditLesson";
 import NotFoundPage from "../common/NotFoundPage";
 import EnrollmentSuccess from "../components/user/student/EnrollmentSuccess";
+import StudentEnrolledCourses from "../components/user/student/StudentEnrolledCourses";
+import StudentEnrolledCourseDetails from "../components/user/student/StudentEnrolledCourseDetails";
+import StudentPaymentHistory from "../components/user/student/StudentPaymentHistory";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -121,6 +124,29 @@ const UserRoutes: React.FC = () => {
           element={
             <ProtectedRoute allowedRoles={["student"]}>
           <EnrollmentSuccess />
+          </ProtectedRoute>
+          } 
+          />
+
+         <Route path="/enrolled-courses" 
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+          <StudentEnrolledCourses />
+          </ProtectedRoute>
+          } 
+          />
+
+         <Route path="/course/:courseId/learn"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+          <StudentEnrolledCourseDetails />
+          </ProtectedRoute>
+          } 
+          />
+          <Route path="/payment-history"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+          <StudentPaymentHistory />
           </ProtectedRoute>
           } 
           />

@@ -1,7 +1,7 @@
 // StudentSidebar.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu } from 'react-icons/fi';
+import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu, FiDollarSign } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store'; // Replace with your actual store path
@@ -57,7 +57,7 @@ const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen })
           <FiBookOpen />
           {sidebarOpen && <span>All Courses</span>}
         </Link>
-        <Link to="/studentcourses" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link to="/enrolled-courses" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
         </Link>
@@ -65,6 +65,10 @@ const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen })
         <Link to="/studentprogress" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiTrendingUp />
           {sidebarOpen && <span>Progress</span>}
+        </Link>
+        <Link to="/payment-history" className="flex items-center space-x-2 hover:text-yellow-400">
+          <FiDollarSign />
+          {sidebarOpen && <span>Payment Details</span>}
         </Link>
         <Link to="/studentmessages" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiMessageSquare />

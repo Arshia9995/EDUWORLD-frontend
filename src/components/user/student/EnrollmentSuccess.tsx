@@ -171,7 +171,7 @@ const EnrollmentSuccess = () => {
         const response = await api.get(`/users/verify-payment?session_id=${sessionId}`);
         if (response.data.success) {
           toast.success('Enrollment successful!', { id: 'enrollment-success' });
-          navigate(`/course/${courseId}/learn`);
+          navigate("/enrolled-courses");
         }
       } catch (error: any) {
         toast.error(error.response?.data?.message || 'Failed to verify payment');
