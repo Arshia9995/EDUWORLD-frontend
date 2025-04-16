@@ -189,6 +189,10 @@ interface Course {
   instructor: { _id: string; name: string };
   enrolledAt: Date;
   completionStatus: 'enrolled' | 'in-progress' | 'completed';
+  progress?: {
+    overallCompletionPercentage: number;
+    completedLessons: string[];
+  };
 }
 
 interface Category {
@@ -209,7 +213,8 @@ interface ApiResponse {
   totalCourses: number;
   currentPage: number;
   totalPages: number;
-  message?: string;}
+  message?: string;
+}
 
 const StudentEnrolledCourses: React.FC = () => {
   const navigate = useNavigate();
@@ -602,6 +607,19 @@ const StudentEnrolledCourses: React.FC = () => {
                       <div className="text-sm text-gray-500 mb-4">
                         Status: {course.completionStatus}
                       </div>
+
+                      {course.progress && (
+                        <div className="mb-4">
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Progress</h4>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div
+                              className="bg-blue-600 h-2.5 rounded-full"
+                              style={{ width: `${course.progress.overallCompletionPercentage}%` }}
+                            ></div>
+                          </div>
+                          <p className="text-gray-500 text-xs mt-1">{course.progress.overallCompletionPercentage}% completed</p>
+                        </div>
+                      )}
 
                       <button
                         onClick={() => handleGoToCourse(course._id)}

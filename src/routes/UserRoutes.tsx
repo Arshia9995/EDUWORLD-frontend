@@ -150,6 +150,7 @@ const UserRoutes: React.FC = () => {
           </ProtectedRoute>
           } 
           />
+          
 
          <Route path="*" element={<NotFoundPage />} />
             
