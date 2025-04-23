@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook, FiUsers, FiMessageSquare, FiCalendar, FiTrendingUp, FiSettings, FiHelpCircle, FiLogOut, FiMenu } from 'react-icons/fi';
+import { FiHome, FiBook, FiUsers, FiMessageSquare, FiCalendar, FiTrendingUp, FiSettings, FiHelpCircle, FiLogOut, FiMenu, FiDollarSign } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store'; // Replace with your actual logout action
@@ -59,6 +59,10 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
         <Link to="/students" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiUsers />
           {sidebarOpen && <span>Students</span>}
+        </Link>
+        <Link to="/instructor/wallet" className="flex items-center space-x-2 hover:text-yellow-400">
+          <FiDollarSign />
+          {sidebarOpen && <span>Wallet</span>}
         </Link>
         <Link to="/messages" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiMessageSquare />

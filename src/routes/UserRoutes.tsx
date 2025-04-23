@@ -27,6 +27,7 @@ import EnrollmentSuccess from "../components/user/student/EnrollmentSuccess";
 import StudentEnrolledCourses from "../components/user/student/StudentEnrolledCourses";
 import StudentEnrolledCourseDetails from "../components/user/student/StudentEnrolledCourseDetails";
 import StudentPaymentHistory from "../components/user/student/StudentPaymentHistory";
+import InstructorWallet from "../components/user/instructor/InstructorWallet";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -98,6 +99,13 @@ const UserRoutes: React.FC = () => {
             <InstructorEditLesson/>
            </ProtectedRoute>
           } />
+          <Route path="/instructor/wallet"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+          <InstructorWallet />
+          </ProtectedRoute>
+          } 
+          />
 
           <Route path ="/studentdashboard"
              element= {
@@ -150,6 +158,7 @@ const UserRoutes: React.FC = () => {
           </ProtectedRoute>
           } 
           />
+           
           
 
          <Route path="*" element={<NotFoundPage />} />

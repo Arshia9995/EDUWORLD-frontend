@@ -1319,6 +1319,7 @@ import {
 import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
+import CourseReview from './CourseReview';
 
 interface Lesson {
   _id: string;
@@ -1373,6 +1374,7 @@ const StudentEnrolledCourseDetails: React.FC = () => {
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [courseCompletionPercentage, setCourseCompletionPercentage] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [markingAsCompleted, setMarkingAsCompleted] = useState<Set<string>>(new Set());
 
   const fetchCourseDetails = async () => {
     if (!courseId) {
@@ -1384,7 +1386,7 @@ const StudentEnrolledCourseDetails: React.FC = () => {
     try {
       setLoading(true);
 
-      const courseResponse = await api.get(`/users/enrolled-course-details/${courseId}`, {
+      const courseResponse = await api.get(`/users/enrolled-course-detailss/${courseId}`, {
         withCredentials: true,
       });
 
@@ -1484,8 +1486,15 @@ const StudentEnrolledCourseDetails: React.FC = () => {
     if (videoRef.current && lessons.length > 0 && activeLesson) {
       const { currentTime, duration } = videoRef.current;
       const percentageWatched = (currentTime / duration) * 100;
-
-      if (percentageWatched >= 80 && !enrollment?.progress.completedLessons.includes(activeLesson)) {
+  
+      // Check if lesson is not completed AND not currently being marked as completed
+      if (
+        percentageWatched >= 80 && 
+        !enrollment?.progress.completedLessons.includes(activeLesson) &&
+        !markingAsCompleted.has(activeLesson)
+      ) {
+        // Add to tracking set before making API call
+        setMarkingAsCompleted(prev => new Set(prev).add(activeLesson));
         updateLessonCompletion(activeLesson);
       }
     }
@@ -1500,7 +1509,7 @@ const StudentEnrolledCourseDetails: React.FC = () => {
       }, {
         withCredentials: true,
       });
-
+  
       if (response.status === 200) {
         const updatedEnrollment = response.data.enrollment;
         setEnrollment(updatedEnrollment);
@@ -1510,6 +1519,13 @@ const StudentEnrolledCourseDetails: React.FC = () => {
     } catch (error) {
       console.error('Failed to update lesson progress:', error);
       toast.error('Failed to mark lesson as complete');
+    } finally {
+      // Remove from tracking set regardless of success/failure
+      setMarkingAsCompleted(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(lessonId);
+        return newSet;
+      });
     }
   };
 
@@ -1644,6 +1660,11 @@ const StudentEnrolledCourseDetails: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+                           {/* NEWLY ADDED SECTION: Render CourseRatingReview */}
+                           {enrollment && (
+                <CourseReview courseId={courseId!} studentId={enrollment.userId} />
+              )}
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 order-2 lg:order-1">
