@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  {userSignup, verifyOtp, userLogin,userLogout, updateUserProfile, getUserDataFirst, isExist, registerInstructor} from "../../actions/userActions";
+import  {userSignup, verifyOtp, userLogin,userLogout, updateUserProfile, getUserDataFirst, isExist, registerInstructor, googleAuthAction} from "../../actions/userActions";
 import { IUserSignupData } from "../../../interface/IUserSignup";
 import { IUserLoginData } from "../../../interface/IUserLogin";
 import { IUserData } from "../../../interface/IUserData";
@@ -137,20 +137,20 @@ const userSlice = createSlice({
             state.error = action.payload as string;
           })
           // Google Auth Cases
-      // .addCase(googleAuthAction.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      // .addCase(googleAuthAction.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.user = action.payload;
-      //   state.error = null;
-      // })
-      // .addCase(googleAuthAction.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.user = null;
-      //   state.error = action.payload as string | null;
-      // });
+      .addCase(googleAuthAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleAuthAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(googleAuthAction.rejected, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        state.error = action.payload as string | null;
+      });
 
       },
 });

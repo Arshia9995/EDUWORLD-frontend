@@ -142,17 +142,17 @@ export const userLogout = createAsyncThunk('user/userLogout', async(_, { rejectW
     }
   });
 
-  // export const googleAuthAction = createAsyncThunk(
-  //   'user/googleAuth',
-  //   async (token: string, { rejectWithValue }) => {
-  //     try {
-  //       const response = await axios.post('/users/google-login', { token }, { withCredentials: true });
-  //       return response.data.data;
-  //     } catch (error: any) {
-  //       return rejectWithValue(error.response?.data.message || 'Google login failed');
-  //     }
-  //   }
-  // );
+  export const googleAuthAction = createAsyncThunk(
+    'user/googleAuth',
+    async (token: string, { rejectWithValue }) => {
+      try {
+        const response = await api.post('/users/google-login', { token }, { withCredentials: true });
+        return response.data.data;
+      } catch (error: any) {
+        return rejectWithValue(error.response?.data.message || 'Google login failed');
+      }
+    }
+  );
 
 
 

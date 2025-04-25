@@ -16,7 +16,7 @@ const AdminCategories: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [categories, setCategories] = useState<CategoryDoc[]>([]);
   const navigate = useNavigate();
-  
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8; // You can adjust this value
@@ -117,7 +117,11 @@ const AdminCategories: React.FC = () => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-      <main className="flex-1 p-6">
+      <main
+        className={`flex-1 p-6 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+      >
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-blue-900">Categories List</h1>
           <button
@@ -184,7 +188,7 @@ const AdminCategories: React.FC = () => {
             )}
           </tbody>
         </table>
-        
+
         {/* Pagination Component */}
         <Pagination
           currentPage={currentPage}

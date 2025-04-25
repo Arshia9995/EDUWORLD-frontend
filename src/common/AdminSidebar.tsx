@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiHome, FiUsers, FiLogOut, FiMenu,FiList } from "react-icons/fi";
+import { FiHome, FiUsers, FiLogOut, FiMenu, FiList } from "react-icons/fi";
 import logo from '../assets/home/logo.png';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
@@ -13,25 +13,24 @@ interface SidebarProps {
 }
 
 const AdminSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) => {
-    const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();  
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        try {
-          await dispatch(logoutAdminAction()).unwrap();
-          toast.success("Logged out successfully");
-          navigate("/admin/login"); // Redirect to admin login page
-        } catch (error) {
-          toast.error("Failed to logout");
-        }
-      };
-
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutAdminAction()).unwrap();
+      toast.success("Logged out successfully");
+      navigate("/admin/login"); // Redirect to admin login page
+    } catch (error) {
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <aside
       className={`${
         isSidebarOpen ? "w-64" : "w-20"
-      } bg-blue-900 text-white h-screen p-5 transition-all duration-300`}
+      } bg-blue-900 text-white fixed top-0 left-0 h-full p-5 transition-all duration-300 z-50 overflow-y-auto`} // Added fixed, top-0, left-0, h-full, z-50, overflow-y-auto
     >
       <div className="flex items-center space-x-2 mb-6">
         <img src={logo} alt="EduWorld Logo" className="h-10 w-10" />
@@ -55,9 +54,9 @@ const AdminSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen 
           <FiHome />
           {isSidebarOpen && <span>Dashboard</span>}
         </Link>
-        <Link 
-        to="/admin/categories" 
-        className="flex items-center space-x-2 hover:text-yellow-400"
+        <Link
+          to="/admin/categories"
+          className="flex items-center space-x-2 hover:text-yellow-400"
         >
           <FiList />
           {isSidebarOpen && <span>Categories</span>}

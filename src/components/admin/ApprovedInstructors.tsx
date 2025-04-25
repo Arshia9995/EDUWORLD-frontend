@@ -13,7 +13,7 @@ const ApprovedInstructors: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [blockingIds, setBlockingIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  
+
   // Sorting states
   const [sortField, setSortField] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -85,16 +85,16 @@ const ApprovedInstructors: React.FC = () => {
     const actionText = isBlocked ? "unblock" : "block";
     // Use SweetAlert2 for confirmation
     const result = await Swal.fire({
-        title: `Are you sure?`,
-        text: `Do you want to ${actionText} this instructor?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: `Yes, ${actionText} it!`,
-        cancelButtonText: "No, cancel",
-      });
-      if (result.isConfirmed) {
+      title: `Are you sure?`,
+      text: `Do you want to ${actionText} this instructor?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${actionText} it!`,
+      cancelButtonText: "No, cancel",
+    });
+    if (result.isConfirmed) {
       setBlockingIds((prev) => [...prev, instructorId]); // Set loading state
       try {
         await dispatch(blockUnblockInstructor({ instructorId, isBlocked })).unwrap();
@@ -127,20 +127,20 @@ const ApprovedInstructors: React.FC = () => {
     setCurrentPage(pageNumber);
   };
 
-  
-
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <AdminSidebar 
-        isSidebarOpen={isSidebarOpen} 
-        setIsSidebarOpen={setIsSidebarOpen} 
+      <AdminSidebar
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
-
-      {/* Main Content */}
-      <main className="flex-1 p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-blue-900 mb-4">Approved Instructors</h1>
-        <div className="relative w-64">
+      <main
+        className={`flex-1 p-6 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+      >
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-blue-900 mb-4">Approved Instructors</h1>
+          <div className="relative w-64">
             <input
               type="text"
               placeholder="Search by name or email..."
@@ -158,99 +158,99 @@ const ApprovedInstructors: React.FC = () => {
         {instructorError && <p className="text-red-600">{instructorError}</p>}
 
         {!instructorLoading && !instructorError && (
-            <>
-          <table className="w-full bg-white shadow-md rounded-lg">
-            <thead>
-              <tr className="bg-blue-900 text-white">
-                <th className="p-3">S.No</th>
-                <th 
-                  className="p-3 cursor-pointer"
-                  onClick={() => handleSort("name")}
-                >
-                  <div className="flex items-center justify-center">
-                    Name
-                    {sortField === "name" && (
-                      <span className="ml-1">
-                        {sortDirection === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </div>
-                </th>
-                <th 
-                  className="p-3 cursor-pointer"
-                  onClick={() => handleSort("email")}
-                >
-                  <div className="flex items-center justify-center">
-                    Email
-                    {sortField === "email" && (
-                      <span className="ml-1">
-                        {sortDirection === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </div>
-                </th>
-                <th 
-                  className="p-3 cursor-pointer"
-                  onClick={() => handleSort("status")}
-                >
-                  <div className="flex items-center justify-center">
-                    Status
-                    {sortField === "status" && (
-                      <span className="ml-1">
-                        {sortDirection === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </div>
-                </th>
-                <th className="p-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(currentInstructors) && currentInstructors.length > 0 ? (
-                currentInstructors.map((instructor, index) => (
-                  <tr key={instructor._id} className="border-b text-center">
-                   <td className="p-3">{indexOfFirstItem + index + 1}</td>
-                    <td className="p-3">{instructor.name}</td>
-                    <td className="p-3">{instructor.email}</td>
-                    <td className="p-3">
-                      {instructor.isBlocked ? (
-                        <span className="text-red-600">Blocked</span>
-                      ) : (
-                        <span className="text-green-600">Active</span>
+          <>
+            <table className="w-full bg-white shadow-md rounded-lg">
+              <thead>
+                <tr className="bg-blue-900 text-white">
+                  <th className="p-3">S.No</th>
+                  <th
+                    className="p-3 cursor-pointer"
+                    onClick={() => handleSort("name")}
+                  >
+                    <div className="flex items-center justify-center">
+                      Name
+                      {sortField === "name" && (
+                        <span className="ml-1">
+                          {sortDirection === "asc" ? "▲" : "▼"}
+                        </span>
                       )}
-                    </td>
-                    <td className="p-3">
-                    <button
-                        onClick={() =>  handleBlockToggle(instructor._id!, instructor.isBlocked!)}
-                        disabled={blockingIds.includes(instructor._id!)}
-                        className={`flex items-center justify-center mx-auto px-3 py-1 rounded-md text-white ${
-                          instructor.isBlocked
-                            ? "bg-green-500 hover:bg-green-600"
-                            : "bg-red-500 hover:bg-red-600"
-                        } ${blockingIds.includes(instructor._id!) ? "opacity-50 cursor-not-allowed" : ""}`}
-                      >
-                        {blockingIds.includes(instructor._id!)
-                          ? "Processing..."
-                          : instructor.isBlocked
-                          ? "Unblock"
-                          : "Block"}
-                      </button>
+                    </div>
+                  </th>
+                  <th
+                    className="p-3 cursor-pointer"
+                    onClick={() => handleSort("email")}
+                  >
+                    <div className="flex items-center justify-center">
+                      Email
+                      {sortField === "email" && (
+                        <span className="ml-1">
+                          {sortDirection === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    className="p-3 cursor-pointer"
+                    onClick={() => handleSort("status")}
+                  >
+                    <div className="flex items-center justify-center">
+                      Status
+                      {sortField === "status" && (
+                        <span className="ml-1">
+                          {sortDirection === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                  <th className="p-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(currentInstructors) && currentInstructors.length > 0 ? (
+                  currentInstructors.map((instructor, index) => (
+                    <tr key={instructor._id} className="border-b text-center">
+                      <td className="p-3">{indexOfFirstItem + index + 1}</td>
+                      <td className="p-3">{instructor.name}</td>
+                      <td className="p-3">{instructor.email}</td>
+                      <td className="p-3">
+                        {instructor.isBlocked ? (
+                          <span className="text-red-600">Blocked</span>
+                        ) : (
+                          <span className="text-green-600">Active</span>
+                        )}
+                      </td>
+                      <td className="p-3">
+                        <button
+                          onClick={() => handleBlockToggle(instructor._id!, instructor.isBlocked!)}
+                          disabled={blockingIds.includes(instructor._id!)}
+                          className={`flex items-center justify-center mx-auto px-3 py-1 rounded-md text-white ${
+                            instructor.isBlocked
+                              ? "bg-green-500 hover:bg-green-600"
+                              : "bg-red-500 hover:bg-red-600"
+                          } ${blockingIds.includes(instructor._id!) ? "opacity-50 cursor-not-allowed" : ""}`}
+                        >
+                          {blockingIds.includes(instructor._id!)
+                            ? "Processing..."
+                            : instructor.isBlocked
+                            ? "Unblock"
+                            : "Block"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="text-center p-3">
+                      {searchQuery
+                        ? "No instructors match your search."
+                        : "No approved instructors found."}
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="text-center p-3">
-                  {searchQuery
-                      ? "No instructors match your search."
-                      : "No approved instructors found."}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          {/* Pagination controls */}
-          {filteredAndSortedInstructors.length > ITEMS_PER_PAGE && (
+                )}
+              </tbody>
+            </table>
+            {/* Pagination controls */}
+            {filteredAndSortedInstructors.length > ITEMS_PER_PAGE && (
               <div className="flex justify-center mt-4">
                 <div className="flex items-center space-x-1">
                   <button

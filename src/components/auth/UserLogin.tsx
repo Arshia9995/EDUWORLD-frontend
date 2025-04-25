@@ -9,8 +9,8 @@ import toast from "react-hot-toast";
 import { ValidationSchemaLogin } from "../../schemas/ValidationSchema";
 import { userLogin } from "../../redux/actions/userActions";
 import { RootState, AppDispatch } from "../../redux/store";
-// import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-// import { googleAuthAction } from "../../redux/actions/userActions";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { googleAuthAction } from "../../redux/actions/userActions";
 
 
 interface LoginValues {
@@ -49,23 +49,26 @@ const UserLogin: React.FC = () => {
 
   })
 
-  // const handleGoogleSuccess = async (credentialResponse: any) => {
-  //   console.log(credentialResponse);
-  //   try {
-  //     const result = await dispatch(googleAuthAction(credentialResponse.credential)).unwrap();
-  //     if (!result.isBlocked) {
-  //       toast.success("Google Login successful!");
-  //       navigate("/", { replace: true });
-  //     }
-  //   } catch (err: any) {
-  //     toast.error("Google login failed");
-  //   }
-  // };
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    console.log("Google credential received:", credentialResponse);
+    try {
+      console.log("Sending to backend:", credentialResponse.credential);
+      const result = await dispatch(googleAuthAction(credentialResponse.credential as string)).unwrap();
+      console.log("Backend response:", result);
+      if (!result.isBlocked) {
+        toast.success("Google Login successful!");
+        navigate("/", { replace: true });
+      }
+    } catch (err: any) {
+      console.error("Google login error:", err);
+      toast.error("Google login failed");
+    }
+  };
 
-  // const handleGoogleError = () => {
-  //   console.log("Login Failed");
-  //   toast.error("Google Login Failed");
-  // };
+  const handleGoogleError = () => {
+    console.log("Login Failed");
+    toast.error("Google Login Failed");
+  };
 
 
   return (
@@ -157,14 +160,14 @@ const UserLogin: React.FC = () => {
             Log In with Google
           </button>
         </div> */}
-{/* 
+
       <div className="mt-6 text-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
             width="352px"
           />
-        </div> */}
+        </div>
         
          <div className="mt-4 text-center">
           <Link

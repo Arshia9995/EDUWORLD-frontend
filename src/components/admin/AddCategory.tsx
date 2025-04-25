@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCategory } from "../../redux/actions/adminActions";
 import AdminSidebar from "../../common/AdminSidebar";
 import toast from "react-hot-toast";
-import { AppDispatch, RootState } from "../../redux/store";// Adjust path
+import { AppDispatch, RootState } from "../../redux/store"; // Adjust path
 
 const AddCategory: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -38,7 +38,11 @@ const AddCategory: React.FC = () => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-      <main className="flex-1 p-6">
+      <main
+        className={`flex-1 p-6 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+      >
         <h1 className="text-2xl font-bold text-blue-900 mb-4">Add Category</h1>
         <form onSubmit={handleSaveCategory} className="flex flex-col max-w-sm">
           <label htmlFor="category" className="text-gray-700 font-semibold mb-2">

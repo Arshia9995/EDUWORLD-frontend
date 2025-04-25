@@ -62,7 +62,11 @@ const EditCategory: React.FC = () => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-      <main className="flex-1 p-6">
+      <main
+        className={`flex-1 p-6 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+      >
         <h1 className="text-2xl font-bold text-blue-900 mb-4">Edit Category</h1>
         <form onSubmit={handleUpdateCategory} className="flex flex-col max-w-sm">
           <label htmlFor="category" className="text-gray-700 font-semibold mb-2">

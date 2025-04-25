@@ -8,6 +8,7 @@ import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';
+import CourseReviewsList from './CourseReviewList';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY!);
@@ -367,6 +368,14 @@ const StudentCourseDetails: React.FC = () => {
                     </div>
                   )}
                 </div>
+
+                 {/* Add Course Reviews Section */}
+                <div className="mt-8 flex justify-start">
+                  <div className="w-full lg:w-80 max-h-[400px] overflow-y-auto bg-gray-50 rounded-lg shadow-lg border border-gray-200 p-4">
+                    <CourseReviewsList courseId={courseId!} />
+                  </div>
+                </div>
+               
 
                 <div className="absolute bottom-6 right-6">
                   {isEnrolled ? (

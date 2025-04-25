@@ -13,13 +13,11 @@ const AdminStudents: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   
-  
   const [sortField, setSortField] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10; 
+  const ITEMS_PER_PAGE = 10;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -27,22 +25,18 @@ const AdminStudents: React.FC = () => {
     (state: RootState) => state.admin || { students: [], studentLoading: false, studentError: null }
   );
 
- 
   const sortStudents = (students: any[]) => {
     return [...students].sort((a, b) => {
       if (sortField === "status") {
-       
         if (a.isBlocked === b.isBlocked) return 0;
         if (sortDirection === "asc") {
-          return a.isBlocked ? 1 : -1; 
+          return a.isBlocked ? 1 : -1;
         } else {
-          return a.isBlocked ? -1 : 1; 
+          return a.isBlocked ? -1 : 1;
         }
       } else {
-       
         const fieldA = a[sortField]?.toLowerCase() || "";
         const fieldB = b[sortField]?.toLowerCase() || "";
-        
         if (fieldA === fieldB) return 0;
         if (sortDirection === "asc") {
           return fieldA > fieldB ? 1 : -1;
@@ -52,8 +46,7 @@ const AdminStudents: React.FC = () => {
       }
     });
   };
-  
-  
+
   const filteredAndSortedStudents = sortStudents(
     students.filter(
       (student) =>
@@ -62,7 +55,6 @@ const AdminStudents: React.FC = () => {
     )
   );
 
-  
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentStudents = filteredAndSortedStudents.slice(indexOfFirstItem, indexOfLastItem);
@@ -72,7 +64,6 @@ const AdminStudents: React.FC = () => {
     dispatch(getallStudents());
   }, [dispatch]);
 
-  
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, sortField, sortDirection]);
@@ -100,32 +91,30 @@ const AdminStudents: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
-  
   const handleSort = (field: string) => {
     if (sortField === field) {
-     
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      
       setSortField(field);
       setSortDirection("asc");
     }
   };
 
- 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  
-
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <AdminSidebar 
-        isSidebarOpen={isSidebarOpen} 
-        setIsSidebarOpen={setIsSidebarOpen} 
+      <AdminSidebar
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
-        <main className="flex-1 p-6">
+      <main
+        className={`flex-1 p-6 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+      >
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-blue-900 mb-4">Students List</h1>
           <div className="relative w-64">
@@ -149,7 +138,7 @@ const AdminStudents: React.FC = () => {
               <thead>
                 <tr className="bg-blue-900 text-white">
                   <th className="p-3">ID</th>
-                  <th 
+                  <th
                     className="p-3 cursor-pointer"
                     onClick={() => handleSort("name")}
                   >
@@ -162,7 +151,7 @@ const AdminStudents: React.FC = () => {
                       )}
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="p-3 cursor-pointer"
                     onClick={() => handleSort("email")}
                   >
@@ -175,7 +164,7 @@ const AdminStudents: React.FC = () => {
                       )}
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="p-3 cursor-pointer"
                     onClick={() => handleSort("status")}
                   >
@@ -230,7 +219,7 @@ const AdminStudents: React.FC = () => {
                 )}
               </tbody>
             </table>
-           
+
             {filteredAndSortedStudents.length > ITEMS_PER_PAGE && (
               <div className="flex justify-center mt-4">
                 <div className="flex items-center space-x-1">
