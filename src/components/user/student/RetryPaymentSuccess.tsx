@@ -1,11 +1,9 @@
-
-
 import { useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
 
-const EnrollmentSuccess = () => {
+const RetryPaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const hasVerified = useRef(false);
@@ -21,19 +19,19 @@ const EnrollmentSuccess = () => {
 
       if (!sessionId || !courseId) {
         toast.error('Invalid session or course ID');
-        navigate('/');
+        navigate('/payment-history');
         return;
       }
 
       try {
         const response = await api.get(`/users/verify-payment?session_id=${sessionId}`);
         if (response.data.success) {
-          toast.success('Enrollment successful!', { id: 'enrollment-success' });
-          navigate("/enrolled-courses");
+          toast.success('Payment retry successful!', { id: 'retry-payment-success' });
+          navigate('/enrolled-courses');
         }
       } catch (error: any) {
         toast.error(error.response?.data?.message || 'Failed to verify payment');
-        navigate('/');
+        navigate('/payment-history');
       } finally {
         hasVerified.current = true;
       }
@@ -46,12 +44,10 @@ const EnrollmentSuccess = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="text-center p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-green-600 mb-4">Payment Successful!</h2>
-        <p className="text-gray-600">Verifying your enrollment...</p>
+        <p className="text-gray-600">Verifying your payment...</p>
       </div>
     </div>
   );
 };
 
-export default EnrollmentSuccess;
-
-
+export default RetryPaymentSuccess;

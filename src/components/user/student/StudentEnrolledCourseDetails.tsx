@@ -560,6 +560,7 @@ const StudentEnrolledCourseDetails: React.FC = () => {
   const [studentName, setStudentName] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [markingAsCompleted, setMarkingAsCompleted] = useState<Set<string>>(new Set());
+  const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 
   const fetchCourseDetails = async () => {
     if (!courseId) {
@@ -869,11 +870,12 @@ const StudentEnrolledCourseDetails: React.FC = () => {
                     </div>
                     {courseCompletionPercentage === 100 && (
                       <div className="mt-6">
-                        <Certificate 
-                          courseTitle={course.title}
-                          studentName={studentName}
-                          completionDate={enrollment?.updatedAt || new Date()}
-                        />
+                       <Certificate 
+  courseTitle={course.title}
+  studentName={studentName}
+  completionDate={enrollment?.updatedAt || new Date()}
+  instructorName={course.instructor?.name || "Course Instructor"}
+/>
                       </div>
                     )}
                   </div>
@@ -997,10 +999,16 @@ const StudentEnrolledCourseDetails: React.FC = () => {
           {enrollment && (
             <div className="mt-8 flex flex-col lg:flex-row justify-between">
               <div className="w-full lg:w-[400px] mb-6 lg:mb-0">
-                <CourseReview courseId={courseId} studentId={enrollment.userId} />
+                <CourseReview courseId={courseId} studentId={enrollment.userId}
+                onReviewSubmitted={() => setReviewSubmitted(prev => !prev)} 
+                 />
               </div>
               <div className="w-full lg:w-80 max-h-[400px] overflow-y-auto bg-gray-50 rounded-lg shadow-lg border border-gray-200 p-4">
-                <CourseReviewsList courseId={courseId} />
+
+                <CourseReviewsList 
+                courseId={courseId}
+                reviewSubmitted={reviewSubmitted}
+                 />
               </div>
             </div>
           )}

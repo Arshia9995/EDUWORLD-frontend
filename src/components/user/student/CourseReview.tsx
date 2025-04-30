@@ -6,9 +6,10 @@ import toast from 'react-hot-toast';
 interface CourseRatingReviewProps {
   courseId: string;
   studentId?: string;
+  onReviewSubmitted: () => void;  // Add this new prop
 }
 
-const CourseReview: React.FC<CourseRatingReviewProps> = ({ courseId, studentId }) => {
+const CourseReview: React.FC<CourseRatingReviewProps> = ({ courseId, studentId, onReviewSubmitted }) => {
   const [rating, setRating] = useState<number>(0);
   const [hover, setHover] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
@@ -42,6 +43,9 @@ const CourseReview: React.FC<CourseRatingReviewProps> = ({ courseId, studentId }
         toast.success('Review submitted successfully');
         setRating(0);
         setReviewText('');
+        
+        // Call the callback to notify parent component
+        onReviewSubmitted();
       }
     } catch (error: any) {
       console.error('Error submitting review:', error);
@@ -57,6 +61,7 @@ const CourseReview: React.FC<CourseRatingReviewProps> = ({ courseId, studentId }
     }
   };
 
+  // Rest of the component stays the same
   return (
     <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-5 w-80 mt-4">
       <h3 className="text-sm font-bold text-gray-800 mb-2">Rate This Course</h3>

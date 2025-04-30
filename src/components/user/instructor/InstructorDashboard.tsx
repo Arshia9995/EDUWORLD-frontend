@@ -33,7 +33,18 @@ const InstructorDashboard: React.FC = () => {
         // Fetch wallet data
         const walletResponse = await api.get('/users/instructorwallet', { withCredentials: true });
         if (walletResponse.data.success) {
-          setWalletData(walletResponse.data.data);
+          // Log API Response Transactions
+          console.log('API Response Transactions:', walletResponse.data.data.transactions); // Added log
+          // Deduplicate transactions
+          const uniqueTransactions = Array.from(
+            new Map(
+              walletResponse.data.data.transactions.map((t: any) => [
+                [t.createdAt, t.amount, t.description].join('|'),
+                t,
+              ])
+            ).values()
+          );
+          setWalletData({ ...walletResponse.data.data, transactions: uniqueTransactions });
         } else {
           throw new Error(walletResponse.data.message);
         }
@@ -285,6 +296,9 @@ const InstructorDashboard: React.FC = () => {
     return { percent: Math.abs(change), increase: change >= 0 };
   };
 
+  // Log component render with transactions
+  console.log('Component Rendered with Transactions:', walletData.transactions); // Added log
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <InstructorSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -344,10 +358,10 @@ const InstructorDashboard: React.FC = () => {
                 <BookOpen className="h-4 w-4 mr-2 text-gray-500" />
                 Create New Course
               </button>
-              <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
+              {/* <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
                 <DollarSign className="h-4 w-4 mr-2" />
                 Withdraw Funds
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -604,15 +618,15 @@ const InstructorDashboard: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-800">Recent Transactions</h2>
+                  <h2 className="text-lg font-semibold text-gray-800">Recent 5 Transactions</h2>
                   <p className="text-xs text-gray-500 mt-1">Latest financial activity on your instructor account</p>
                 </div>
-                {walletData.transactions.length > 5 && (
+                {/* {walletData.transactions.length > 5 && (
                   <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors flex items-center">
                     View All
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </button>
-                )}
+                )} */}
               </div>
               
               {walletData.transactions.length === 0 ? (
@@ -756,7 +770,7 @@ const InstructorDashboard: React.FC = () => {
           {/* Footer */}
           <div className="mt-12 pt-6 border-t border-gray-200">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-500">
-              <p>&copy; 2025 Learning Platform. All rights reserved.</p>
+              <p>© 2025 Learning Platform. All rights reserved.</p>
               <div className="flex space-x-4 mt-2 md:mt-0">
                 <a href="#" className="hover:text-indigo-600 transition-colors">Help Center</a>
                 <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>

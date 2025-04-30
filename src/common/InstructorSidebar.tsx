@@ -56,10 +56,10 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
         </Link>
-        <Link to="/students" className="flex items-center space-x-2 hover:text-yellow-400">
+        {/* <Link to="/students" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiUsers />
           {sidebarOpen && <span>Students</span>}
-        </Link>
+        </Link> */}
         <Link to="/instructor/wallet" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiDollarSign />
           {sidebarOpen && <span>Wallet</span>}

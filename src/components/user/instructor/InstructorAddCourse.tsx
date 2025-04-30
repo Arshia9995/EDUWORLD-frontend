@@ -472,6 +472,11 @@ function InstructorAddCourse() {
         withCredentials: true, // Send cookies with the request
       });
 
+      // if(response.data.course == null){
+      //   toast.error("can not add the course with same category and price")
+      //   return;
+      // }
+
       const createdCourse = response.data.course;
       toast.success('Course added successfully');
       // Navigate to the next page with the created course ID

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiHome, FiUsers, FiLogOut, FiMenu, FiList } from "react-icons/fi";
+import { FiHome, FiUsers, FiLogOut, FiMenu, FiList, FiDollarSign } from "react-icons/fi";
 import logo from '../assets/home/logo.png';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
@@ -79,8 +79,21 @@ const AdminSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen 
           to="/admin/approvedinstructors"
           className="flex items-center space-x-2 hover:text-yellow-400"
         >
+
           <FiUsers />
           {isSidebarOpen && <span>Approved Instructors</span>}
+        </Link>
+         <Link to="/admin/payment-history" 
+         className="flex items-center space-x-2 hover:text-yellow-400">
+                  <FiDollarSign />
+                  {isSidebarOpen && <span>Payment Details</span>}
+                </Link>
+        <Link
+          to="/admin/adminwallet"
+          className="flex items-center space-x-2 hover:text-yellow-400"
+        >
+          <FiDollarSign />
+          {isSidebarOpen && <span>Wallet</span>}
         </Link>
         <button
           onClick={handleLogout}

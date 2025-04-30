@@ -10,6 +10,8 @@ import AdminCategoryPage from "../pages/admin/AdminCategoryPage";
 import AddCategoryPage from "../pages/admin/AddCategoryPage";
 import EditCategoryPage from "../pages/admin/EditCategoryPage";
 import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
+import AdminWallet from "../components/admin/AdminWallet";
+import AdminPaymentHistory from "../components/admin/AdminPaymentHistory";
 
 const AdminRoutes: React.FC = () => {
     return (
@@ -61,6 +63,19 @@ const AdminRoutes: React.FC = () => {
              element ={
             <ProtectedRoute allowedRoles={['admin']}>
              <EditCategoryPage />
+             </ProtectedRoute>
+            } />
+
+            <Route path="/adminwallet"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <AdminWallet />
+             </ProtectedRoute>
+            } />
+              <Route path="/payment-history"
+             element ={
+            <ProtectedRoute allowedRoles={['admin']}>
+             <AdminPaymentHistory />
              </ProtectedRoute>
             } />
 

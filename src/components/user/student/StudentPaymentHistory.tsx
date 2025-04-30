@@ -4,6 +4,11 @@ import { FiList, FiChevronLeft, FiRefreshCw } from 'react-icons/fi';
 import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
+import Pagination from '../../../common/Pagination';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY!);
 
 interface Payment {
   _id: string;
@@ -21,6 +26,9 @@ const StudentPaymentHistory: React.FC = () => {
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [retryLoading, setRetryLoading] = useState<string | null>(null);
+  const itemsPerPage = 10;
 
   const fetchPaymentHistory = async () => {
     try {
@@ -43,8 +51,40 @@ const StudentPaymentHistory: React.FC = () => {
     }
   };
 
+  const handleRetryPayment = async (paymentId: string) => {
+    try {
+      setRetryLoading(paymentId);
+      const response = await api.post(
+        '/users/retry-payment',
+        { paymentId },
+        { withCredentials: true }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message || 'Failed to retry payment');
+      }
+
+      const { sessionId } = response.data;
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error('Stripe failed to initialize');
+      }
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (err: any) {
+      console.error('Error retrying payment:', err);
+      toast.error(err.response?.data?.message || 'Failed to retry payment');
+    } finally {
+      setRetryLoading(null);
+    }
+  };
+
   const handleRefresh = () => {
     setError(null);
+    setCurrentPage(1);
     fetchPaymentHistory();
   };
 
@@ -54,6 +94,17 @@ const StudentPaymentHistory: React.FC = () => {
 
   const handleBackToDashboard = () => {
     navigate('/studentdashboard');
+  };
+
+  // Calculate paginated payments
+  const totalItems = paymentHistory.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPayments = paymentHistory.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -152,74 +203,108 @@ const StudentPaymentHistory: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          SI No.
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          Course
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          Amount
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          Status
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          Date
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-100">
-                      {paymentHistory.map((payment, index) => (
-                        <tr
-                          key={payment._id}
-                          className="hover:bg-gray-50 transition-colors cursor-pointer"
-                          onClick={() => console.log('View payment details:', payment._id)} // Placeholder for details view
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {index + 1}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 font-medium">
-                              {payment.courseId.title}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 font-medium">₹{payment.amount}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-3 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${
-                                payment.status === 'completed'
-                                  ? 'bg-green-100 text-green-800'
-                                  : payment.status === 'pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : payment.status === 'failed'
-                                  ? 'bg-red-100 text-red-800'
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}
-                            >
-                              {payment.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
-                              {new Date(payment.createdAt).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: 'numeric',
-                              })}
-                            </div>
-                          </td>
+                <>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            SI No.
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            Course
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            Amount
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                            Action
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-100">
+                        {paginatedPayments.map((payment, index) => (
+                          <tr
+                            key={payment._id}
+                            className="hover:bg-gray-50 transition-colors cursor-pointer"
+                            onClick={() => console.log('View payment details:', payment._id)}
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {startIndex + index + 1}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900 font-medium">
+                                {payment.courseId.title}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900 font-medium">₹{payment.amount}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`px-3 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${
+                                  payment.status === 'completed'
+                                    ? 'bg-green-100 text-green-800'
+                                    : payment.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : payment.status === 'failed'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}
+                              >
+                                {payment.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">
+                                {new Date(payment.createdAt).toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                })}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {payment.status === 'pending' && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRetryPayment(payment._id);
+                                  }}
+                                  className={`px-3 py-1 text-sm font-medium text-white rounded-md ${
+                                    retryLoading === payment._id
+                                      ? 'bg-gray-400 cursor-not-allowed'
+                                      : 'bg-blue-600 hover:bg-blue-700'
+                                  }`}
+                                  disabled={retryLoading === payment._id}
+                                >
+                                  {retryLoading === payment._id ? 'Retrying...' : 'Retry Payment'}
+                                </button>
+                              )}
+                              {payment.status === 'completed' && (
+                                <span className="px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-md">
+                                  Payment Completed
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                  />
+                </>
               )}
             </div>
           )}

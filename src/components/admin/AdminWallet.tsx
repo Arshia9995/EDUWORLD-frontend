@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiDollarSign, FiList, FiCreditCard, FiCalendar, FiInfo } from 'react-icons/fi';
-import InstructorSidebar from '../../../common/InstructorSidebar';
-import { api } from '../../../config/api';
+import AdminSidebar from '../../common/AdminSidebar';
+import { api } from '../../config/api';
 import toast from 'react-hot-toast';
-import Pagination from '../../../common/Pagination';
+import Pagination from '../../common/Pagination';
 
 interface Transaction {
   amount: number;
@@ -19,20 +19,27 @@ interface Wallet {
   transactions: Transaction[];
 }
 
-const InstructorWallet: React.FC = () => {
+const AdminWallet: React.FC = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [wallet, setWallet] = useState<Wallet>({ balance: 0, transactions: [] });
+  const [creditAmount, setCreditAmount] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [courseId, setCourseId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'credit' | 'debit'>('all');
-  const [currentPage, setCurrentPage] = useState<number>(1); 
-  const itemsPerPage = 5; 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage: number = 5;
 
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+  // Fetch wallet details
   const fetchWalletDetails = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/users/instructorwallet', {
+      const response = await api.get('/admin/admin-wallet', {
         withCredentials: true,
       });
 
@@ -54,44 +61,83 @@ const InstructorWallet: React.FC = () => {
     }
   };
 
+  // Handle wallet credit
+  const handleCreditWallet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!creditAmount || !description) {
+      setError('Amount and description are required');
+      toast.error('Amount and description are required');
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await api.post(
+        '/api/admin/wallet/credit',
+        {
+          amount: parseFloat(creditAmount),
+          description,
+          courseId: courseId || undefined,
+        },
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        setCreditAmount('');
+        setDescription('');
+        setCourseId('');
+        setError(null);
+        toast.success('Wallet credited successfully');
+        fetchWalletDetails();
+      } else {
+        throw new Error(response.data.message || 'Failed to credit wallet');
+      }
+    } catch (err: any) {
+      console.error('Error crediting wallet:', err);
+      const errorMessage = err.response?.data?.message || 'Failed to credit wallet';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchWalletDetails();
   }, []);
 
   const handleBackToDashboard = () => {
-    navigate('/instructordashboard');
+    navigate('/admin/dashboard');
   };
 
-  const filteredTransactions = wallet.transactions.filter(transaction => {
+  // Filter transactions
+  const filteredTransactions: Transaction[] = wallet.transactions.filter((transaction) => {
     if (activeFilter === 'all') return true;
     return transaction.type === activeFilter;
   });
 
-  
-  const totalItems = filteredTransactions.length;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
+  // Pagination
+  const totalItems: number = filteredTransactions.length;
+  const startIndex: number = (currentPage - 1) * itemsPerPage;
+  const paginatedTransactions: Transaction[] = filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
 
-  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter]);
 
-  
-  const totalEarnings = wallet.transactions
-    .filter(t => t.type === 'credit')
-    .reduce((sum, t) => sum + t.amount, 0);
-  
-  const totalSpending = wallet.transactions
-    .filter(t => t.type === 'debit')
+  // Calculate total earnings and spending
+  const totalEarnings: number = wallet.transactions
+    .filter((t) => t.type === 'credit')
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const formatDate = (dateString: string) => {
+  const totalSpending: number = wallet.transactions
+    .filter((t) => t.type === 'debit')
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  // Format date and time
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       day: 'numeric',
@@ -100,7 +146,7 @@ const InstructorWallet: React.FC = () => {
     });
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -110,8 +156,10 @@ const InstructorWallet: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
-      <InstructorSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
+ <AdminSidebar
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
       <div
         className="flex-1 min-w-0 transition-all duration-300 ease-in-out relative"
         style={{
@@ -129,7 +177,7 @@ const InstructorWallet: React.FC = () => {
                 >
                   <FiArrowLeft className="h-5 w-5" />
                 </button>
-                <h1 className="text-3xl font-bold text-blue-900">Wallet Dashboard</h1>
+                <h1 className="text-3xl font-bold text-blue-900">Admin Wallet Dashboard</h1>
               </div>
               <button
                 onClick={handleBackToDashboard}
@@ -138,7 +186,7 @@ const InstructorWallet: React.FC = () => {
                 <span>Back to Dashboard</span>
               </button>
             </div>
-            <p className="text-gray-500 mt-2 ml-11">Track your earnings and manage financial transactions</p>
+            <p className="text-gray-500 mt-2 ml-11">Manage your admin wallet and track transactions</p>
           </div>
 
           {loading ? (
@@ -161,9 +209,9 @@ const InstructorWallet: React.FC = () => {
             </div>
           ) : (
             <>
-             
+              {/* Wallet Summary and Credit Form */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                
+                {/* Current Balance */}
                 <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-2xl shadow-xl overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -177,7 +225,7 @@ const InstructorWallet: React.FC = () => {
                   </div>
                 </div>
 
-              
+                {/* Total Earnings */}
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -206,20 +254,18 @@ const InstructorWallet: React.FC = () => {
                 </div>
               </div>
 
+
               {/* Transaction History */}
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                 <div className="bg-blue-50 p-6 border-b border-gray-200">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <h2 className="text-xl font-bold text-blue-900">Transaction History</h2>
-                    
                     {/* Filter buttons */}
                     <div className="flex bg-white rounded-lg shadow-sm p-1">
                       <button
                         onClick={() => setActiveFilter('all')}
                         className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                          activeFilter === 'all'
-                            ? 'bg-blue-900 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                          activeFilter === 'all' ? 'bg-blue-900 text-white' : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >
                         All
@@ -227,9 +273,7 @@ const InstructorWallet: React.FC = () => {
                       <button
                         onClick={() => setActiveFilter('credit')}
                         className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                          activeFilter === 'credit'
-                            ? 'bg-green-600 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                          activeFilter === 'credit' ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >
                         Credits
@@ -237,9 +281,7 @@ const InstructorWallet: React.FC = () => {
                       <button
                         onClick={() => setActiveFilter('debit')}
                         className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                          activeFilter === 'debit'
-                            ? 'bg-red-600 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                          activeFilter === 'debit' ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >
                         Debits
@@ -252,13 +294,15 @@ const InstructorWallet: React.FC = () => {
                   {paginatedTransactions.length > 0 ? (
                     paginatedTransactions.map((transaction, index) => (
                       <div
-                        key={`${transaction.createdAt}-${index}`} // Use a unique key
+                        key={`${transaction.createdAt}-${index}`}
                         className="hover:bg-gray-50 transition-colors p-6 flex flex-wrap items-center justify-between gap-4"
                       >
                         <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-full ${
-                            transaction.type === 'credit' ? 'bg-green-100' : 'bg-red-100'
-                          }`}>
+                          <div
+                            className={`p-3 rounded-full ${
+                              transaction.type === 'credit' ? 'bg-green-100' : 'bg-red-100'
+                            }`}
+                          >
                             {transaction.type === 'credit' ? (
                               <FiCreditCard className="h-6 w-6 text-green-600" />
                             ) : (
@@ -269,7 +313,9 @@ const InstructorWallet: React.FC = () => {
                             <p className="text-gray-800 font-medium">{transaction.description}</p>
                             <div className="flex items-center mt-1 text-gray-500 text-sm">
                               <FiCalendar className="mr-1 h-3 w-3" />
-                              <span>{formatDate(transaction.createdAt)} at {formatTime(transaction.createdAt)}</span>
+                              <span>
+                                {formatDate(transaction.createdAt)} at {formatTime(transaction.createdAt)}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -281,11 +327,13 @@ const InstructorWallet: React.FC = () => {
                           >
                             {transaction.type === 'credit' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded-full mt-1 ${
-                            transaction.type === 'credit' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full mt-1 ${
+                              transaction.type === 'credit'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
                             {transaction.type === 'credit' ? 'Credit' : 'Debit'}
                           </span>
                         </div>
@@ -296,15 +344,15 @@ const InstructorWallet: React.FC = () => {
                       <FiList className="h-16 w-16 mx-auto mb-4 text-gray-300" />
                       <p className="text-xl font-medium mb-2">No transactions found</p>
                       <p className="text-gray-400">
-                        {activeFilter !== 'all' 
-                          ? `No ${activeFilter} transactions are available.` 
+                        {activeFilter !== 'all'
+                          ? `No ${activeFilter} transactions are available.`
                           : 'Your transaction history will appear here.'}
                       </p>
                     </div>
                   )}
                 </div>
 
-                {/*  Pagination Component */}
+                {/* Pagination */}
                 <Pagination
                   currentPage={currentPage}
                   totalItems={totalItems}
@@ -320,4 +368,4 @@ const InstructorWallet: React.FC = () => {
   );
 };
 
-export default InstructorWallet;
+export default AdminWallet;

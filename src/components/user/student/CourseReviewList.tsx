@@ -20,9 +20,10 @@ interface Review {
 
 interface CourseReviewsListProps {
   courseId: string;
+  reviewSubmitted?: boolean;  // Add this new prop
 }
 
-const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId }) => {
+const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId, reviewSubmitted }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,12 +64,14 @@ const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId }) => {
     }
   };
 
+  // Fetch reviews when component mounts or when reviewSubmitted changes
   useEffect(() => {
     if (courseId) {
       fetchReviews();
     }
-  }, [courseId]);
+  }, [courseId, reviewSubmitted]);  // Added reviewSubmitted to dependency array
 
+  // Rest of the component stays the same
   if (loading) {
     return (
       <div className="p-4 text-center">
