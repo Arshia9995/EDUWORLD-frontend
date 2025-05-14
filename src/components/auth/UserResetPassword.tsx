@@ -60,7 +60,7 @@ const UserResetPassword: React.FC = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-5">
-              {/* New Password */}
+              
               <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
                   New Password

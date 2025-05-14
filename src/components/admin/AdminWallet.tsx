@@ -35,7 +35,7 @@ const AdminWallet: React.FC = () => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
-  // Fetch wallet details
+  
   const fetchWalletDetails = async () => {
     try {
       setLoading(true);
@@ -61,7 +61,7 @@ const AdminWallet: React.FC = () => {
     }
   };
 
-  // Handle wallet credit
+  
   const handleCreditWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!creditAmount || !description) {
@@ -108,13 +108,13 @@ const AdminWallet: React.FC = () => {
     navigate('/admin/dashboard');
   };
 
-  // Filter transactions
+  
   const filteredTransactions: Transaction[] = wallet.transactions.filter((transaction) => {
     if (activeFilter === 'all') return true;
     return transaction.type === activeFilter;
   });
 
-  // Pagination
+  
   const totalItems: number = filteredTransactions.length;
   const startIndex: number = (currentPage - 1) * itemsPerPage;
   const paginatedTransactions: Transaction[] = filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
@@ -127,7 +127,7 @@ const AdminWallet: React.FC = () => {
     setCurrentPage(1);
   }, [activeFilter]);
 
-  // Calculate total earnings and spending
+  
   const totalEarnings: number = wallet.transactions
     .filter((t) => t.type === 'credit')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -136,7 +136,7 @@ const AdminWallet: React.FC = () => {
     .filter((t) => t.type === 'debit')
     .reduce((sum, t) => sum + t.amount, 0);
 
-  // Format date and time
+  
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -167,7 +167,7 @@ const AdminWallet: React.FC = () => {
         }}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
+         
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -209,9 +209,9 @@ const AdminWallet: React.FC = () => {
             </div>
           ) : (
             <>
-              {/* Wallet Summary and Credit Form */}
+              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {/* Current Balance */}
+                
                 <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-2xl shadow-xl overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -225,7 +225,7 @@ const AdminWallet: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Total Earnings */}
+                
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -239,7 +239,7 @@ const AdminWallet: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Total Debits */}
+                
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -255,12 +255,12 @@ const AdminWallet: React.FC = () => {
               </div>
 
 
-              {/* Transaction History */}
+              
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                 <div className="bg-blue-50 p-6 border-b border-gray-200">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <h2 className="text-xl font-bold text-blue-900">Transaction History</h2>
-                    {/* Filter buttons */}
+                    
                     <div className="flex bg-white rounded-lg shadow-sm p-1">
                       <button
                         onClick={() => setActiveFilter('all')}
@@ -352,7 +352,7 @@ const AdminWallet: React.FC = () => {
                   )}
                 </div>
 
-                {/* Pagination */}
+               
                 <Pagination
                   currentPage={currentPage}
                   totalItems={totalItems}

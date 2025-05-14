@@ -23,7 +23,7 @@ function InstructorAddLesson() {
   const navigate = useNavigate();
   const location = useLocation();
   const { courseId } = location.state || {}; 
-  // Redirect if courseId is not provided
+  
   if (!courseId) {
     toast.error('Course ID is missing. Please add a course first.');
     navigate('/instructoraddcourse');
@@ -32,7 +32,7 @@ function InstructorAddLesson() {
 
   const validateVideoFile = (file: File): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-      const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+      const maxSize = 50 * 1024 * 1024; 
       if (file.size > maxSize) {
         reject(new Error('Video file size must be less than 50MB'));
         return;
@@ -200,13 +200,13 @@ function InstructorAddLesson() {
 
   const handleFinishCourse = async () => {
     try {
-      // Validate that at least one lesson has been added
+      
       if (lessonCount === 0) {
         toast.error('Cannot publish course: At least one lesson is required');
         return;
       }
 
-      // Call the publish course endpoint
+      
       const response = await api.post(
         '/users/publishcourse',
         { courseId },
@@ -214,7 +214,7 @@ function InstructorAddLesson() {
       );
 
 
-          // Check if the course is already published - handle this case separately
+          
     if (response.data.message === "Course is already published") {
       toast.success('Course is already published');
       navigate('/instructorcourses');
@@ -242,7 +242,7 @@ function InstructorAddLesson() {
         className={`flex-1 min-h-screen transition-all duration-300`}
         style={{ marginLeft: sidebarOpen ? '16rem' : '5rem' }}
       >
-        {/* Header */}
+       
         <div className="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-gray-800">Add New Lesson</h1>

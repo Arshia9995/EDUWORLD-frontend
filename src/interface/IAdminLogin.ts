@@ -5,5 +5,6 @@ export interface IAdminLoginData {
     password: string;
     id?:string;
     role?:string;
-   
+    token?: string;
+    refreshToken?: string;
   }

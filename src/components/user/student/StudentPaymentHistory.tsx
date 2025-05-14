@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import Pagination from '../../../common/Pagination';
 import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe with your publishable key
+
 const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY!);
 
 interface Payment {
@@ -96,7 +96,7 @@ const StudentPaymentHistory: React.FC = () => {
     navigate('/studentdashboard');
   };
 
-  // Calculate paginated payments
+  
   const totalItems = paymentHistory.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

@@ -28,7 +28,7 @@ const EnrollmentSuccess = () => {
       try {
         const response = await api.get(`/users/verify-payment?session_id=${sessionId}`);
         if (response.data.success) {
-          toast.success('Enrollment successful!', { id: 'enrollment-success' });
+          toast.success('Enrollment successful! You have been added to the course chat',{ id: 'enrollment-success' });
           navigate("/enrolled-courses");
         }
       } catch (error: any) {

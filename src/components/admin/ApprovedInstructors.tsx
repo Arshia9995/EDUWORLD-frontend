@@ -14,13 +14,13 @@ const ApprovedInstructors: React.FC = () => {
   const [blockingIds, setBlockingIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Sorting states
+  
   const [sortField, setSortField] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // Pagination states
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10; // Fixed at 10 items per page
+  const ITEMS_PER_PAGE = 10; 
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -30,19 +30,19 @@ const ApprovedInstructors: React.FC = () => {
     }
   );
 
-  // Sorting function
+ 
   const sortInstructors = (instructors: any[]) => {
     return [...instructors].sort((a, b) => {
       if (sortField === "status") {
-        // For status field, sort by isBlocked property
+       
         if (a.isBlocked === b.isBlocked) return 0;
         if (sortDirection === "asc") {
-          return a.isBlocked ? 1 : -1; // Active (false) comes first in ascending
+          return a.isBlocked ? 1 : -1; 
         } else {
-          return a.isBlocked ? -1 : 1; // Blocked (true) comes first in descending
+          return a.isBlocked ? -1 : 1; 
         }
       } else {
-        // For name and email fields
+       
         const fieldA = a[sortField]?.toLowerCase() || "";
         const fieldB = b[sortField]?.toLowerCase() || "";
         
@@ -56,7 +56,7 @@ const ApprovedInstructors: React.FC = () => {
     });
   };
 
-  // Filter, sort, and paginate instructors
+  
   const filteredAndSortedInstructors = sortInstructors(
     instructors
       .filter((instructor) => instructor.isApproved && !instructor.isRejected)
@@ -66,7 +66,7 @@ const ApprovedInstructors: React.FC = () => {
       )
   );
   
-  // Calculate pagination
+  
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentInstructors = filteredAndSortedInstructors.slice(indexOfFirstItem, indexOfLastItem);
@@ -76,14 +76,14 @@ const ApprovedInstructors: React.FC = () => {
     dispatch(getallInstructors());
   }, [dispatch]);
 
-  // Reset to first page when search query or sorting changes
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, sortField, sortDirection]);
 
   const handleBlockToggle = async (instructorId: string, isBlocked: boolean) => {
     const actionText = isBlocked ? "unblock" : "block";
-    // Use SweetAlert2 for confirmation
+   
     const result = await Swal.fire({
       title: `Are you sure?`,
       text: `Do you want to ${actionText} this instructor?`,
@@ -95,14 +95,14 @@ const ApprovedInstructors: React.FC = () => {
       cancelButtonText: "No, cancel",
     });
     if (result.isConfirmed) {
-      setBlockingIds((prev) => [...prev, instructorId]); // Set loading state
+      setBlockingIds((prev) => [...prev, instructorId]);
       try {
         await dispatch(blockUnblockInstructor({ instructorId, isBlocked })).unwrap();
         toast.success(`Instructor ${actionText}ed successfully`);
       } catch (error) {
         toast.error("Failed to update instructor status");
       }
-      setBlockingIds((prev) => prev.filter((id) => id !== instructorId)); // Clear loading state
+      setBlockingIds((prev) => prev.filter((id) => id !== instructorId)); 
     }
   };
 
@@ -110,19 +110,19 @@ const ApprovedInstructors: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
-  // Sorting handler
+  
   const handleSort = (field: string) => {
     if (sortField === field) {
-      // If already sorting by this field, toggle direction
+      
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      // If sorting by a new field, default to ascending
+     
       setSortField(field);
       setSortDirection("asc");
     }
   };
 
-  // Pagination handler
+  
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -136,7 +136,7 @@ const ApprovedInstructors: React.FC = () => {
       <main
         className={`flex-1 p-6 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-20"
-        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+        }`} 
       >
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-blue-900 mb-4">Approved Instructors</h1>
@@ -249,7 +249,7 @@ const ApprovedInstructors: React.FC = () => {
                 )}
               </tbody>
             </table>
-            {/* Pagination controls */}
+           
             {filteredAndSortedInstructors.length > ITEMS_PER_PAGE && (
               <div className="flex justify-center mt-4">
                 <div className="flex items-center space-x-1">

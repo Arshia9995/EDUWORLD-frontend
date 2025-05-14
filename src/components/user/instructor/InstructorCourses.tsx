@@ -6,13 +6,13 @@ const InstructorCourses: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCreateCourse = () => {
-    navigate('/add-course'); // Navigate to the AddCourse page
+    navigate('/add-course'); 
   };
 
   return (
     <div className="p-6 lg:p-8 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-extrabold text-blue-900 mb-6">My Courses</h1>
-      {/* Placeholder for course list */}
+     
       <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto text-center">
         <p className="text-gray-600 mb-4">You haven't created any courses yet.</p>
         <button

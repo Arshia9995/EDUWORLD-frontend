@@ -1,4 +1,4 @@
-// StudentDashboard.tsx
+
 import React, { useState } from 'react';
 import { MessageSquare, Bell, Menu, X } from 'lucide-react';
 import StudentSidebar from '../../../common/StudentSidebar';
@@ -9,15 +9,15 @@ const StudentDashboard: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+      
       <StudentSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      {/* Main Content */}
+      
       <div
         className="flex-1 min-w-0"
         style={{
-          marginLeft: sidebarOpen ? '16rem' : '5rem', // w-64 = 16rem, w-20 = 5rem
-          transition: 'margin-left 0.3s ease', // Smooth transition for margin change
+          marginLeft: sidebarOpen ? '16rem' : '5rem', 
+          transition: 'margin-left 0.3s ease', 
         }}
       >
         {/* Top Bar */}

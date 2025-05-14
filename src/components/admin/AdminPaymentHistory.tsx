@@ -25,7 +25,7 @@ const AdminPaymentHistory: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch payment history
+  
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       try {
@@ -129,7 +129,7 @@ const AdminPaymentHistory: React.FC = () => {
           isSidebarOpen ? 'ml-64' : 'ml-20'
         } p-6 lg:p-8`}
       >
-        {/* Header with shadow and gradient accent */}
+      
         <div className="mb-8 bg-white rounded-xl p-6 shadow-sm border border-gray-100 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
           

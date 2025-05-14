@@ -30,6 +30,8 @@ import StudentPaymentHistory from "../components/user/student/StudentPaymentHist
 import InstructorWallet from "../components/user/instructor/InstructorWallet";
 import EnrollmentFailure from "../components/user/student/EnrollmentFailure";
 import RetryPaymentSuccess from "../components/user/student/RetryPaymentSuccess";
+import InstructorChat from "../components/user/instructor/InstructorChat";
+import StudentAnnouncements from "../components/user/student/StudentAnnouncement";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -108,6 +110,13 @@ const UserRoutes: React.FC = () => {
           </ProtectedRoute>
           } 
           />
+           <Route path="/instructorchat"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+          <InstructorChat />
+          </ProtectedRoute>
+          } 
+          />
 
           <Route path ="/studentdashboard"
              element= {
@@ -165,6 +174,13 @@ const UserRoutes: React.FC = () => {
           element={
             <ProtectedRoute allowedRoles={["student"]}>
           <StudentPaymentHistory />
+          </ProtectedRoute>
+          } 
+          />
+           <Route path="/announcements"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+          <StudentAnnouncements />
           </ProtectedRoute>
           } 
           />

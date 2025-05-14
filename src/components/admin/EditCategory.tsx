@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCategory } from "../../redux/actions/adminActions"; // Add this action
+import { updateCategory } from "../../redux/actions/adminActions"; 
 import AdminSidebar from "../../common/AdminSidebar";
 import toast from "react-hot-toast";
 import { AppDispatch, RootState } from "../../redux/store";
@@ -20,14 +20,14 @@ const EditCategory: React.FC = () => {
   const location = useLocation();
   const { loading, error } = useSelector((state: RootState) => state.admin);
 
-  // Get category data from navigation state
+  
   useEffect(() => {
     const category = (location.state as { category: CategoryDoc })?.category;
     if (category) {
       setCategoryName(category.categoryName);
     } else {
       toast.error("No category data found!");
-      navigate("/admin/categories"); // Redirect if no data
+      navigate("/admin/categories"); 
     }
   }, [location, navigate]);
 
@@ -65,7 +65,7 @@ const EditCategory: React.FC = () => {
       <main
         className={`flex-1 p-6 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-20"
-        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+        }`} 
       >
         <h1 className="text-2xl font-bold text-blue-900 mb-4">Edit Category</h1>
         <form onSubmit={handleUpdateCategory} className="flex flex-col max-w-sm">

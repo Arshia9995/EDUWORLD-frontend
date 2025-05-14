@@ -43,7 +43,7 @@ const InstructorEditCourse: React.FC = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
-  // Function to upload the thumbnail to S3
+ 
   const uploadToS3 = async (file: File) => {
     try {
       const { data } = await axios.post(
@@ -73,7 +73,7 @@ const InstructorEditCourse: React.FC = () => {
     }
   };
 
-  // Fetch course details and categories
+  
   useEffect(() => {
     const fetchData = async () => {
       if (!courseId) {
@@ -85,7 +85,7 @@ const InstructorEditCourse: React.FC = () => {
       try {
         setLoading(true);
 
-        // Fetch course details
+        
         const courseResponse = await api.get(`/users/getcoursebyid/${courseId}`, {
           withCredentials: true,
         });
@@ -96,7 +96,7 @@ const InstructorEditCourse: React.FC = () => {
         setCourse(courseData);
         setPreviewUrl(courseData.thumbnail || null);
 
-        // Fetch categories
+        
         const categoriesResponse = await api.get('/users/fetchallcategories', {
           withCredentials: true,
         });
@@ -137,14 +137,14 @@ const InstructorEditCourse: React.FC = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      // Validate thumbnail
+      
       if (!thumbnail && !previewUrl) {
         setThumbnailError('Thumbnail is required');
         toast.error('Please upload a thumbnail');
         return;
       }
   
-      // Upload thumbnail to S3 if a new one is selected
+      
       let thumbnailUrl = previewUrl;
       const courseData: Partial<{
         title: string;
@@ -166,10 +166,10 @@ const InstructorEditCourse: React.FC = () => {
       if (thumbnail) {
         const { permanentUrl } = await uploadToS3(thumbnail);
         thumbnailUrl = permanentUrl;
-        courseData.thumbnail = thumbnailUrl || ''; // Add thumbnail only if new
+        courseData.thumbnail = thumbnailUrl || ''; 
       }
   
-      // Update the course
+      
       const response = await api.put(`/users/updatecourse/${courseId}`, courseData, {
         withCredentials: true,
       });
@@ -177,6 +177,11 @@ const InstructorEditCourse: React.FC = () => {
       if (response.status !== 200) {
         throw new Error(response.data.message || 'Failed to update course');
       }
+
+      // if(!response.data.success){
+      //   toast.error(response.data.error)
+      //   return;
+      // }
   
       toast.success('Course updated successfully');
       navigate(`/instructor/editlessons/${courseId}`);
@@ -191,13 +196,13 @@ const InstructorEditCourse: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // Validate file type
+      
       if (!file.type.startsWith('image/')) {
         setThumbnailError('Please upload an image file');
         toast.error('Please upload an image file');
         return;
       }
-      // Validate file size (e.g., max 5MB)
+      
       if (file.size > 5 * 1024 * 1024) {
         setThumbnailError('File size must be less than 5MB');
         toast.error('File size must be less than 5MB');

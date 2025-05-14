@@ -43,7 +43,7 @@ const ForgotOtp: React.FC = () => {
     
           if (response.data.success) {
             toast.success("OTP resent successfully!");
-            setTimeLeft(60); // Reset timer
+            setTimeLeft(60); 
             setCanResend(false);
           } else {
             toast.error(response.data.message);

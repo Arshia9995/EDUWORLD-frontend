@@ -1,3 +1,4 @@
+
 // import React, { useState, useEffect, useRef } from 'react';
 // import { useParams, useNavigate } from 'react-router-dom';
 // import { 
@@ -9,6 +10,7 @@
 // import toast from 'react-hot-toast';
 // import CourseReview from './CourseReview';
 // import CourseReviewsList from './CourseReviewList';
+// import Certificate from './Certificate';
 
 // interface Lesson {
 //   _id: string;
@@ -62,8 +64,10 @@
 //   const [refreshingVideos, setRefreshingVideos] = useState<Set<string>>(new Set());
 //   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
 //   const [courseCompletionPercentage, setCourseCompletionPercentage] = useState(0);
+//   const [studentName, setStudentName] = useState<string>('');
 //   const videoRef = useRef<HTMLVideoElement | null>(null);
 //   const [markingAsCompleted, setMarkingAsCompleted] = useState<Set<string>>(new Set());
+//   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 
 //   const fetchCourseDetails = async () => {
 //     if (!courseId) {
@@ -105,7 +109,6 @@
 //         setLessons([]);
 //       }
 
-//       // Fetch enrollment data to get progress
 //       const enrollmentResponse = await api.get(`/users/enrolled-course-detailss/${courseId}`, {
 //         withCredentials: true,
 //       });
@@ -114,6 +117,11 @@
 //       };
 //       setEnrollment(enrollmentData);
 //       setCourseCompletionPercentage(enrollmentData.progress.overallCompletionPercentage || 0);
+
+//       const userResponse = await api.get('/users/profile', {
+//         withCredentials: true,
+//       });
+//       setStudentName(userResponse.data.user.name || 'Student');
 
 //       setCourse(courseData);
 //     } catch (err: any) {
@@ -176,13 +184,11 @@
 //       const { currentTime, duration } = videoRef.current;
 //       const percentageWatched = (currentTime / duration) * 100;
   
-//       // Check if lesson is not completed AND not currently being marked as completed
 //       if (
 //         percentageWatched >= 80 && 
 //         !enrollment?.progress.completedLessons.includes(activeLesson) &&
 //         !markingAsCompleted.has(activeLesson)
 //       ) {
-//         // Add to tracking set before making API call
 //         setMarkingAsCompleted(prev => new Set(prev).add(activeLesson));
 //         updateLessonCompletion(activeLesson);
 //       }
@@ -209,7 +215,6 @@
 //       console.error('Failed to update lesson progress:', error);
 //       toast.error('Failed to mark lesson as complete');
 //     } finally {
-//       // Remove from tracking set regardless of success/failure
 //       setMarkingAsCompleted(prev => {
 //         const newSet = new Set(prev);
 //         newSet.delete(lessonId);
@@ -220,7 +225,31 @@
 
 //   const activeLessonData = lessons.find((lesson) => lesson._id === activeLesson);
 
- 
+  
+//   if (!courseId) {
+//     return (
+//       <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
+//         <StudentSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+//         <div
+//           className="flex-1 min-w-0 transition-all duration-300 ease-in-out"
+//           style={{
+//             marginLeft: sidebarOpen ? '16rem' : '5rem',
+//           }}
+//         >
+//           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+//             <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg shadow-md">
+//               <div className="flex items-center">
+//                 <svg className="h-6 w-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+//                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+//                 </svg>
+//                 <p className="text-red-800 font-semibold">Course ID is missing</p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
 
 //   return (
 //     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -346,11 +375,19 @@
 //                         {course.instructor?.name || 'Unknown'}
 //                       </span>
 //                     </div>
+//                     {courseCompletionPercentage === 100 && (
+//                       <div className="mt-6">
+//                        <Certificate 
+//   courseTitle={course.title}
+//   studentName={studentName}
+//   completionDate={enrollment?.updatedAt || new Date()}
+//   instructorName={course.instructor?.name || "Course Instructor"}
+// />
+//                       </div>
+//                     )}
 //                   </div>
 //                 </div>
 //               </div>
-
-             
 
 //               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 //                 <div className="lg:col-span-1 order-2 lg:order-1">
@@ -449,10 +486,6 @@
 //                         </div>
 //                         <h2 className="text-xl font-bold text-gray-800 mb-3">{activeLessonData.title}</h2>
 //                         <p className="text-gray-600">{activeLessonData.description}</p>
-
-
-         
-
 //                       </div>
 //                     </div>
 //                   ) : (
@@ -466,23 +499,26 @@
 //                       </p>
 //                     </div>
 //                   )}
-
-
-
 //                 </div>
 //               </div>
 //             </>
 //           )}
-// {enrollment && (
-//                 <div className="mt-8 flex flex-col lg:flex-row justify-between">
-//                   <div className="w-full lg:w-[400px] mb-6 lg:mb-0">
-//                     <CourseReview courseId={courseId!} studentId={enrollment.userId} />
-//                   </div>
-//                   <div className="w-full lg:w-80 max-h-[400px] overflow-y-auto bg-gray-50 rounded-lg shadow-lg border border-gray-200 p-4">
-//                     <CourseReviewsList courseId={courseId!} />
-//                   </div>
-//                 </div>
-//               )}
+//           {enrollment && (
+//             <div className="mt-8 flex flex-col lg:flex-row justify-between">
+//               <div className="w-full lg:w-[400px] mb-6 lg:mb-0">
+//                 <CourseReview courseId={courseId} studentId={enrollment.userId}
+//                 onReviewSubmitted={() => setReviewSubmitted(prev => !prev)} 
+//                  />
+//               </div>
+//               <div className="w-full lg:w-80 max-h-[400px] overflow-y-auto bg-gray-50 rounded-lg shadow-lg border border-gray-200 p-4">
+
+//                 <CourseReviewsList 
+//                 courseId={courseId}
+//                 reviewSubmitted={reviewSubmitted}
+//                  />
+//               </div>
+//             </div>
+//           )}
 //         </div>
 //       </div>
 //     </div>
@@ -492,11 +528,13 @@
 // export default StudentEnrolledCourseDetails;
 
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   FiBookOpen, FiClock, FiDollarSign, FiGlobe, 
-  FiUser, FiTag, FiChevronLeft, FiPlayCircle, FiCheckCircle 
+  FiUser, FiTag, FiChevronLeft, FiPlayCircle, FiCheckCircle,
+  FiMessageCircle
 } from 'react-icons/fi';
 import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';
@@ -504,6 +542,7 @@ import toast from 'react-hot-toast';
 import CourseReview from './CourseReview';
 import CourseReviewsList from './CourseReviewList';
 import Certificate from './Certificate';
+import ChatModal from './ChatModal';
 
 interface Lesson {
   _id: string;
@@ -561,6 +600,10 @@ const StudentEnrolledCourseDetails: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [markingAsCompleted, setMarkingAsCompleted] = useState<Set<string>>(new Set());
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>('');
+  // NEW: Added state for unread message count
+  const [unreadCount, setUnreadCount] = useState<number>(0);
 
   const fetchCourseDetails = async () => {
     if (!courseId) {
@@ -615,6 +658,15 @@ const StudentEnrolledCourseDetails: React.FC = () => {
         withCredentials: true,
       });
       setStudentName(userResponse.data.user.name || 'Student');
+      setUserId(userResponse.data.user._id || '');
+
+      // NEW: Fetch chat and unread message count
+      const chatResponse = await api.get(`/users/getchat/${courseId}`, {
+        withCredentials: true,
+      });
+      if (chatResponse.data.success) {
+        setUnreadCount(chatResponse.data.unreadCount || 0);
+      }
 
       setCourse(courseData);
     } catch (err: any) {
@@ -716,9 +768,12 @@ const StudentEnrolledCourseDetails: React.FC = () => {
     }
   };
 
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   const activeLessonData = lessons.find((lesson) => lesson._id === activeLesson);
 
-  // If courseId is undefined, show an error message
   if (!courseId) {
     return (
       <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -766,12 +821,32 @@ const StudentEnrolledCourseDetails: React.FC = () => {
                 </button>
                 <h1 className="text-3xl font-bold text-blue-900">Enrolled Course Details</h1>
               </div>
-              <button
-                onClick={handleBackToEnrolledCourses}
-                className="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors shadow-md"
-              >
-                Back to Enrolled Courses
-              </button>
+              <div className="flex items-center space-x-3">
+                {/* MODIFIED: Added relative positioning and unread count badge */}
+                {course && (
+                  <div className="relative">
+                    <button
+                      onClick={toggleChat}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md flex items-center"
+                      title="Course Chat"
+                    >
+                      <FiMessageCircle className="h-5 w-5 mr-2" />
+                      <span>Chat</span>
+                    </button>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
+                )}
+                <button
+                  onClick={handleBackToEnrolledCourses}
+                  className="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors shadow-md"
+                >
+                  Back to Enrolled Courses
+                </button>
+              </div>
             </div>
             <p className="text-gray-500 mt-2">Detailed insights into your enrolled course</p>
           </div>
@@ -870,12 +945,12 @@ const StudentEnrolledCourseDetails: React.FC = () => {
                     </div>
                     {courseCompletionPercentage === 100 && (
                       <div className="mt-6">
-                       <Certificate 
-  courseTitle={course.title}
-  studentName={studentName}
-  completionDate={enrollment?.updatedAt || new Date()}
-  instructorName={course.instructor?.name || "Course Instructor"}
-/>
+                        <Certificate 
+                          courseTitle={course.title}
+                          studentName={studentName}
+                          completionDate={enrollment?.updatedAt || new Date()}
+                          instructorName={course.instructor?.name || "Course Instructor"}
+                        />
                       </div>
                     )}
                   </div>
@@ -999,18 +1074,32 @@ const StudentEnrolledCourseDetails: React.FC = () => {
           {enrollment && (
             <div className="mt-8 flex flex-col lg:flex-row justify-between">
               <div className="w-full lg:w-[400px] mb-6 lg:mb-0">
-                <CourseReview courseId={courseId} studentId={enrollment.userId}
-                onReviewSubmitted={() => setReviewSubmitted(prev => !prev)} 
-                 />
+                <CourseReview 
+                  courseId={courseId} 
+                  studentId={enrollment.userId}
+                  onReviewSubmitted={() => setReviewSubmitted(prev => !prev)} 
+                />
               </div>
               <div className="w-full lg:w-80 max-h-[400px] overflow-y-auto bg-gray-50 rounded-lg shadow-lg border border-gray-200 p-4">
-
                 <CourseReviewsList 
-                courseId={courseId}
-                reviewSubmitted={reviewSubmitted}
-                 />
+                  courseId={courseId}
+                  reviewSubmitted={reviewSubmitted}
+                />
               </div>
             </div>
+          )}
+          {/* MODIFIED: Added setUnreadCount prop to ChatModal */}
+          {course && (
+            <ChatModal
+              isOpen={isChatOpen}
+              onClose={toggleChat}
+              courseId={courseId}
+              instructorId={course.instructor._id}
+              userId={userId}
+              userName={studentName}
+              courseTitle={course.title}
+              setUnreadCount={setUnreadCount}
+            />
           )}
         </div>
       </div>

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "../../../config/constants";
 
-// Validation schema
+
 const validationSchema = Yup.object({
   dob: Yup.string().required("Date of Birth is required"),
   gender: Yup.string()
@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
   cv: Yup.string().required("CV is required"),
 });
 
-// S3 upload function
+
 const uploadToS3 = async (file: File) => {
   try {
     const { data } = await axios.post(`${baseUrl}/users/get-s3-url`, {
@@ -80,14 +80,14 @@ const RegistrationForm: React.FC = () => {
       try {
         let updatedValues = { ...values };
 
-        // Upload profile image to S3 if a file was selected
+        
         if (file) {
           const s3ImageUrl = await uploadToS3(file);
           updatedValues.profileImage = s3ImageUrl;
           formik.setFieldValue("profileImage", s3ImageUrl); 
         }
 
-        // Upload CV to S3 if selected
+        
         if (cvFile) {
           const s3CvUrl = await uploadToS3(cvFile);
           updatedValues.cv = s3CvUrl;
@@ -122,8 +122,8 @@ const RegistrationForm: React.FC = () => {
   const handleCvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setCvFile(selectedFile); // Store the CV file
-      formik.setFieldTouched("cv", true); // Mark field as touched
+      setCvFile(selectedFile); 
+      formik.setFieldTouched("cv", true); 
       formik.setFieldValue("cv", "uploaded");
     }
   };

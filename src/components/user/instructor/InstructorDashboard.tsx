@@ -24,18 +24,18 @@ const InstructorDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch wallet and stats data
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Fetch wallet data
+        
         const walletResponse = await api.get('/users/instructorwallet', { withCredentials: true });
         if (walletResponse.data.success) {
-          // Log API Response Transactions
+          
           console.log('API Response Transactions:', walletResponse.data.data.transactions); // Added log
-          // Deduplicate transactions
+          
           const uniqueTransactions = Array.from(
             new Map(
               walletResponse.data.data.transactions.map((t: any) => [
@@ -49,7 +49,7 @@ const InstructorDashboard: React.FC = () => {
           throw new Error(walletResponse.data.message);
         }
 
-        // Fetch instructor stats
+        
         const statsResponse = await api.get('/users/instructor-stats', { withCredentials: true });
         if (statsResponse.data.success) {
           setStatsData(statsResponse.data.data);
@@ -65,7 +65,7 @@ const InstructorDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  // Render weekly income chart
+ 
   useEffect(() => {
     if (!walletData.transactions.length || loading) return;
 
@@ -162,7 +162,7 @@ const InstructorDashboard: React.FC = () => {
     });
   }, [walletData, loading]);
 
-  // Render course creation chart
+  
   useEffect(() => {
     if (!statsData.courseCreationData.length || loading) return;
 
@@ -268,7 +268,7 @@ const InstructorDashboard: React.FC = () => {
     });
   };
 
-  // Calculate change percentage for last month income compared to previous month
+  
   const getMonthlyChangePercent = () => {
     const today = new Date();
     
@@ -296,8 +296,8 @@ const InstructorDashboard: React.FC = () => {
     return { percent: Math.abs(change), increase: change >= 0 };
   };
 
-  // Log component render with transactions
-  console.log('Component Rendered with Transactions:', walletData.transactions); // Added log
+  
+  console.log('Component Rendered with Transactions:', walletData.transactions); 
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -379,7 +379,7 @@ const InstructorDashboard: React.FC = () => {
                 <div className="h-6 bg-indigo-100 rounded animate-pulse w-24"></div>
               ) : (
                 <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-800">${walletData.balance.toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-gray-800">₹{walletData.balance.toFixed(2)}</span>
                   <span className="ml-2 text-xs text-green-600 font-medium px-2 py-0.5 bg-green-50 rounded-full">Available</span>
                 </div>
               )}
@@ -401,7 +401,7 @@ const InstructorDashboard: React.FC = () => {
                 <div className="h-6 bg-green-100 rounded animate-pulse w-24"></div>
               ) : (
                 <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-800">${getTotalIncome().toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-gray-800">₹{getTotalIncome().toFixed(2)}</span>
                   <span className="ml-2 text-xs text-gray-500 font-medium px-2 py-0.5 bg-gray-100 rounded-full">Lifetime</span>
                 </div>
               )}
@@ -422,7 +422,7 @@ const InstructorDashboard: React.FC = () => {
                 <div className="h-6 bg-blue-100 rounded animate-pulse w-24"></div>
               ) : (
                 <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-800">${getLastMonthIncome().toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-gray-800">₹{getLastMonthIncome().toFixed(2)}</span>
                   <span className="ml-2 text-xs text-gray-500 font-medium px-2 py-0.5 bg-gray-100 rounded-full">Earnings</span>
                 </div>
               )}
@@ -661,7 +661,7 @@ const InstructorDashboard: React.FC = () => {
                               t.type === 'credit' ? 'text-green-600' : 'text-red-600'
                             }`}
                           >
-                            {t.type === 'credit' ? '+' : '-'}${t.amount.toFixed(2)}
+                            {t.type === 'credit' ? '+' : '-'}₹{t.amount.toFixed(2)}
                           </td>
                           <td className="py-4 px-4 text-sm text-gray-700">{t.description}</td>
                           <td className="py-4 px-4 text-sm">

@@ -37,7 +37,7 @@ const InstructorEditLesson: React.FC = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
-  // Redirect if courseId is not provided
+  
   if (!courseId) {
     toast.error('Course ID is missing.');
     navigate('/instructorcourses');
@@ -46,14 +46,14 @@ const InstructorEditLesson: React.FC = () => {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.load(); // Force reload when URL changes
+      videoRef.current.load(); 
     }
   }, [videoPreviewUrl]);
 
-  // Validate video file
+  
   const validateVideoFile = (file: File): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-      const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+      const maxSize = 50 * 1024 * 1024; 
       if (file.size > maxSize) {
         reject(new Error('Video file size must be less than 50MB'));
         return;
@@ -79,11 +79,11 @@ const InstructorEditLesson: React.FC = () => {
       };
 
       videoElement.src = url;
-      videoElement.load(); // Explicitly trigger loading
+      videoElement.load(); 
     });
   };
 
-  // Upload video to S3
+  
   const uploadToS3 = async (file: File) => {
     try {
       setUploading(true);
@@ -117,7 +117,7 @@ const InstructorEditLesson: React.FC = () => {
       });
 
       setUploading(false);
-      return { permanentUrl: data.imageUrl, downloadUrl: data.downloadUrl }; // Return the permanent S3 URL
+      return { permanentUrl: data.imageUrl, downloadUrl: data.downloadUrl }; 
     } catch (error: any) {
       setUploading(false);
       console.error('S3 upload error:', error.response?.data || error.message);
@@ -125,7 +125,7 @@ const InstructorEditLesson: React.FC = () => {
     }
   };
 
-  // Fetch lessons for the course
+  
   const fetchLessons = async () => {
   try {
     setLoading(true);
@@ -157,12 +157,12 @@ const InstructorEditLesson: React.FC = () => {
 
 console.log(videoPreviewUrl,"video preview url")
 
-  // Load lessons on component mount
+  
   useEffect(() => {
     fetchLessons();
   }, [courseId]);
 
-  // Cleanup preview URL on unmount or when video changes
+  
   useEffect(() => {
     return () => {
       if (videoPreviewUrl && video) {
@@ -171,7 +171,7 @@ console.log(videoPreviewUrl,"video preview url")
     };
   }, [videoPreviewUrl, video]);
 
-  // Initial form values based on selected lesson
+  
   const initialValues = {
     title: selectedLesson?.title || '',
     description: selectedLesson?.description || '',
@@ -191,9 +191,9 @@ console.log(videoPreviewUrl,"video preview url")
     }
   
     try {
-      let stateUpdateVideoUrl = selectedLesson.video; // Default for state update
+      let stateUpdateVideoUrl = selectedLesson.video; 
   
-      // Prepare lessonData without video initially
+      
       const lessonData: Partial<{
         title: string;
         description: string;
@@ -209,13 +209,13 @@ console.log(videoPreviewUrl,"video preview url")
   
       if (video) {
         const { permanentUrl, downloadUrl } = await uploadToS3(video);
-        lessonData.video = permanentUrl; // Add video only if new, using permanentUrl for backend
-        stateUpdateVideoUrl = downloadUrl; // Use downloadUrl for state update
-        // Update preview URL only after successful upload
+        lessonData.video = permanentUrl; 
+        stateUpdateVideoUrl = downloadUrl; 
+        
         if (videoPreviewUrl && video) {
-          URL.revokeObjectURL(videoPreviewUrl); // Clean up old preview
+          URL.revokeObjectURL(videoPreviewUrl); 
         }
-        setVideoPreviewUrl(downloadUrl); // Set downloadUrl for preview/state
+        setVideoPreviewUrl(downloadUrl); 
       }
   
       const response = await api.put(`/users/updatelesson/${selectedLesson._id}`, lessonData, {
@@ -228,7 +228,7 @@ console.log(videoPreviewUrl,"video preview url")
   
       toast.success('Lesson updated successfully');
   
-      // Update local state with downloadUrl for video field if new video, else keep existing
+      
       const updatedLessons = lessons.map((lesson) =>
         lesson._id === selectedLesson._id
           ? { ...lesson, ...lessonData, video: video ? stateUpdateVideoUrl : lesson.video }
@@ -238,7 +238,7 @@ console.log(videoPreviewUrl,"video preview url")
       setSelectedLesson({
         ...selectedLesson,
         ...lessonData,
-        video: video ? stateUpdateVideoUrl : selectedLesson.video, // Use downloadUrl for state if new
+        video: video ? stateUpdateVideoUrl : selectedLesson.video, 
       });
       setVideo(null);
       setVideoError(null);
@@ -295,7 +295,7 @@ console.log(videoPreviewUrl,"video preview url")
       if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
         await validateVideoFile(file);
-        // Clean up previous preview URL if it exists and is a local blob
+        
         if (videoPreviewUrl && video) {
           URL.revokeObjectURL(videoPreviewUrl);
         }
@@ -307,7 +307,7 @@ console.log(videoPreviewUrl,"video preview url")
     } catch (err: any) {
       setVideoError(err.message);
       setVideo(null);
-      setVideoPreviewUrl(selectedLesson?.video || null); // Revert to original
+      setVideoPreviewUrl(selectedLesson?.video || null); 
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -332,7 +332,7 @@ console.log(videoPreviewUrl,"video preview url")
 
   const handleLessonSelect = (lesson: Lesson) => {
     if (videoPreviewUrl && video) {
-      URL.revokeObjectURL(videoPreviewUrl); // Clean up preview of unsaved video
+      URL.revokeObjectURL(videoPreviewUrl); 
     }
     setSelectedLesson(lesson);
     setVideo(null);

@@ -4,7 +4,7 @@ import AdminSidebar from "../../common/AdminSidebar";
 import toast from "react-hot-toast";
 import { api } from "../../config/api";
 import Swal from "sweetalert2";
-import Pagination from "../../common/Pagination"; // Make sure the path is correct
+import Pagination from "../../common/Pagination"; 
 
 interface CategoryDoc {
   _id: string;
@@ -17,9 +17,9 @@ const AdminCategories: React.FC = () => {
   const [categories, setCategories] = useState<CategoryDoc[]>([]);
   const navigate = useNavigate();
 
-  // Pagination states
+ 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // You can adjust this value
+  const itemsPerPage = 8; 
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -101,12 +101,12 @@ const AdminCategories: React.FC = () => {
     navigate("/admin/addcategory");
   };
 
-  // Function to handle page change
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Get current categories for pagination
+  
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentCategories = categories.slice(indexOfFirstItem, indexOfLastItem);
@@ -120,7 +120,7 @@ const AdminCategories: React.FC = () => {
       <main
         className={`flex-1 p-6 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-20"
-        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+        }`} 
       >
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-blue-900">Categories List</h1>
@@ -189,7 +189,7 @@ const AdminCategories: React.FC = () => {
           </tbody>
         </table>
 
-        {/* Pagination Component */}
+       
         <Pagination
           currentPage={currentPage}
           totalItems={categories.length}

@@ -1,10 +1,10 @@
 // StudentSidebar.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu, FiDollarSign } from 'react-icons/fi';
+import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../redux/store'; // Replace with your actual store path
+import { AppDispatch } from '../redux/store'; 
 import toast from 'react-hot-toast';
 
 interface SidebarProps {
@@ -60,6 +60,10 @@ const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen })
         <Link to="/enrolled-courses" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
+        </Link>
+        <Link to="/announcements" className="flex items-center space-x-2 hover:text-yellow-400">
+          <FiBell />
+          {sidebarOpen && <span>Announcements</span>}
         </Link>
         
         {/* <Link to="/student-progress" className="flex items-center space-x-2 hover:text-yellow-400">

@@ -10,10 +10,10 @@ import toast from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';
 import CourseReviewsList from './CourseReviewList';
 
-// Initialize Stripe with your publishable key
+
 const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY!);
 
-// Define the Lesson interface (excluding video)
+
 interface Lesson {
   _id: string;
   lessonNumber: number;
@@ -146,20 +146,20 @@ const StudentCourseDetails: React.FC = () => {
     setError(null);
 
     try {
-      // Check enrollment status
+      
       if (isEnrolled) {
         toast.error('You are already enrolled in this course.');
         return;
       }
 
-      // Check payment status
+      
       const hasPaid = await checkPaymentStatus();
       if (hasPaid) {
         toast.error('You have already paid for this course.');
         return;
       }
 
-      // Proceed with enrollment for free course
+      
       if (course?.price === 0) {
         const response = await api.post(
           '/users/enroll-free',
@@ -176,7 +176,7 @@ const StudentCourseDetails: React.FC = () => {
         return;
       }
 
-      // Proceed with Stripe payment for paid course
+      
       const response = await api.post(
         '/users/create-checkout-session',
         { courseId },

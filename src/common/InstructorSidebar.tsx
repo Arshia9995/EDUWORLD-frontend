@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiHome, FiBook, FiUsers, FiMessageSquare, FiCalendar, FiTrendingUp, FiSettings, FiHelpCircle, FiLogOut, FiMenu, FiDollarSign } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../redux/store'; // Replace with your actual logout action
+import { AppDispatch } from '../redux/store'; 
 import toast from 'react-hot-toast';
 
 interface SidebarProps {
@@ -64,7 +64,7 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
           <FiDollarSign />
           {sidebarOpen && <span>Wallet</span>}
         </Link>
-        <Link to="/messages" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link to="/instructorchat" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiMessageSquare />
           {sidebarOpen && <span>Messages</span>}
         </Link>

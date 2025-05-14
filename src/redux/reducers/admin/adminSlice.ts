@@ -14,8 +14,8 @@ interface AdminState {
     students: IStudentData[]; 
     studentLoading: boolean;
     studentError: string | null;
-    instructors: IInstructorData[]; // Added instructors array
-    instructorLoading: boolean;    // Added instructor loading state
+    instructors: IInstructorData[]; 
+    instructorLoading: boolean;    
     instructorError: string | null;
   }
 
@@ -50,8 +50,7 @@ const adminSlice = createSlice({
             state.loading = true;
             state.error = null;
         })
-        .addCase(adminLogin.fulfilled, (state, action) => {
-           
+        .addCase(adminLogin.fulfilled, (state, action:any) => {
             state.loading = false;
             state.admin = action.payload.data as IAdminLoginData;
             state.isAuthenticated = true;
@@ -91,7 +90,7 @@ const adminSlice = createSlice({
           })
           .addCase(approveInstructor.fulfilled, (state, action) => {
             state.instructorLoading = false;
-            state.instructors = action.payload as IInstructorData[]; // Replace entire array
+            state.instructors = action.payload as IInstructorData[]; 
           })
           .addCase(approveInstructor.rejected, (state, action) => {
             state.instructorLoading = false;
@@ -103,7 +102,7 @@ const adminSlice = createSlice({
           })
           .addCase(rejectInstructor.fulfilled, (state, action) => {
             state.instructorLoading = false;
-            state.instructors = action.payload as IInstructorData[]; // Replace entire array
+            state.instructors = action.payload as IInstructorData[]; 
           })
           .addCase(rejectInstructor.rejected, (state, action) => {
             state.instructorLoading = false;
@@ -115,7 +114,7 @@ const adminSlice = createSlice({
           })
           .addCase(blockUnblockInstructor.fulfilled, (state, action) => {
             state.instructorLoading = false;
-            const updatedInstructor = action.payload; // Updated instructor from backend
+            const updatedInstructor = action.payload; 
             const index = state.instructors.findIndex(
               (inst) => inst._id === updatedInstructor._id
             );

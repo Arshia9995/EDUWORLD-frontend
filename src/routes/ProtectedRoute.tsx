@@ -27,7 +27,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
       console.log("Redirecting to admin login - not authenticated");
       return <Navigate to="/admin/login" replace />;
     }
-    const adminRole = admin.role || ""; // Default to 'admin' if role isn’t set
+    const adminRole = admin.role || ""; 
     if (!allowedRoles.includes(adminRole)) {
       console.log("Admin doesn't have required role");
       return <Navigate to="/admin/login" replace />;
@@ -37,14 +37,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
       console.log("Redirecting to user login - not authenticated");
       return <Navigate to="/login" replace />;
     }
-    const userRole = user.role || ""; // Default to 'User' if role isn’t set
+    const userRole = user.role || ""; 
     if (!allowedRoles.includes(userRole)) {
       console.log("User doesn't have required role");
       return <Navigate to="/login" replace />;
     }
   }
 
-  return <>{children}</>; // Render children instead of Outlet
+  return <>{children}</>; 
 };
 
 export default ProtectedRoute;

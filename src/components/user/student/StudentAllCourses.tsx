@@ -99,7 +99,7 @@ const StudentAllCourses: React.FC = () => {
       setCourses(response.data.courses || []);
       setTotalItems(response.data.totalCourses || 0);
       
-      // Extract unique languages from courses
+      
       if (response.data.courses && response.data.courses.length > 0) {
         const uniqueLanguages = [...new Set(response.data.courses.map((course: Course) => course.language))] as string[];
         setLanguages(uniqueLanguages.filter(Boolean));
@@ -124,7 +124,7 @@ const StudentAllCourses: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1); 
   };
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

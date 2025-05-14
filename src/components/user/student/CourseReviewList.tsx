@@ -20,7 +20,7 @@ interface Review {
 
 interface CourseReviewsListProps {
   courseId: string;
-  reviewSubmitted?: boolean;  // Add this new prop
+  reviewSubmitted?: boolean;  
 }
 
 const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId, reviewSubmitted }) => {
@@ -36,24 +36,24 @@ const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId, reviewS
         withCredentials: true,
       });
 
-      // Always set reviews to the data we received or empty array
+      
       const reviewsData = response.data.reviews || [];
       setReviews(reviewsData);
       
-      // Calculate average rating
+      
       if (reviewsData.length > 0) {
         const totalRating = reviewsData.reduce((sum: number, review: Review) => sum + review.rating, 0);
         setAverageRating(totalRating / reviewsData.length);
       }
 
-      // Only set error if it's a true error, not just empty reviews
+      
       if (response.status !== 200 && !response.data.message.includes("No reviews")) {
         throw new Error(response.data.message || 'Failed to fetch reviews');
       }
       
     } catch (err: any) {
       console.error('Error fetching reviews:', err);
-      // Only show toast for real errors
+      
       const errorMessage = err.response?.data?.message || 'Failed to fetch reviews';
       if (!errorMessage.includes("No reviews")) {
         setError(errorMessage);
@@ -64,14 +64,14 @@ const CourseReviewsList: React.FC<CourseReviewsListProps> = ({ courseId, reviewS
     }
   };
 
-  // Fetch reviews when component mounts or when reviewSubmitted changes
+  
   useEffect(() => {
     if (courseId) {
       fetchReviews();
     }
-  }, [courseId, reviewSubmitted]);  // Added reviewSubmitted to dependency array
+  }, [courseId, reviewSubmitted]);  
 
-  // Rest of the component stays the same
+ 
   if (loading) {
     return (
       <div className="p-4 text-center">

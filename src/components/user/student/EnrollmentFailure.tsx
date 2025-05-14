@@ -14,14 +14,14 @@ const EnrollmentFailure = () => {
   useEffect(() => {
     if (hasProcessed.current) return;
 
-    // Display the error message from query params or a default one
+    
     toast.error(errorMessage, { id: 'enrollment-failure' });
     hasProcessed.current = true;
   }, [errorMessage]);
 
   const handleRetryPayment = () => {
     if (courseId) {
-      // Redirect to the course details page or trigger a new checkout session
+     
       navigate(`/retry`);
     } else {
       navigate('/courses');

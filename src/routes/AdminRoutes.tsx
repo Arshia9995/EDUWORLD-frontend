@@ -12,6 +12,7 @@ import EditCategoryPage from "../pages/admin/EditCategoryPage";
 import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
 import AdminWallet from "../components/admin/AdminWallet";
 import AdminPaymentHistory from "../components/admin/AdminPaymentHistory";
+import Announcements from "../components/admin/Announcements";
 
 const AdminRoutes: React.FC = () => {
     return (
@@ -79,6 +80,12 @@ const AdminRoutes: React.FC = () => {
              </ProtectedRoute>
             } />
 
+            <Route path="/announcements"
+             element ={
+            // <ProtectedRoute allowedRoles={['admin']}>
+             <Announcements />
+            //  </ProtectedRoute>
+            } />
         </Routes>
     )
 }

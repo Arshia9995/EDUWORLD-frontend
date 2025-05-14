@@ -23,7 +23,7 @@ const Profile = () => {
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
 
-      // Generate preview URL
+      
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewUrl(reader.result as string);
@@ -97,7 +97,7 @@ const Profile = () => {
 
         if (file) {
           const { permanentUrl, downloadUrl } = await uploadToS3(file);         
-          updatedValues.profileImage = permanentUrl; // Send permanent URL to backend
+          updatedValues.profileImage = permanentUrl; 
           // formik.setFieldValue("profileImage", downloadUrl); // Use download URL for display
         
 
@@ -113,12 +113,12 @@ const Profile = () => {
     },
   });
 
-  // Fetch pre-signed URL for profile image whenever user data changes or on component mount
+  
   useEffect(() => {
     const fetchProfileImage = async () => {
       if (user?.profile?.profileImage) {
         try {
-          // Extract the actual filename from the S3 URL path
+          
           const fullPath = user.profile.profileImage;
           const fileName = fullPath.split('/').pop();
           
@@ -133,7 +133,7 @@ const Profile = () => {
           const { data } = await axios.post(`${baseUrl}/users/get-s3-url`, {
             fileName: fileName,
             fileType: "image/*",
-            getUrl: true  // This is the key addition
+            getUrl: true  
         });
           
           console.log("Received downloadUrl:", data.downloadUrl);

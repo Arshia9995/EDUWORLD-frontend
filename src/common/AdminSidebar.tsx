@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiHome, FiUsers, FiLogOut, FiMenu, FiList, FiDollarSign } from "react-icons/fi";
+import { FiHome, FiUsers, FiLogOut, FiMenu, FiList, FiDollarSign, FiBell } from "react-icons/fi";
 import logo from '../assets/home/logo.png';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
@@ -20,7 +20,7 @@ const AdminSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen 
     try {
       await dispatch(logoutAdminAction()).unwrap();
       toast.success("Logged out successfully");
-      navigate("/admin/login"); // Redirect to admin login page
+      navigate("/admin/login"); 
     } catch (error) {
       toast.error("Failed to logout");
     }
@@ -83,6 +83,15 @@ const AdminSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen 
           <FiUsers />
           {isSidebarOpen && <span>Approved Instructors</span>}
         </Link>
+
+        <Link
+          to="/admin/announcements"
+          className="flex items-center space-x-2 hover:text-yellow-400"
+        >
+          <FiBell />
+          {isSidebarOpen && <span>Announcements</span>}
+        </Link>
+
          <Link to="/admin/payment-history" 
          className="flex items-center space-x-2 hover:text-yellow-400">
                   <FiDollarSign />

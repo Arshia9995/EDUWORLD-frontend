@@ -113,7 +113,7 @@ const AdminStudents: React.FC = () => {
       <main
         className={`flex-1 p-6 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-20"
-        }`} // Added dynamic margin-left to prevent overlap with fixed sidebar
+        }`} 
       >
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-blue-900 mb-4">Students List</h1>
