@@ -146,7 +146,7 @@ const adminSlice = createSlice({
         .addCase(logoutAdminAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
-            // Note: We don't clear authentication state here since the logout failed
+            
         });
 
     },

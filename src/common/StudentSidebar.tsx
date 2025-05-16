@@ -1,4 +1,4 @@
-// StudentSidebar.tsx
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
@@ -74,10 +74,10 @@ const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen })
           <FiDollarSign />
           {sidebarOpen && <span>Payment Details</span>}
         </Link>
-        <Link to="/studentmessages" className="flex items-center space-x-2 hover:text-yellow-400">
+        {/* <Link to="/studentmessages" className="flex items-center space-x-2 hover:text-yellow-400">
           <FiMessageSquare />
           {sidebarOpen && <span>Messages</span>}
-        </Link>
+        </Link> */}
       </nav>
     </aside>
   );

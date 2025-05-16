@@ -11,16 +11,17 @@ import { SocketProvider } from './context/SocketContext.tsx'
 console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID)
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
       <Provider store={store}>
-      <SocketProvider>
+      
     <BrowserRouter>
+    <SocketProvider>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <App />
     </GoogleOAuthProvider>
-    
-    </BrowserRouter>
     </SocketProvider>
+    </BrowserRouter>
+    
     </Provider>
-   </StrictMode>
+  //  </StrictMode>
 );

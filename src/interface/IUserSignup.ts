@@ -14,7 +14,7 @@ export interface IUserSignupData {
     gender?: string;
     profileImage?: string;
     },
-    cv?: string | null; // Add CV field
+    cv?: string | null; 
     qualification?: string;
     isApproved?: boolean;
     isRequested?: boolean;
