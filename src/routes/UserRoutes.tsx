@@ -11,7 +11,6 @@ import ProfilePage from "../pages/user/ProfilePage";
 import RegistrationFormPage from "../pages/user/instructor/RegistrationFormPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import ProtectedRoute from "./ProtectedRoute";
-import InstructorCourselist from "../components/user/instructor/InstructorCourselist";
 import InstructorCoursePage from "../pages/instructor/InstructorCoursePage";
 import InstructorAddCourse from "../components/user/instructor/InstructorAddCourse";
 import InstructorAddLesson from "../components/user/instructor/InstructorAddLesson";
@@ -28,7 +27,6 @@ import StudentEnrolledCourses from "../components/user/student/StudentEnrolledCo
 import StudentEnrolledCourseDetails from "../components/user/student/StudentEnrolledCourseDetails";
 import StudentPaymentHistory from "../components/user/student/StudentPaymentHistory";
 import InstructorWallet from "../components/user/instructor/InstructorWallet";
-import EnrollmentFailure from "../components/user/student/EnrollmentFailure";
 import RetryPaymentSuccess from "../components/user/student/RetryPaymentSuccess";
 import InstructorChat from "../components/user/instructor/InstructorChat";
 import StudentAnnouncements from "../components/user/student/StudentAnnouncement";

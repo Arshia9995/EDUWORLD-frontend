@@ -20,7 +20,7 @@ const StudentAnnouncements: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Show 5 announcements per page
 
@@ -43,7 +43,7 @@ const StudentAnnouncements: React.FC = () => {
       setCurrentPage(1); // Reset to page 1 on fetch
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to fetch announcements';
-      setError(errorMessage);
+      
       toast.error(errorMessage);
       setAnnouncements([]); // Ensure announcements is empty on error
     } finally {

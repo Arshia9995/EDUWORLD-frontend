@@ -96,7 +96,7 @@ const Profile = () => {
         }
 
         if (file) {
-          const { permanentUrl, downloadUrl } = await uploadToS3(file);         
+          const { permanentUrl } = await uploadToS3(file);         
           updatedValues.profileImage = permanentUrl; 
           // formik.setFieldValue("profileImage", downloadUrl); // Use download URL for display
         

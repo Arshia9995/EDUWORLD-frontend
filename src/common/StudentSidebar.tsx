@@ -1,11 +1,10 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook, FiBookOpen, FiTrendingUp, FiMessageSquare, FiSettings, FiLogOut, FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
+import { FiHome, FiBook, FiBookOpen,  FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../redux/store'; 
-import toast from 'react-hot-toast';
+
+
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -13,7 +12,7 @@ interface SidebarProps {
 }
 
 const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
-  const dispatch = useDispatch<AppDispatch>();
+ 
   const navigate = useNavigate();
 
   const goToHome = () => {

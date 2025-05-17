@@ -6,7 +6,7 @@ import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
 import Pagination from '../../../common/Pagination';
-import { string } from 'yup';
+
 
 
 interface Course {

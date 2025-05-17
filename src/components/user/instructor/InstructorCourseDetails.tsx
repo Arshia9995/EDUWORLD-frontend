@@ -44,7 +44,6 @@ const InstructorCourseDetails: React.FC = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isRefreshingThumbnail, setIsRefreshingThumbnail] = useState<boolean>(false);
   const [refreshingVideos, setRefreshingVideos] = useState<Set<string>>(new Set());
   const [activeLesson, setActiveLesson] = useState<string | null>(null);
 
@@ -102,32 +101,7 @@ const InstructorCourseDetails: React.FC = () => {
     fetchCourseDetails();
   }, [courseId]);
 
-  const handleThumbnailError = async () => {
-    if (!isRefreshingThumbnail && course && course.thumbnail) {
-      setIsRefreshingThumbnail(true);
-      try {
-        const fileName = course.thumbnail.split('/').pop();
-        if (!fileName) {
-          console.error('Could not extract filename from thumbnail URL:', course.thumbnail);
-          return;
-        }
-
-        const { data } = await api.post('/users/get-s3-url', {
-          fileName: fileName,
-          fileType: 'image/*',
-          getUrl: true,
-        });
-
-        setCourse((prev) => (prev ? { ...prev, thumbnail: data.downloadUrl } : prev));
-      } catch (error) {
-        console.error('Error refreshing thumbnail URL:', error);
-        toast.error('Failed to refresh thumbnail');
-      } finally {
-        setIsRefreshingThumbnail(false);
-      }
-    }
-  };
-
+ 
   const handleVideoError = async (lessonId: string) => {
     if (!refreshingVideos.has(lessonId)) {
       setRefreshingVideos((prev) => new Set(prev).add(lessonId));

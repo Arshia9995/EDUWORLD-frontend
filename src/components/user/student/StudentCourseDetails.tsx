@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
-  FiBookOpen, FiClock, FiDollarSign, FiGlobe, 
-  FiUser, FiList, FiChevronLeft, FiStar,  
+  FiBookOpen, FiClock, FiGlobe, 
+  FiUser, FiList, FiChevronLeft,  
 } from 'react-icons/fi';
 import StudentSidebar from '../../../common/StudentSidebar';
 import { api } from '../../../config/api';

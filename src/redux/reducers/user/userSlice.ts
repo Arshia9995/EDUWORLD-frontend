@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  {userSignup, verifyOtp, userLogin,userLogout, updateUserProfile, getUserDataFirst, isExist, registerInstructor, googleAuthAction} from "../../actions/userActions";
+import  {userSignup, verifyOtp, userLogin,userLogout, updateUserProfile, getUserDataFirst, registerInstructor, googleAuthAction} from "../../actions/userActions";
 import { IUserSignupData } from "../../../interface/IUserSignup";
-import { IUserLoginData } from "../../../interface/IUserLogin";
-import { IUserData } from "../../../interface/IUserData";
 
 
 

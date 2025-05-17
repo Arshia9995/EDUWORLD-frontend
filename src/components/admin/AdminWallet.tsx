@@ -21,11 +21,8 @@ interface Wallet {
 
 const AdminWallet: React.FC = () => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [sidebarOpen ] = useState<boolean>(true);
   const [wallet, setWallet] = useState<Wallet>({ balance: 0, transactions: [] });
-  const [creditAmount, setCreditAmount] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [courseId, setCourseId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'credit' | 'debit'>('all');
@@ -34,7 +31,7 @@ const AdminWallet: React.FC = () => {
 
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [searchQuery, setSearchQuery] = useState<string>("");
+   
   
   const fetchWalletDetails = async () => {
     try {
@@ -62,43 +59,6 @@ const AdminWallet: React.FC = () => {
   };
 
   
-  const handleCreditWallet = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!creditAmount || !description) {
-      setError('Amount and description are required');
-      toast.error('Amount and description are required');
-      return;
-    }
-    try {
-      setLoading(true);
-      const response = await api.post(
-        '/api/admin/wallet/credit',
-        {
-          amount: parseFloat(creditAmount),
-          description,
-          courseId: courseId || undefined,
-        },
-        { withCredentials: true }
-      );
-      if (response.data.success) {
-        setCreditAmount('');
-        setDescription('');
-        setCourseId('');
-        setError(null);
-        toast.success('Wallet credited successfully');
-        fetchWalletDetails();
-      } else {
-        throw new Error(response.data.message || 'Failed to credit wallet');
-      }
-    } catch (err: any) {
-      console.error('Error crediting wallet:', err);
-      const errorMessage = err.response?.data?.message || 'Failed to credit wallet';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchWalletDetails();

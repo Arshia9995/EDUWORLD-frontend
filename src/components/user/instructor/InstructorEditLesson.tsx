@@ -184,7 +184,7 @@ console.log(videoPreviewUrl,"video preview url")
     duration: Yup.string().optional(),
   });
 
-  const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     if (!selectedLesson) {
       toast.error('Please select a lesson to edit');
       return;

@@ -1,15 +1,13 @@
 
 import React from "react";
-import { useEffect } from "react";
 import logo from "../../../assets/home/logo.png";
 import { Link ,useNavigate} from "react-router-dom";
 import {useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { getInstructorById, userLogout } from "../../../redux/actions/userActions";
 import toast from "react-hot-toast";
-import { IUserSignupData } from "../../../interface/IUserSignup";
-import { IInstructorData } from "../../../interface/IInstructor";
-import { approveInstructor, getallInstructors, rejectInstructor } from "../../../redux/actions/adminActions";
+
+
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

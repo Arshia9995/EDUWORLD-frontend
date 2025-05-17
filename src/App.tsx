@@ -1,22 +1,20 @@
-import React, { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import React  from "react";
+import { Route, Routes } from "react-router-dom";
 import UserRoutes from "./routes/UserRoutes";
-import toast, { Toaster } from "react-hot-toast";
+import  { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
 import AdminRoutes from "./routes/AdminRoutes";
 import { ToastContainer } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./redux/store";
-import { getUserDataFirst, isExist, userLogout } from "./redux/actions/userActions";
+import {  useSelector } from "react-redux";
+import {  RootState } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor} from './redux/store'
-import { getallInstructors } from "./redux/actions/adminActions";
+import {  persistor} from './redux/store'
+
 
 const App: React.FC = () => {
-  const { user, error } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const {  error } = useSelector((state: RootState) => state.user);
+ 
 
   // console.log(user, "user in the app.tsx");
   // const fetchUserData = async () => {
@@ -25,23 +23,7 @@ const App: React.FC = () => {
   //     checkExist();
   // },[]);
 
-  const checkExist = async () => {
-    if (user) {
-      try {
-        const response = await dispatch(isExist()).unwrap();
-        if (response?.data.isBlocked) {
-          console.log("checiking is user blockec by admin ......................///")
-          await dispatch(userLogout())
-          toast.error('Your Account is Blocked. Contact the Admininstrator')
-          navigate('/login')
-          console.log("blocked by admin ......................///")
-        }
-      } catch (error) {
-        console.error('Error checking user existence:', error);
-     
-      }
-    }
-  };
+
 
   // .......................................
   // };

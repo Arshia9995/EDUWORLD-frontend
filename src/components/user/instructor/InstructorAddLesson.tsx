@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MessageSquare, Upload, X, CheckCircle, AlertCircle, Plus } from 'lucide-react';
 import InstructorSidebar from '../../../common/InstructorSidebar';
 import { Formik, Form, Field, ErrorMessage } from 'formik';

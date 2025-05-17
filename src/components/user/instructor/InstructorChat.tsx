@@ -83,8 +83,7 @@ const InstructorChat: React.FC = () => {
   const { socket, joinChat } = useSocketContext();
   const [processedMessageIds, setProcessedMessageIds] = useState<Set<string>>(new Set());
 
-  const messageContainerRef = useRef<HTMLDivElement>(null);
-  const shouldScrollToBottomRef = useRef(true);
+
 
   const fetchChats = async () => {
     try {

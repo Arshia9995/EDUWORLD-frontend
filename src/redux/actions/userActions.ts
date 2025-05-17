@@ -1,11 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IUserSignupData } from "../../interface/IUserSignup";
 import { IUserLoginData } from "../../interface/IUserLogin";
-import axios,  { AxiosError } from "axios";
-import { baseUrl } from "../../config/constants";
-import { ApiError, config, handleError } from "../../config/configuration";
+import   { AxiosError } from "axios";
+import { ApiError, handleError } from "../../config/configuration";
 import { api } from "../../config/api";
-import { CredentialResponse } from "@react-oauth/google";
+
 
 
 

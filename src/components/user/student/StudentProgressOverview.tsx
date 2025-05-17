@@ -4,15 +4,7 @@ import { FiBookOpen, FiChevronLeft, FiCheckCircle } from 'react-icons/fi';
 import { api } from '../../../config/api';
 import toast from 'react-hot-toast';
 
-interface Lesson {
-  _id: string;
-  lessonNumber: number;
-  title: string;
-  description?: string;
-  duration?: string;
-  video?: string;
-  course: string;
-}
+
 
 interface Course {
   _id: string;

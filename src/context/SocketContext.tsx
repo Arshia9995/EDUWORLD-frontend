@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { IMessage } from "../interface/IMessage";
 import { useSelector } from "react-redux";
 
 interface UserState {

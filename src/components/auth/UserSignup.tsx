@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import logo from "../../assets/home/logo.png";
 import { useFormik } from 'formik';
@@ -6,7 +6,6 @@ import { ValidationSchema } from "../../schemas/ValidationSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { userSignup } from "../../redux/actions/userActions";
 import { AppDispatch, RootState } from "../../redux/store";
-import OtpVerification from "./OtpVerification";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { IUserSignupData } from "../../interface/IUserSignup";
@@ -21,13 +20,7 @@ import { IUserSignupData } from "../../interface/IUserSignup";
 //   email: string;
 //   role: "student" | "instructor";
 // }
-interface TempData {
-  name: string;
-  email: string;
-  password: string;
-  otp?: string;
-  role: "student" | "instructor";
-}
+
 const initialValues = {
   name: "",
   email: "",
@@ -35,16 +28,10 @@ const initialValues = {
   confirmPassword: "",
   role: "student"
 }
-const temporaryData: TempData = {
-  name: "",
-  email: "",
-  password: "",
-  role: "student",
-}
+
 
 const UserSignup: React.FC = () => {
-  const [isOTP, setIsOTP] = useState<boolean>(false)
-  const [tempData, setTempData] = useState<TempData>(temporaryData)
+ 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -72,14 +59,9 @@ const UserSignup: React.FC = () => {
       console.log(response, 'response ----')
       if (response) {
         console.log(rest,"rest values")
-        setTempData({
-          name: rest.name,
-          email: rest.email,
-          password: rest.password,
-          role: rest.role as 'student' | 'instructor',
-        });
 
-        setIsOTP(true); 
+
+        
         toast.success("Signup successful! OTP sent.");
         action.resetForm(); 
         navigate("/otp", { state: { userData: {

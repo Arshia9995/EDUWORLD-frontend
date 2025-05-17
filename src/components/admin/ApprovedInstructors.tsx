@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import logo from "../../assets/home/logo.png";
 import { getallInstructors, blockUnblockInstructor } from "../../redux/actions/adminActions";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
