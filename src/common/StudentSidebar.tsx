@@ -1,10 +1,7 @@
-
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook, FiBookOpen,  FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FiHome, FiBook, FiBookOpen, FiMenu, FiDollarSign, FiBell } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
-
-
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -12,12 +9,15 @@ interface SidebarProps {
 }
 
 const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
- 
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   const goToHome = () => {
     navigate('/');
   };
+
+  // Function to determine if a link is active
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <aside
@@ -41,42 +41,60 @@ const StudentSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen })
 
       <button
         onClick={goToHome}
-        className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:text-yellow-400 transition-colors mb-4"
+        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors mb-4 ${
+          isActive('/') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+        }`}
       >
         <FiHome className="h-5 w-5" />
         {sidebarOpen && <span className="font-medium">Go to Home</span>}
       </button>
 
       <nav className="space-y-4">
-        <Link to="/studentdashboard" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/studentdashboard"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/studentdashboard') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiHome />
           {sidebarOpen && <span>Dashboard</span>}
         </Link>
-        <Link to="/student/allcourses" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/student/allcourses"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/student/allcourses') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiBookOpen />
           {sidebarOpen && <span>All Courses</span>}
         </Link>
-        <Link to="/enrolled-courses" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/enrolled-courses"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/enrolled-courses') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
         </Link>
-        <Link to="/announcements" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/announcements"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/announcements') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiBell />
           {sidebarOpen && <span>Announcements</span>}
         </Link>
-        
-        {/* <Link to="/student-progress" className="flex items-center space-x-2 hover:text-yellow-400">
-          <FiTrendingUp />
-          {sidebarOpen && <span>Progress</span>}
-        </Link> */}
-        <Link to="/payment-history" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/payment-history"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/payment-history') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiDollarSign />
           {sidebarOpen && <span>Payment Details</span>}
         </Link>
-        {/* <Link to="/studentmessages" className="flex items-center space-x-2 hover:text-yellow-400">
-          <FiMessageSquare />
-          {sidebarOpen && <span>Messages</span>}
-        </Link> */}
       </nav>
     </aside>
   );

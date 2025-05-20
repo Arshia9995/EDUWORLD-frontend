@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiBook,  FiMessageSquare, FiMenu, FiDollarSign } from 'react-icons/fi';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FiHome, FiBook, FiMessageSquare, FiMenu, FiDollarSign } from 'react-icons/fi';
 import logo from '../assets/home/logo.png';
-
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -10,12 +9,15 @@ interface SidebarProps {
 }
 
 const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
- 
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   const goToHome = () => {
     navigate('/');
   };
+
+  // Function to determine if a link is active
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <aside
@@ -39,39 +41,51 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
 
       <button
         onClick={goToHome}
-        className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:text-yellow-400 transition-colors mb-4"
+        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors mb-4 ${
+          isActive('/') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+        }`}
       >
         <FiHome className="h-5 w-5" />
         {sidebarOpen && <span className="font-medium">Go to Home</span>}
       </button>
 
       <nav className="space-y-4">
-        <Link to="/instructordashboard" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/instructordashboard"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/instructordashboard') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiHome />
           {sidebarOpen && <span>Dashboard</span>}
         </Link>
-        <Link to="/instructorcourses" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/instructorcourses"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/instructorcourses') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
         </Link>
-        {/* <Link to="/students" className="flex items-center space-x-2 hover:text-yellow-400">
-          <FiUsers />
-          {sidebarOpen && <span>Students</span>}
-        </Link> */}
-        <Link to="/instructor/wallet" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/instructor/wallet"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/instructor/wallet') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiDollarSign />
           {sidebarOpen && <span>Wallet</span>}
         </Link>
-        <Link to="/instructorchat" className="flex items-center space-x-2 hover:text-yellow-400">
+        <Link
+          to="/instructorchat"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/instructorchat') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
           <FiMessageSquare />
           {sidebarOpen && <span>Messages</span>}
         </Link>
-        {/* <button
-          className="flex items-center space-x-2 hover:text-yellow-400 w-full text-left"
-        >
-          <FiLogOut />
-          {sidebarOpen && <span>Logout</span>}
-        </button> */}
       </nav>
     </aside>
   );
