@@ -1,3 +1,3 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "https://eduworld.space" }]
+    "rewrites": [{ "source": "/(.*)", "destination": "https://eduworld.space/" }]
   }
