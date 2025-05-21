@@ -22,6 +22,7 @@ api.interceptors.response.use(
     }
 );
 
+
 export const commonRequest = async <T, B = unknown>(
     method: Method,
     route: string,
