@@ -14,17 +14,17 @@ import { commonRequest } from "../../config/interceptors";
 }
 
 
-// export const adminLogin = createAsyncThunk(
-//     "admin/adminLogin",
-//     async ({ email, password }: IAdminLoginData,{ rejectWithValue }) => {
-//       try {
-//         const response = await api.post("/admin/login" , { email, password });
-//         return response.data;
-//       } catch (error: any) {
-//         return handleError(error as AxiosError<ApiError>, rejectWithValue);
-//       }
-//     }
-//   );
+export const adminLogin = createAsyncThunk(
+    "admin/adminLogin",
+    async ({ email, password }: IAdminLoginData,{ rejectWithValue }) => {
+      try {
+        const response = await api.post("/admin/login" , { email, password });
+        return response.data;
+      } catch (error: any) {
+        return handleError(error as AxiosError<ApiError>, rejectWithValue);
+      }
+    }
+  );
 
 export const adminLogin = createAsyncThunk(
   "admin/adminLogin",

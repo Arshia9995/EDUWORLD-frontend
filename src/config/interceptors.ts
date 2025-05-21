@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, Method } from "axios";
 import { config } from "./configuration";
 
-export const baseUrl = 'http://localhost:3000';
+export const baseUrl = 'https://api.eduworld.space';
 
 export const api = axios.create({
   baseURL: baseUrl,
