@@ -12,7 +12,25 @@ import { baseUrl } from "../../../config/constants";
 
 
 const validationSchema = Yup.object({
-  dob: Yup.string().required("Date of Birth is required"),
+  dob: Yup.date()
+    .required("Date of Birth is required")
+    .max(new Date(), "Date of Birth cannot be in the future")
+    .test(
+      "is-18-or-older",
+      "You must be at least 18 years old",
+      (value) => {
+        if (!value) return false;
+        const today = new Date();
+        const birthDate = new Date(value);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          return age - 1 >= 18;
+        }
+        return age >= 18;
+      }
+    ),
   gender: Yup.string()
     .oneOf(["male", "female", "other"], "Invalid gender selection")
     .required("Gender is required"),

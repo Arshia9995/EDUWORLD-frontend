@@ -79,7 +79,25 @@ const Profile = () => {
       name: Yup.string().required('Name is required'),
       email: Yup.string().email('Invalid email address').required('Email is required'),
       phone: Yup.string().matches(/^\d+$/, 'Phone number must be numeric').min(10, 'Must be at least 10 digits').required('Phone number is required'),
-      dob: Yup.date().required('Date of birth is required'),
+      dob: Yup.date()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of Birth cannot be in the future')
+    .test(
+      'is-18-or-older',
+      'You must be at least 18 years old',
+      (value) => {
+        if (!value) return false;
+        const today = new Date();
+        const birthDate = new Date(value);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          return age - 1 >= 18;
+        }
+        return age >= 18;
+      }
+    ),
       address: Yup.string().required('Address is required'),
       gender: Yup.string().required('Please select a gender'),
     }),
