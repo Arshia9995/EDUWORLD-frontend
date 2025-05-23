@@ -17,3 +17,4 @@ export const RupeeIcon = ({ className }: { className?: string }) => (
     <path d="M14 3v18" />
   </svg>
 );
+
