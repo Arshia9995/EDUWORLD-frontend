@@ -234,6 +234,10 @@ function InstructorAddLesson() {
     }
   };
 
+    const handleSaveDraft = () => {
+    navigate('/instructordraftcourses');
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <InstructorSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -450,6 +454,15 @@ function InstructorAddLesson() {
                       >
                         {isSubmitting ? 'Saving...' : uploading ? `Uploading (${uploadProgress}%)` : 'Add Lesson'}
                       </button>
+
+                       <button
+  type="button"
+  onClick={handleSaveDraft}
+  className="py-2.5 px-6 rounded-lg flex items-center justify-center gap-2 bg-yellow-500 text-white hover:bg-yellow-600 transition-colors font-medium"
+>
+  Save Draft
+</button>
+
                       <button
                         type="button"
                         onClick={handleFinishCourse}

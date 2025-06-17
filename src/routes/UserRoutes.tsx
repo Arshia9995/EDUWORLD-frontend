@@ -30,6 +30,7 @@ import InstructorWallet from "../components/user/instructor/InstructorWallet";
 import RetryPaymentSuccess from "../components/user/student/RetryPaymentSuccess";
 import InstructorChat from "../components/user/instructor/InstructorChat";
 import StudentAnnouncements from "../components/user/student/StudentAnnouncement";
+import InstructorDraftCourselist from "../components/user/instructor/InstructorDraftCourselist";
 
 const UserRoutes: React.FC = () => {
     return (
@@ -66,6 +67,13 @@ const UserRoutes: React.FC = () => {
              element= {
                 <ProtectedRoute allowedRoles={["instructor"]}>
              <InstructorCoursePage />
+             </ProtectedRoute>
+            } />
+
+              <Route path ="/instructordraftcourses"
+             element= {
+                <ProtectedRoute allowedRoles={["instructor"]}>
+             <InstructorDraftCourselist />
              </ProtectedRoute>
             } />
 

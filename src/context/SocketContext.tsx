@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useSelector } from "react-redux";
+import { log } from "console";
 
 interface UserState {
   user: {
@@ -40,6 +41,8 @@ export const useSocketContext = (): SocketContextType => {
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useSelector((state: RootState) => state.user);
+  console.log("userrrrrrrrrrr from socketcontext", user);
+  
 
   const userId = user?._id || "";
   const [socket, setSocket] = useState<Socket | null>(null);

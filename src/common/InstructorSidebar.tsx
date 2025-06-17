@@ -68,6 +68,17 @@ const InstructorSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen
           <FiBook />
           {sidebarOpen && <span>My Courses</span>}
         </Link>
+
+        <Link
+          to="/instructordraftcourses"
+          className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+            isActive('/instructor/draft-courses') ? 'bg-yellow-400 text-blue-900' : 'text-white hover:text-yellow-400'
+          }`}
+        >
+          <FiBook />
+          {sidebarOpen && <span>Draft Courses</span>}
+        </Link>
+
         <Link
           to="/instructor/wallet"
           className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
